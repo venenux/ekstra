@@ -34,6 +34,11 @@
 		public function salir()
 		{	// destruir la session e invalidarla
 			$sDatausuario = array('logueado' => FALSE);
+			$sDatausuario['codarrendatario']='';
+			$sDatausuario['cod_controlador']	='';
+			$sDatausuario['cod_aplicacion']	='';
+			$sDatausuario['username']	= '';	
+			$sDatausuario['accionpagina']='';
 			$this->session->set_userdata($sDatausuario);
 			$this->session->sess_destroy();
 			$this->index();
@@ -46,7 +51,7 @@ public function iniciarsesion()
 		  //obtener el post con  login contraseña 
 		    $sLogin= $this->input->post('username');
 			$sPass = $this->input->post('contrasena');
-	
+	        $smodulo=$this->input->post('moduloindexarray');
 			if ($sLogin!='' &&     $sPass!='' )
 			{   	
 				   ///   login y la contraseña () no son vacios; 
@@ -75,7 +80,7 @@ public function iniciarsesion()
 													$this->load->view('view_header');
 													//esta linea impedia la sesion
 										        	$this->session->set_userdata($sDatausuario);
-												   redirect('Registropagos_bta/index', 'refresh');
+												   redirect('Registropagos/index', 'refresh');
 												   } // fin si
 								         	else								    
 						                     { 	// incremento la variable de posicion 
