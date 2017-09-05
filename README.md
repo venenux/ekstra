@@ -14,6 +14,14 @@ Paginas en proceso y de recomendada lectura:
 Para obtener la respuesta json, se realiza un CURL con metodo POST con el usuairo y clave en los datos
 si se envia por json siempre en todo momento se enviaria el usuario y clave en md5 (en futuro sha1+md5)
 
+## autentication
+
+cada vez que se envie un request siempre en el post se enviaran:
+
+* username : el login o inicio de sesion
+* userclave: la clave obviamente
+* usermodulo : el indice de modulo al que accedera
+
 ## formato usuarios
 
 json que ofrecera "elsistema" a "elcliente" : 
@@ -58,11 +66,11 @@ si no es exitosa la operacion, se recibe esto:
 
 despues de cada modificacion de dato, se recibira siempre esto en caso exitoso de usuario:
 
-`{"userintranet":{"intranetclave":"szsd890fbh6s0d89f7g0sdf76g0sd896g08sdf6"}}`
+`{"userintranet":{"intranetclave":"szsd890fbh6s0d89f7g0sdf76g0sd896g08sdf6","modulo":"1"}}`
 
 ejemplo:
 
-`{"salazar_leonardo":{"intranetclave":"szdafsdfafbh6s0d89f7g0sdf76g0sd896g08sdf6"}}`
+`{"salazar_leonardo":{"intranetclave":"szdafsdfafbh6s0d89f7g0sdf76g0sd896g08sdf6","modulo":"1"}}`
 
 el string "intranetclave" debe decodificarse por md5, es decir este despues de decodificado sera:
 
