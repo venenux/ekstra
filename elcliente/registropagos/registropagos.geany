@@ -1,0 +1,29 @@
+
+[indentation]
+indent_width=4
+indent_type=1
+indent_hard_tab_width=8
+detect_indent=false
+detect_indent_width=false
+indent_mode=3
+
+[project]
+name=registropagos_bta
+base_path=/home/systemas/Devel/registropagos_bta/
+description=Sistemas para control de pago de inmuebles alquilados
+file_patterns=
+
+[long line marker]
+long_line_behaviour=1
+long_line_column=72
+
+[files]
+current_page=2
+FILE_NAME_0=2582;PHP;0;16;1;1;0;/home/systemas/Devel/registropagos_bta/application/controllers/Login_usuario.php;0;4
+FILE_NAME_1=2217;PHP;0;16;1;1;0;/home/systemas/Devel/registropagos_bta/application/controllers/Registropagos_bta.php;0;4
+FILE_NAME_2=2810;PHP;0;16;1;1;0;/home/systemas/Devel/registropagos_bta/application/models/Modelodatos.php;0;4
+FILE_NAME_3=18407;PHP;0;16;1;1;0;/home/systemas/Devel/registropagos_bta/application/config/config.php;0;4
+FILE_NAME_4=729;PHP;0;16;1;1;0;/home/systemas/Devel/registropagos_bta/application/views/iniciosesion.php;0;4
+
+[VTE]
+last_dir=/home/systemas
