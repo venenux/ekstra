@@ -9,6 +9,12 @@ Paginas en proceso y de recomendada lectura:
 * [tecnical-visor-precio-cd202-serial (como usar el visor serial D202 varias marcas)](https://gitlab.com/nerp/nerpextras/wikis/tecnical-visor-precio-cd202-serial)
 * [tecnical-vposjaruniversal-megasoft (como usar el vpos universar verifone/ingenico)](https://gitlab.com/nerp/nerpextras/wikis/vposjaruniversal-megasoft-verifone-ingenico)
 
+# PROGRAMA para usar git
+
+GIGGLE: `apt-get install giggle giggle-personal-details-plugin giggle-terminal-view-plugin`
+
+Giggle puede clonar, asignar datos de correo y usuario ver diferencias, abrir uan consola de operaciones y subir.
+
 # formatos json: PEDIR/BAJAR info o realizar llamadas a datos ofrecidos por el sistema:
 
 Para obtener la respuesta json, se realiza un CURL con metodo POST con el usuairo y clave en los datos
