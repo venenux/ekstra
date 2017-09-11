@@ -40,7 +40,7 @@ class Registropagos extends CI_Controller
 		// este será el array que obtiene le valor del modelo
 		$this->load->library('session');
 		//$this->adm_arrendatario->arrendatarios_get($arrendatariosfiltro);
-		$datos= $this ->Modelodatos->getdatos();
+	//	$datos= $this ->Modelodatos->getdatos();
 		 // verificar si el usuario  estableció sessión (logueado) o no
 		if( $this->session->userdata('logueado') == TRUE AND  $this->session->userdata('username') != '')
 		{
@@ -48,14 +48,17 @@ class Registropagos extends CI_Controller
 			$this->load->helper(array('form', 'url','html'));
 			// cargar los datos de la sessión
 		   $username = $this->session->userdata('username');
-		   $codarrendatario=$this->session->userdata('codarrendatario');
+		  // $codarrendatario=$this->session->userdata('codarrendatario');
 		   // aqui es donde se le pide al modelo los datos de los patrimonios de ese usuario
-		    $datauser=$this->Modelodatos->get_patrimonios_by_code($codarrendatario);
+		   // $datauser=$this->Modelodatos->get_patrimonios_by_code($codarrendatario);
+			$datauser=$this->session->userdata('patrimonios');
 			// eso se eliminará cuando ya no se necesite el profiler y se deshabilite
 			$data['datos'] = $datauser;
  			$data['username'] =$username ;
     		$data['accionpagina']='logueado';
-    		$data['codarrendatario']=  $codarrendatario;
+    		//$data['codarrendatario']=  $codarrendatario;
+    		$data['a']= $this->session->userdata('flecha');
+    		///
     		$this->load->library('table');
 	    	$this->load->helper(array('form', 'url','html'));
 		    $tmplnewtable = array ( 'table_open'  => '<table border="0" cellpadding="1" cellspacing="1" class="table">' );
@@ -78,6 +81,7 @@ class Registropagos extends CI_Controller
                $titulos = array('Cod Patrimonio'.nbs(2),nbs().'Descripción'.nbs(2),nbs().'Monto'.nbs(2),nbs().'Fecha Contrato');
                $this->table->add_row($titulos);
                       //crear el arreglo con los  patrimonuios, solo interesa el código, por ahora
+              
                   $patrimonios= array();
                  //cargar los pseudo datos del arreglo a la tabla para la vista y el arreglo de los patrimonios
                  foreach($datauser as $item)

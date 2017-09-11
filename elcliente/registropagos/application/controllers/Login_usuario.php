@@ -25,7 +25,13 @@
 		public function index()
 		{
 			$sDatausuario = null;
-		
+		  	$sDatausuario = array('logueado' => FALSE);
+			$sDatausuario['codarrendatario']='';
+			$sDatausuario['cod_controlador']	='';
+			$sDatausuario['cod_aplicacion']	='';
+			$sDatausuario['username']	= '';	
+			$sDatausuario['accionpagina']='';
+		   $sDatausuario['flecha']= null;	
 			$this->session->set_userdata($sDatausuario);
 			$this->load->helper(array('form', 'url','html'));
 			$this->load->view('iniciosesion', $sDatausuario);
@@ -46,59 +52,84 @@
 
 public function iniciarsesion()
 {	    // la libreria curl
-         $this->load->library('curl');
+           $this->load->library('curl');
        
 		  //obtener el post con  login contraseña 
 		    $sLogin= $this->input->post('username');
 			$sPass = $this->input->post('contrasena');
-	        $smodulo=$this->input->post('moduloindexarray');
+	        $smodulo=$this->input->post('modulo');
 			if ($sLogin!='' &&     $sPass!='' )
 			{   	
-				   ///   login y la contraseña () no son vacios; 
-				   // obtener el json remoto con los datos de  los usuarios
+				   ///   login y la contraseña (desde formulario) no son vacios; 
+		    		/*  obtener el json remoto con los datos de  los usuarios no se implementará ese método
 		               $datausers = $this->Modelodatos->get_Datos_Users(); //p 
-			       //    	$datausers =$this->Modelodatos->getDatos();
-				    	$hay_match=0;			
-				      	$i= 1;
-				      	$max= 	count($datausers );	
-				      
-				    	 $datauser=array();
-					        while (($hay_match < 1 )&& ($i <=$max ))
-					          { 	   // acceder al elemento en la posicion i
-								           $datauser	=$datausers[$i];
-								  		     if (($sLogin== $datauser['login'] ) && ($datauser['clave']== $sPass))
-												{
-													//  hay match:
-													$hay_match=1;
-													$sDatausuario['codarrendatario']=$datauser['codarrendatario'];
-													$sDatausuario['cod_controlador']	='controlpago';
-													$sDatausuario['cod_aplicacion']	='007';
-													$sDatausuario['username']	= $datauser['login'] ;	
+			         */
+			         
+				      	/*  tomar   los valores que vienen desde formulario y mandarlos al controlador EmuDB
+				    	 *   luego cuando se conozca el servidor que usará el sistema seŕa configurada la ruta 
+				    	 *   primero deben transformarse...
+				    	 * */
+				    	 $transfsLogin=md5(  $sLogin);
+				    	  $transfsPass=md5( $sPass);
+				    	
+				    	   //{"userintranet":{"intranetclave":"szsd890fbh6s0d89f7g0sdf76g0sd896g08sdf6","modulo":"1"}}
+				    	                                    //  fx= userintranet                   dy=intranetclave           z0= modulo                                      
+				   
+				   	 // cargar al arreglo 
+				   	// $arreglopost=array ('fx'=> $sLogin,  'dy'=> $sPass, 'z0'=>$smodulo) ;
+				     $arreglopost=array ('fx'=> $transfsLogin, 'dy'=> $transfsPass, 'z0'=>$smodulo) ;        
+				    
+				    	// invocar el modelo para que haga el trabjo de enviar el post
+				    	$elrequest= $this->Modelodatos->request_for_login($arreglopost);
+				    	$sDatausuario['flecha']	=	$elrequest;
+				    	// revisar la respuesta  segun sea la respuesta permitir sesion
+				    	// EL RESPONSE QUE ES JSON SE DEBE DE TRANSFORMAR, SEGUNDA VARIABLE
+				    	$response=json_decode($elrequest,TRUE);
+				    	 $sDatausuario['patrimonios']=$response;// esto se mostrará en formulario
+								if (array_key_exists('status', $response) )
+								{ // no hay sesion, no may match, respuesta recibida : error
+ 									    $this->index(); // mostrar la misma pantalla, no dar señales de nada
+							  	echo 'error : ';
+							             	var_dump($response);
+							  	}	
+								else
+								{//  significa que el servidor mandó la respuesta, el arreglo con los patrimonios
+									// establecer sesión	
+									              //	echo 'Legolas was here!';
+									              //	var_dump($response);
+									              	$sDatausuario['username']	= $sLogin ;	
 													$sDatausuario['logueado'] = TRUE;
-													$sDatausuario['accionpagina']='logueado';
+												    $sDatausuario['accionpagina']='logueado';
+								               
+												
+												  	// por ahora el modulo es 1 y se configuara estos datos asi, luego 
+												  	//cuando se desarrollen/diseñen mas controladores y cosas en el sistema
+												  	// se adaptara esata lineas a los cambios
+													$sDatausuario['controlador']	='RegistroPagos ';
+													$sDatausuario['modulo']	=$smodulo;
+													
+													
+												
+													
+												     // se carga estas librerias para preparar las vistas de tablas y lo demás
 													$this->load->helper(array('form', 'url','html'));
 													$this->load->view('view_header');
-													//esta linea impedia la sesion
-										        	$this->session->set_userdata($sDatausuario);
-												   redirect('Registropagos/index', 'refresh');
-												   } // fin si
-								         	else								    
-						                     { 	// incremento la variable de posicion 
-											    $i= $i+1 ;
-											 }
-							  
-							  } // mientras
-				
-				   	if		($hay_match<1)	
-				   	
-				   	{  $this->index();
-					   echo 'Error : no Hay respuesta del Emulador DB';
-					}  
-				
+													
+												/* cuando se tengan que cargar  un controlador según sea el modulo se configura aqui que 
+												/   controlador se cargará */	
+													//if  ($smodulo==1)
+														// cargar los datos del usuario ey  la sesion
+													  	$this->session->set_userdata($sDatausuario);
+												    redirect('Registropagos/index', 'refresh');
+								
+											}	// if 
+			  
+							   	
+				 
 				} // if login ni pass vacios 
 			
 			else $this->index(); //aquí no vale ni login ni password Vacío... 
-			
+		
 }// funcion iniciarsesion/ 
 
 
@@ -106,3 +137,15 @@ public function iniciarsesion()
 
 	}// fin class Login_usuario	
 	?>
+
+
+
+
+
+
+
+
+
+
+
+

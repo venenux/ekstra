@@ -513,9 +513,12 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 /*
-                    Sección manipulada para usar json como convenga
+          Sección manipulada para usar json como convenga usando  un  sistema que emula la BD (esto es temporal )
 */
-//recibir los datos de los usuarios desde el sistema que emula la BD 
+//recibir los datos de los usuarios 
 $config['json_get_users']='http://127.0.0.1/~systemas/CodeEmudb/index.php/api/emudb/users';
 //recibir los datos del arrendatario (inmuebles arrendados etc)
 $config['json_get_patrim']='http://127.0.0.1/~systemas/CodeEmudb/index.php/api/emudb/patxcode/beta/';
+//enviar el post al emudb
+//$config['json_post_login']='http://127.0.0.1/~systemas/CodeEmudb/Welcome/result_login';
+$config['json_post_login']='http://127.0.0.1/~systemas/CodeEmudb/index.php/api/emudb/login';

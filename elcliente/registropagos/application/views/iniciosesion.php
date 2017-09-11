@@ -10,7 +10,7 @@
 		echo form_hidden('paso',$paso).PHP_EOL;
 		//echo 'Clave :'.form_password('contrasena','321').PHP_EOL; // esto hay que quitarlo
 		echo 'Clave :'.form_password('contrasena').PHP_EOL; 
-		$moduloindexarray = array('1'=>'1');
+		$moduloindexarray = array('1'=>'1','2'=>'2');
 		echo form_dropdown('modulo', $moduloindexarray, '1');
 		echo form_submit('login', 'Iniciar sesion');
 		echo form_close() . PHP_EOL;
