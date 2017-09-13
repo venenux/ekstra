@@ -113,27 +113,30 @@ public function  request_for_login($losdatos)
 					curl_close($scurl);*/
 				
 				
-               return $response; // esto no se sabe si funciona
+               return $response; // devolver respuesta del servidor
 }//fin
 
-public function registrarpago( $parametros = array() )
-{ // mandar esto usando json al emulador  (función no probada)
+public function registrarpago( $parametros  )
+{ // manda un json al emuladordb usanndo el método post
 				/*  la url donde se va a mandar el json... esto puede cambiar porque se está usando la de prueba (emudb)
-				 por ahora esta es una prueba, pero estando la data en json puede ir hasta
-				 la base de datos real..*/
-				$laurl ='http://127.0.0.1/~systemas/CodeEmudb/index.php/welcome/recibir_datos_sesion'; 
+				 (por ahora)  pero estando la data en json puede ir hasta  la base de datos real..*/
+            
+				//establecer ruta
+				   //http://127.0.0.1/~systemas/CodeEmudb/index.php/api/emudb/registrar';
+				//   'json_post_registropagos
+				$laurl =$this->config->item('json_post_registropagos');
 				
-				//codificar el array:a json:
-				$eljson=json_encode($parametros);
-				//  crear la sesion cURL 
-				$this->curl->create($laurl);
-				// preparar el envio del json y determinar cual es el contenido del post:
-				$this->curl->option(CURLOPT_HTTPHEADER, array('Content-type: application/json; Charset=UTF-8'));
-				// preparar el post
-				$this->curl->post($eljson);
-				// ejecutar -enviar - el post
-				echo $result=$this->curl->execute();   
+				$eljson =json_encode($parametros);
+				$scurl = curl_init();
+			   curl_setopt($scurl, CURLOPT_URL, $laurl);
+				curl_setopt($scurl , CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+				curl_setopt($scurl , CURLOPT_POST, 1);
+				curl_setopt($scurl , CURLOPT_POSTFIELDS,$eljson);
+				curl_setopt($scurl, CURLOPT_RETURNTRANSFER, true);
+				$response  = curl_exec($scurl );
+				curl_close($scurl ); 
 				// luego el emulador recibe el json, lo decodifica y puede enviar la data a donde deba mandarlo
+				 return $response; // devolver respuesta del servidor
 }// fin registrarpagos
 
 

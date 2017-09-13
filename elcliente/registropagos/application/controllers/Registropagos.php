@@ -103,31 +103,54 @@ class Registropagos extends CI_Controller
 					// configurar los mensajes de error en español
 					$this->form_validation->set_message('required', 'El campo %s es obligatorio');			
 					$this->form_validation->set_message('numeric', 'El campo %s debe contener sólo números (el punto (.) es separador decimal)');		
-			        
-			    
-   	            
-   	                  
-   	                    // pasalo a $data
+			       
+   	       
+   	                    // pasarlo a $data para que sea  mostrado en la vista
    	                    $data['listapatrimonios']=$patrimonios;
    	                     
    	                      if($this->form_validation->run() === true){
-		 
+		                                    // preparar el arreglo para que reciba los valores del post
+		                                    $elregistro=array(
+		                                       'intranet'=>$data['username'], // el intranet será el indice de este arreglo
+		                                      'can_depositado'=>'',
+		                                       'cod_patrimonio'=>''
+		                                                          
+		                                    );
+											
 											$elregistro[ 'can_depositado']=$this->input->post('cant');
 											$elregistro[ 'num_referencia']=$this->input->post('numrefcheq');
 											$elregistro [ 'cod_patrimonio']=$this->input->post('patrimonio');
-										   // estos datos se envian al modelo trifake:
-											 $this->Modelodatos->registrarpago($elregistro);
-											$data['elpost']=  $elregistro; // esto es para ver sie en data captura el post
-												// mensaje al usuario avisando el exito 
-										
-										   
-										   echo "<script>alert('¡Pago Registrado!');</script>";
-                                            
-									  	redirect('Registropagos', 'refresh');
-                              
-										
-									
-				   }	
+										   //$añadir el usuario, puede que sea necesario en el futuro
+					
+										    
+										    // estos datos se envian al modelo trifake: se espera la respuesta
+										    
+											 $elrequest =$this->Modelodatos->registrarpago($elregistro);
+										     $data['request']=  $elrequest; // esta es la respuesta, si no se recibe una cadena de texto  especifica es error
+											
+														if (!is_array( $elrequest))
+														{  
+															   if ($elrequest=='"Pago registrado"')
+																{
+																       //	mensaje al usuario avisando el exito 
+										                                echo "<script>alert('¡ Pago registrado exitosamente !');</script>";
+																	   
+																}
+																else
+																{
+																			echo "<script>alert(' El Pago no ha sido registrado por un error en el Servidor.');</script>";
+																			// se siente una perturbación en la fuerza... es como si un servidor remoto manda hmtl  con errores
+																}
+																
+														}	
+														else
+														{//	se recibó  un arreglo, eso significa que hubo en error. Se deberia ver con el profiler
+														 /// pero por como se hacen las cosas no mostrar nada 
+														      echo "<script>alert(' El Pago no ha sido registrado por un error en el Servidor.');</script>";
+													  }
+									// sea lo que halla pasado, refrescar	
+						     	redirect('Registropagos', 'refresh');
+			   }	
             else
             {
 				      $this->load->view('view_pagoform',$data);

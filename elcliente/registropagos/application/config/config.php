@@ -516,9 +516,13 @@ $config['proxy_ips'] = '';
           Sección manipulada para usar json como convenga usando  un  sistema que emula la BD (esto es temporal )
 */
 //recibir los datos de los usuarios 
-$config['json_get_users']='http://127.0.0.1/~systemas/CodeEmudb/index.php/api/emudb/users';
+//$config['json_get_users']='http://127.0.0.1/~systemas/CodeEmudb/index.php/api/emudb/users';
+
 //recibir los datos del arrendatario (inmuebles arrendados etc)
-$config['json_get_patrim']='http://127.0.0.1/~systemas/CodeEmudb/index.php/api/emudb/patxcode/beta/';
-//enviar el post al emudb
-//$config['json_post_login']='http://127.0.0.1/~systemas/CodeEmudb/Welcome/result_login';
+//$config['json_get_patrim']='http://127.0.0.1/~systemas/CodeEmudb/index.php/api/emudb/patxcode/beta/';
+
+//enviar datos (login , password)  en json  usando request post al emudb 
 $config['json_post_login']='http://127.0.0.1/~systemas/CodeEmudb/index.php/api/emudb/login';
+
+// enviar los datos capturados formulario registropagos  en json  usando request post al emudb 
+$config['json_post_registropagos']='http://127.0.0.1/~systemas/CodeEmudb/index.php/api/emudb/registrar';
