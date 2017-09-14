@@ -112,14 +112,15 @@ class Registropagos extends CI_Controller
 		                                    // preparar el arreglo para que reciba los valores del post
 		                                    $elregistro=array(
 		                                       'intranet'=>$data['username'], // el intranet será el indice de este arreglo
-		                                      'can_depositado'=>'',
-		                                       'cod_patrimonio'=>''
+		                                        'cant_pago'=>$this->input->post('cant'),
+		                                       'numref'=>$this->input->post('numrefcheq'),
+		                                       'cod_pat'=>$this->input->post('patrimonio')
 		                                                          
 		                                    );
 											
-											$elregistro[ 'can_depositado']=$this->input->post('cant');
-											$elregistro[ 'num_referencia']=$this->input->post('numrefcheq');
-											$elregistro [ 'cod_patrimonio']=$this->input->post('patrimonio');
+										//	$elregistro[ 'cant_pago']=$this->input->post('cant');
+										//	$elregistro[ 'numref']=$this->input->post('numrefcheq');
+										//	$elregistro [ 'cod_pat']=$this->input->post('patrimonio');
 										   //$añadir el usuario, puede que sea necesario en el futuro
 					
 										    
@@ -148,7 +149,7 @@ class Registropagos extends CI_Controller
 														 /// pero por como se hacen las cosas no mostrar nada 
 														      echo "<script>alert(' El Pago no ha sido registrado por un error en el Servidor.');</script>";
 													  }
-									// sea lo que halla pasado, refrescar	
+									// lo que sea lo que sucedió con el post , refrescar	
 						     	redirect('Registropagos', 'refresh');
 			   }	
             else

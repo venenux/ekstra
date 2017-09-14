@@ -18,13 +18,15 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=1
-FILE_NAME_0=4109;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/controllers/Login_usuario.php;0;4
-FILE_NAME_1=6242;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/models/Modelodatos.php;0;4
-FILE_NAME_2=833;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/views/iniciosesion.php;0;4
-FILE_NAME_3=2552;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/controllers/Registropagos.php;0;4
-FILE_NAME_4=0;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/views/view_pagoform.php;0;4
-FILE_NAME_5=18784;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/config/config.php;0;4
+current_page=3
+FILE_NAME_0=3999;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/controllers/Login_usuario.php;0;4
+FILE_NAME_1=4993;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/models/Modelodatos.php;0;4
+FILE_NAME_2=339;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/views/iniciosesion.php;0;4
+FILE_NAME_3=5728;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/controllers/Registropagos.php;0;4
+FILE_NAME_4=18958;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/config/config.php;0;4
+FILE_NAME_5=0;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/views/profiler_template.php;0;4
+FILE_NAME_6=358;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/views/view_footer.php;0;4
+FILE_NAME_7=0;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/views/view_pagoform.php;0;4
 
 [VTE]
 last_dir=/home/systemas

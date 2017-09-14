@@ -3,7 +3,7 @@
 		$htmlformaattributos = array('name'=>'formulariomanejousuarios','class'=>'formularios','onSubmit'=>'return validageneric(this);');
 
 		//$this->load->view('view_header');
-		echo '<h2>Registro de pagos: Inicie Sesión</h2>';
+		echo '<h2><center>Registro de pagos: Inicie Sesión</center></h2>';
 		echo form_open('login_usuario/iniciarsesion', $htmlformaattributos) . PHP_EOL;
 		//echo 'Usuario:'.form_input('username','user1').PHP_EOL; // esto hay que quitarlo
 		echo 'Usuario:'.form_input('username').PHP_EOL;
