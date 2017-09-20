@@ -16,15 +16,15 @@ parent::__construct();
 ******************************** **********************************  ******************************* *************/
 public function get_Datos_Users()
 {
-	$laurl =$this->config->item('json_get_users'); 
-	$scurl= curl_init();
-	curl_setopt($scurl, CURLOPT_SSL_VERIFYPEER, false);
-	curl_setopt($scurl, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($scurl, CURLOPT_URL,$laurl);
-	$ladata=curl_exec($scurl);
-	curl_close($scurl);
-	$result = json_decode($ladata,true);
-	return $result; 
+		$laurl =$this->config->item('json_get_users'); 
+		$scurl= curl_init();
+		curl_setopt($scurl, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($scurl, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($scurl, CURLOPT_URL,$laurl);
+		$ladata=curl_exec($scurl);
+		curl_close($scurl);
+		$result = json_decode($ladata,true);
+		return $result; 
 }
 
 public function get_patrimonios_by_code($xcode)
@@ -61,7 +61,7 @@ public function registrarpago( $parametros  )
 		$laurl =$this->config->item('json_post_registropagos');
 		$eljson =json_encode($parametros);
 		$scurl = curl_init();
-	   curl_setopt($scurl, CURLOPT_URL, $laurl);
+		curl_setopt($scurl, CURLOPT_URL, $laurl);
 		curl_setopt($scurl , CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 		curl_setopt($scurl , CURLOPT_POST, 1);
 		curl_setopt($scurl , CURLOPT_POSTFIELDS,$eljson);
