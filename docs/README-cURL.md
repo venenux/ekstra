@@ -86,9 +86,35 @@ public function registrarpago( $parametros = array() )
 
 Si no tiene la libreria, tomela de internet o de spark plugins.
 
-## Uso en .Net
+## Uso en Webservices .Net
 
-(WIP) pero ojo aqui no se necesit ael maldito webserver okey
+Cada webservice .NET provee la informacion necesaria, de como configurr para usarse, visitando el enlace del mismo:
+
+* enlace webservice en navegador: http://localhost:17500/JsonConsulta.asmx?op=GetDetalleOrdenCompra
+
+Arroja **el contenido xml necesario** tanto apra wsdl 1.1 como para 1.2 y esto se usa en el curl, tomemos el 1.1 asi:
+
+* `touch dataxml.xml && editor datamxl.xml`
+* al abrir el editor pegar la parte del xml de la direccion arriba del .net wsdl (1.1 en este caso):
+
+``` 
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <GetDetalleOrdenCompra xmlns="http://json.intranet1.net.ve/">
+      <DataArea>BW02</DataArea>
+      <OC>OC00000692</OC>
+    </GetDetalleOrdenCompra>
+  </soap:Body>
+</soap:Envelope>
+```
+* este archivo se usara como la data en el comando curl asi:
+
+**COMANDO**
+
+`curl --header "Content-Type: text/xml;charset=UTF-8" --header "SOAPAction: \"http://json.intranet1.net.ve/GetDetalleOrdenCompra\"" --data @request.xml http://localhost:17500/JsonConsulta.asmx`
+
+esto arroja el resultado del webservice
 
 ## Uso en Gambas
 
