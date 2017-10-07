@@ -91,8 +91,15 @@ Click on the links to check whether the REST server is working.
 <li><a href="<?php echo site_url('api/example/users.html'); ?>">Users</a> - get it in HTML (users.html)</li>
 <li><a href="<?php echo site_url('api/example/users/format/html'); ?>">Users</a> - get it in HTML (users/format/html)</li>
 <li><a href="<?php echo site_url('api/example/users?format=html'); ?>">Users</a> - get it in HTML (users?format=html)</li>
-</ol>
+<li><a href="<?php echo site_url('api/emudb/users'); ?>">UsersDB</a> - defaulting to JSON</li>
+<li><a href="<?php echo site_url('api/emudb/patxcode/beta/ARR300722' ); ?>">Patrimonios user #2</a> - defaulting to JSON</li>
 
+</ol>
+<?php
+$controladorname = $this->uri->segment(2);
+	  $controladormetodo = $this->uri->segment(3);
+    	echo $controladorname . ' ' . $controladormetodo;
+?>
 <script src="https://code.jquery.com/jquery-1.12.0.js"></script>
 <script>
 // Create an 'App' namespace
