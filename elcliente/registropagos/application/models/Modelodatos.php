@@ -28,7 +28,7 @@ public function get_Datos_Users()
 }
 
 public function get_patrimonios_by_code($xcode)
-{/
+{//
 		$url =$this->config->item('json_get_patrim'); 
 		$laurl=$url.$xcode;
 		$scurl= curl_init();
@@ -42,7 +42,7 @@ public function get_patrimonios_by_code($xcode)
 }
 
 public function  request_for_login($losdatos)
-{ /
+{ //
 		$laurl =$this->config->item('json_post_login');
 		$eljson =json_encode($losdatos);
 		$scurl = curl_init();
@@ -69,6 +69,7 @@ public function registrarpago( $parametros  )
 		$response  = curl_exec($scurl );
 		curl_close($scurl ); 
 		return $response;
+}
 }
 
 
