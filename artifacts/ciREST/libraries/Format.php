@@ -51,7 +51,7 @@ private $_CI;
 *
 * @var mixed
 */
-protected $_data = [];
+protected $_data =array();
 /**
 * Type to convert from
 *
@@ -76,7 +76,7 @@ if ($from_type !== NULL)
 {
 if (method_exists($this, '_from_'.$from_type))
 {
-$data = call_user_func([$this, '_from_'.$from_type], $data);
+$data = call_user_func(array ($this, '_from_'.$from_type), $data);
 }
 else
 {
@@ -122,7 +122,7 @@ if (is_array($data) === FALSE)
 {
 $data = (array) $data;
 }
-$array = [];
+$array =array();
 foreach ((array) $data as $key => $value)
 {
 if (is_object($value) === TRUE || is_array($value) === TRUE)
@@ -233,7 +233,7 @@ else
 {
 // Single array
 $headings = array_keys($data);
-$data = [$data];
+$data = array($data);
 }
 // Load the table library
 $this->_CI->load->library('table');
@@ -296,7 +296,7 @@ else
 {
 // Single array
 $headings = array_keys($data);
-$data = [$data];
+$data =array ($data);
 }
 // Apply the headings
 fputcsv($handle, $headings, $delimiter, $enclosure);
@@ -397,7 +397,7 @@ return var_export($data, TRUE);
 */
 protected function _from_xml($data)
 {
-return $data ? (array) simplexml_load_string($data, 'SimpleXMLElement', LIBXML_NOCDATA) : [];
+return $data ? (array) simplexml_load_string($data, 'SimpleXMLElement', LIBXML_NOCDATA) : array();
 }
 /**
 * @param string $data CSV string
