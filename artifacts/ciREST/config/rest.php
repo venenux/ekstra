@@ -39,7 +39,7 @@ $config['rest_default_format'] = 'json';
 | REST_Controller initialization.
 |
 */
-$config['rest_supported_formats'] = [
+$config['rest_supported_formats'] = array (
 'json',
 'array',
 'csv',
@@ -48,7 +48,7 @@ $config['rest_supported_formats'] = [
 'php',
 'serialized',
 'xml',
-];
+);
 /*
 |--------------------------------------------------------------------------
 | REST Status Field Name
@@ -192,8 +192,11 @@ $config['auth_library_function'] = '';
 |
 | Array of usernames and passwords for login, if ldap is configured this is ignored
 |
+
+
+
 */
-$config['rest_valid_logins'] = ['admin' => '1234'];
+$config['rest_valid_logins'] =array ('user1' => '123', 'user2'=>'231','user3'=>'321');
 /*
 |--------------------------------------------------------------------------
 | Global IP White-listing
@@ -513,13 +516,13 @@ $config['check_cors'] = FALSE;
 | If using CORS checks, set the allowable headers here
 |
 */
-$config['allowed_cors_headers'] = [
+$config['allowed_cors_headers'] = array(
 'Origin',
 'X-Requested-With',
 'Content-Type',
 'Accept',
 'Access-Control-Request-Method'
-];
+);
 /*
 |--------------------------------------------------------------------------
 | CORS Allowable Methods
@@ -528,14 +531,14 @@ $config['allowed_cors_headers'] = [
 | If using CORS checks, you can set the methods you want to be allowed
 |
 */
-$config['allowed_cors_methods'] = [
+$config['allowed_cors_methods'] =array (
 'GET',
 'POST',
 'OPTIONS',
 'PUT',
 'PATCH',
 'DELETE'
-];
+);
 /*
 |--------------------------------------------------------------------------
 | CORS Allow Any Domain
@@ -557,4 +560,4 @@ $config['allow_any_cors_domain'] = FALSE;
 | e.g. $config['allowed_origins'] = ['http://www.example.com', 'https://spa.example.com']
 |
 */
-$config['allowed_cors_origins'] = [];
+$config['allowed_cors_origins'] = array();
