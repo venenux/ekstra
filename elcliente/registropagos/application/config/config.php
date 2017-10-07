@@ -526,3 +526,6 @@ $config['json_post_login']='http://127.0.0.1/~systemas/CodeEmudb/index.php/api/e
 
 // enviar los datos capturados formulario registropagos  en json  usando request post al emudb 
 $config['json_post_registropagos']='http://127.0.0.1/~systemas/CodeEmudb/index.php/api/emudb/registrar';
+
+//prueba con un systema prototipo que implemantó Lenz
+//$config['json_post_login']='http://127.0.0.1/~systemas/CodeEmudb/index.php/api/emudb/login
