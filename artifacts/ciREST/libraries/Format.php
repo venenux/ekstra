@@ -118,6 +118,22 @@ class Format {
 		return new static($data, $from_type);
 	}
 
+	/**
+	* process by usin a instance of the class
+	* e.g: echo $this->format->init(['foo' => 'bar'])->to_csv();
+	*
+	* @param mixed $data Data to convert/parse
+	* @param string $from_type Type to convert from e.g. json, csv, html
+	*
+	* @return object Instance of the format class
+	*/
+	public function process($data, $from_type = NULL)
+	{
+		// $class = __CLASS__;
+		// return new $class();
+		return new static($data, $from_type);
+	}
+
 	// FORMATTING OUTPUT ---------------------------------------------------------
 	/**
 	* Format data as an array
@@ -475,3 +491,4 @@ class Format {
 	}
 
 }
+
