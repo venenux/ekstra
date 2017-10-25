@@ -1,0 +1,76 @@
+' Gambas module file
+
+Export
+
+''' Se detecta toda informacion de red usando `/sbin/ifconfig` y `netstat` esto es estandar en Linux, FreeBSD y MacOS por ende es seguro usar ruta absoluta `/sbin/` y los comandos aqui son unix agnostic. Las llamadas de las funciones necesitan `netstat`, `ifconfig`, `awk`, `grep` y `head`.
+
+Private commandshelltmp As String   '' variable interna para manejar el comando ejecutado en la rutina invocada
+Private outputfunction As String    '' variable interna para resultado del comando ejecutado en la rutina invocada
+Public _requisites As String = "awk,ifconfig,sh,bash,less,head,tail"
+
+' Ofrece ip activa (cual se usa para obetenr los bytes de internet/red activa)
+' y las ip configuradas del sistema activas, tambien los dispositivos equivalentes a las ip activas.<br>
+' los paquetes son al menos en linux: ** coreutils ** (`cut`,`head`), **net-tools** (`netstat`,`ifconfig`), 
+' asi como **nawk/gawk ** (`awk`), **grep** (`grep`) y **sed** (`sed`), en mac todos siempre estan.<br>
+' * los paquetes **coreutils** y **net-tools** siempre estaran tanto en linux como en mac.
+' * los paquetes **nawk/gawk**, **sed**, **grep**, se exige esten instalados en ***modSysInfo*** rutina.
+
+
+Public Function getImdef(Optional defIf As String = Me.getIfdef()) As String    '' obtener la mac que se usa para enviar y recibir datos en la red/internet de todas las activas<br> si @param defif se provee se usara este dispositivo de red como el activo para optener la ip
+    
+    commandshelltmp = "/sbin/ifconfig " & defIf & " | grep 'Link ' -A 2 -B 2|grep 'Link' | head -1 | awk -F 'HWaddr ' '{print $2}'"
+    ' TODO: verificar compatibilidad con freebsd y mac
+    Shell commandshelltmp To outputfunction
+    outputfunction = Replace(outputfunction, " ", "")
+    Return Replace(outputfunction, "\n", "")
+    
+End
+
+
+Public Function getIfdef() As String    '' obtener la interfaz que se usa para enviar y recibir datos en la red/internet de todas las activas
+    
+    commandshelltmp = "netstat -rn | awk '/^0.0.0.0/ {thif=substr($0,74,10); print thif;} /^default.*UG/ {thif=substr($0,65,10); print thif;}' | head -1"
+    ' macos/freebsd has no "addr:" string .. so last cut dont affect, but need detect and substring the ":" if find it
+    Shell commandshelltmp To outputfunction
+    outputfunction = Replace(outputfunction, " ", "")
+    Return Replace(outputfunction, "\n", "")
+    
+End
+
+
+Public Function getIpdef(Optional defIf As String = Me.getIfdef()) As String    '' obtener la ip que se usa para enviar y recibir datos en la red/internet de todas las activas<br> si @param defif se provee se usara este dispositivo de red como el activo para optener la ip
+    
+    commandshelltmp = "/sbin/ifconfig " & defIf & " | grep 'Link ' -A 2 -B 2|grep 'inet' | cut -d' ' -f12|cut -d'r' -f2"
+    ' macos/freebsd has no "addr:" string .. so last cut dont affect, but need detect and substring the ":" if find it
+    Shell commandshelltmp To outputfunction
+    outputfunction = Replace(outputfunction, ":", "")
+    Return Replace(outputfunction, "\n", "")
+    
+End
+
+Public Function getIfall() As String[]    '' obtener todas las interfaces de red activas de las disponibles
+    
+    Dim outputfunctionslip As New String[]
+    commandshelltmp = "/sbin/ifconfig | grep 'Link ' | cut -d'L' -f1"
+    ' el "\" es escape.. re-escapar, ademas /sbin/ifconfig es estandar en MACOS y LINUX se debe usar fullpath para no ser root o usar como usuario normal
+    Shell commandshelltmp To outputfunction
+    outputfunction = Replace(outputfunction, " ", "", gb.IgnoreCase)
+    outputfunctionslip = Split(outputfunction, "\n")
+    outputfunctionslip.Remove(outputfunctionslip.Find("", gb.IgnoreCase), 1)
+    Return outputfunctionslip
+    
+End
+
+Public Function getIpall() As String[]    '' obtener todas las ip/direcciones de red activas de las configuradas
+    
+    Dim outips, outifs As New String[]
+    Dim interfaceif As String
+    outifs = getIfall()
+    For Each interfaceif In outifs
+        outputfunction = Me.getIpdef(interfaceif)
+        outips.Add(outputfunction)
+    Next
+    Return outips
+    
+End
+
