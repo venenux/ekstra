@@ -11,7 +11,7 @@ public function __construct()
 		$this->load->helper('url');
 		$this->load->library('form_validation');
 		$this->load->library('session');
-		$this->load->library('grocery_CRUD');
+		/*$this->load->library('grocery_CRUD'); */
 		$this->output->set_header('Last-Modified: ' . gmdate("D, d M Y H:i:s") . ' GMT',TRUE);
 		$this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0', TRUE);
 		$this->output->set_header('Pragma: no-cache', TRUE);
@@ -65,9 +65,9 @@ public function index()
 						{
 								$elregistro=array(
 									'intranet'=>$data['username'], // el intranet será el indice de este arreglo
-									 'cant_pago'=>$this->input->post('cant'),
-									  'numref'=>$this->input->post('numrefcheq'),
-									  'cod_pat'=>$this->input->post('patrimonio')
+									'cant_pago'=>$this->input->post('cant'),
+									'numref'=>$this->input->post('numrefcheq'),
+									'cod_pat'=>$this->input->post('patrimonio')
 													);
 								 $elrequest =$this->Modelodatos->registrarpago($elregistro);
 								 $data['request']=  $elrequest; // esta es la respuesta, si no se recibe una cadena de texto  especifica es error

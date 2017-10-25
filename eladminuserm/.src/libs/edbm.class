@@ -1,0 +1,151 @@
+' Gambas class file
+
+''' clase de manejo de conexciones a base de datos indicadas, tiene dos conexciones, una en memoria y otra remota de db central, TODO: pool de conexciones de n conexciones
+
+Export
+
+Property Read conexciones As Connection[] ''' pool de las conexciones a bases de datos configuradas, segun el orden archivo configuracion
+Property Read conexdbram As Connection ''' db en ram de operaciones locales para no ir varias veces a db
+Property Read conexdbsql As Connection ''' db default de operaciones remota o la segunda de todo el pool
+Private $conexciones As New Connection[]  '' variable interna de conneciones
+Private $conexdbram As New Connection    '' variable interna de la conecion de db en ram sqlite
+Private $conexdbsql As New Connection    '' variable interna de la conecion de db remota mysql
+Private conninmemmavailable As Boolean = False  ''' si la conexcion local la db en memoria/sqlite esta ya disponible, semaforo de trabajo interno
+Private conninpoolavailable As Boolean = False  ''' si la conexcion remota la db central/mysql esta ya disponible, semaforo de trabajo interno
+Property Read conectados As Boolean  ''' si esta en TRUE el pool de conexciones esta disponible, el ultimo elemento sera los errores ocurridos
+Private $objconfs As Ecfm
+
+'' prepara una instancia del pool de las conexciones a las bases de datos, el error si alguno ocurre esta en el ultimo elemento
+Public Sub _new(Optional autoiniciardbs As Boolean = True)
+    
+    $objconfs = New Ecfm
+    If autoiniciardbs Then
+        If Not $objconfs.configurado Then
+            $objconfs.configurar
+        Endif
+        preparaConexiones()     ' si el flag de automatico instanciar todas las conescciones definidas, entonces prepararlas
+    Else
+        preparaConexionram()     ' si no, entonces devolver y asegurar solo una conexcion, la db en memoria local, y activarla
+    Endif
+    
+End
+
+'' constructor del pool de las conexciones indicadas en configuracion
+Private Sub preparaConexiones(Optional indexnumberscons As Integer = 0) As Boolean
+    
+    Dim dbusr, dbnam, dbip, dbpor, dbpas As String = ""
+    Dim apploc, appusr, appmac As String = ""
+    Dim $configurados As New Collection
+    
+    If Not IsNull($objconfs) Then
+        $configurados = $objconfs.configuracion             ' instancio y leo la configuracion, tomo valores de db (nota TODO: pass en md5)
+    Endif
+    apploc = $configurados["cod_localidad"]
+    appusr = $configurados["cod_localusua"]
+    appmac = emn.getImdef()
+    dbip = $configurados["cnxmysqldbip"]
+    dbusr = $configurados["cnxmysqldbusr"]
+    dbnam = $configurados["cnxmysqldbnam"]
+    dbpas = $configurados["cnxmysqldbpas"]  ' TODO: pass leer en md5 y decodificar aqui
+    If indexnumberscons = 1 Then
+        If Not conninmemmavailable Then     ' es dificil que la db en memoria cambie o se desconecte
+            preparaConexionram()             ' por ende es seguro confiar que si esta presente es la misma de siempre
+        Endif
+    Else
+        Try $conexdbsql.Close()              ' Cierra la conexion con try para no error si esta cerrada
+        $conexdbsql = New Connection
+        $conexdbsql.Type = "mysql"       ' Define el tipo de Conexion
+        $conexdbsql.Host = dbip   ' Nombre del Servidor
+        $conexdbsql.Login = dbusr       ' Usuario para la coenxion
+        $conexdbsql.Port = "3306"        ' Puerto usado para la conexion, usualmente: 3306
+        $conexdbsql.Name = dbnam      ' Nombre de la base de datos a usar
+        $conexdbsql.Password = dbpas ' Clave de Usuario
+        Try $conexdbsql.Open()               ' Abrimos la conexion
+        conninpoolavailable = True
+        If Error Then
+            $conexdbsql = Null
+            conninpoolavailable = False ' si algun error colocan en null el elmento
+        Endif
+        If Not conninmemmavailable Then     ' es dificil que la db en memoria cambie o se desconecte
+            preparaConexionram()             ' por ende es seguro confiar que si esta presente es la misma de siempre
+        Endif
+    Endif
+    $conexciones.Add($conexdbsql, 1)
+    
+End
+
+'' instancia db memoria conexcion hacia '$conexdbram' \ es sqlite en memoria, manejese con cuidado
+Private Sub preparaConexionram()
+    
+    If conninmemmavailable And Not IsNull($conexdbram) Then          ' verificar si la conexcion activa y valida
+        If $conexdbram.Opened And $conexdbram.Name = "" Then      ' si es valida verificar activa y de memoria
+            $conexciones.Add($conexdbram, 0)                       ' si todo bien, reinsertar en el pool como primera
+            conninmemmavailable = True              ' reemplazo le index 0 por la activa seguro y devuelvo esta conexcion
+        Else
+            Goto REINICIARDBMEM
+        Endif
+    Else
+REINICIARDBMEM:
+        $conexdbram = New Connection
+        $conexdbram.Type = "sqlite3"             'esto siempre va en minusculas: always must be lowercase
+        $conexdbram.Name = Null
+        Try $conexdbram.Open
+        If Error Then
+            $conexdbram = Null
+            conninmemmavailable = False
+        Endif
+        $conexciones.Add($conexdbram, 0)
+        conninmemmavailable = True
+    Endif
+    
+End
+
+
+Private Function conectados_Read() As Boolean
+    
+    If conninmemmavailable And conninpoolavailable Then
+        Return True
+    Else
+        conninmemmavailable = False
+        conninpoolavailable = False
+        Return False
+    Endif
+    
+End
+
+Private Function conexciones_Read() As Connection[]
+    
+    preparaConexiones()
+    Return $conexciones
+    
+End
+
+Private Function conexdbram_Read() As Connection ' retorna la conexcion de sqlite en memoria local app
+    
+    If conninmemmavailable Then
+        Return $conexciones[0]
+    Else
+        preparaConexionram()
+        If conninmemmavailable Then
+            Return $conexciones[0]
+        Else
+            Return Null
+        Endif
+    Endif
+    
+End
+
+Private Function conexdbsql_Read() As Connection ' retorna la conexcion de mysql de la db central srv
+    
+    If conninpoolavailable Then
+        Return $conexciones[1]
+    Else
+        preparaConexiones(1)
+        If conninpoolavailable Then
+            Return $conexciones[1]
+        Else
+            Return Null
+        Endif
+    Endif
+    
+End

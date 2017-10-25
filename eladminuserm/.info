@@ -1,0 +1,275 @@
+#ecfm
+
+C
+'clase de configuracion inicial, inicia parametros de la aplicacion sea cliente o servidor y establece a donde se conectara asi como datos de entidad y conectividad
+configurado
+v
+b
+
+'flag semaforo de configuracion lista o no
+configuracion
+p
+Collection
+
+'arreglo de configuraciones
+_new
+m
+
+
+configurar
+m
+
+
+'hacer que la aplicacion acceda a la configuracion y la lea/force si accede como funcion, sino como propiedad
+#edbm
+
+C
+'clase de manejo de conexciones a base de datos indicadas, tiene dos conexciones, una en memoria y otra remota de db central, TODO: pool de conexciones de n conexciones
+conexciones
+r
+Connection[]
+
+'pool de las conexciones a bases de datos configuradas, segun el orden archivo configuracion
+conexdbram
+r
+Connection
+
+'db en ram de operaciones locales para no ir varias veces a db
+conexdbsql
+r
+Connection
+
+'db default de operaciones remota o la segunda de todo el pool
+conectados
+r
+b
+
+'si esta en TRUE el pool de conexciones esta disponible, el ultimo elemento sera los errores ocurridos
+_new
+m
+
+[(autoiniciardbs)b]
+'prepara una instancia del pool de las conexciones a las bases de datos, el error si alguno ocurre esta en el ultimo elemento
+#emf
+
+C
+_requisites
+V
+s
+
+'modulo de utilidades respecto el sistema de ficheros, requiere `libreoffice` para conversiones, `openoffice` solo para visor
+'variable interna para manejar el comando ejecutado en la rutina invocada
+'variable interna para resultado del comando ejecutado en la rutina invocada
+CharacterSets
+M
+String[]
+
+'deveulve un arreglo con los tipos de codificaciones soportadas por el sistemaoperativo y su softwareinstalado
+getMimeEncoding
+M
+s
+(sFilePath)s[(ruta)s]
+'devuelve el tipo de archivo si es texto plano o binario
+getMimeType
+M
+s
+(sFilePath)s[(ruta)s]
+'devuelve el tipo de archivo en forma mime ambito/tipo la ruta debe ser absoluta, sino entonces asume raiz dcel proyecto
+getFileDev
+M
+s
+[(ruta)s]
+'devuelve el dispositivo o disco, segun ruta, sino el del sistema de ficheros raiz, si es mapeado no devuelve el dispositivo real, solo el mapa
+getFileSys
+M
+s
+[(directorio)s]
+'devuelve el sistema de ficheros, segun `directorio`, sino el sistema de ficheros raiz, si no es valido/montado no devuelve nada
+caltoods
+M
+s
+[(namefile)s(pathfile)s]
+'exporta un archivo csv o excel a ods en donde se ejecute el modulo, @return: ruta de donde se guarda el resultado
+#emi
+
+C
+'modulo para funciones de informacion del sistema, depende de lsb (lsb-release en debian)
+ResumeHuman
+M
+s
+
+ArqSO
+M
+s
+
+ArqMicro
+M
+s
+
+Micro
+M
+s
+
+Distro
+M
+s
+
+'devuelve la distribución instalada xmi <br> @return String
+Ram
+M
+s
+
+LastUpgrade
+M
+s
+
+ComputerName
+M
+s
+
+'alias de *system.host* devuelve el nombre del pc
+DskType
+M
+s
+
+CurrentUser
+M
+s
+
+'alias de *system.user.name* devuelve el usuario activo
+AllUsers
+M
+s
+
+'Devuelve los usuarios nivel normal via unix registro (passwd/shadow)
+WGroup
+M
+s
+
+ResumeArray
+M
+Variant[]
+
+ResumeCollec
+M
+Collection
+
+itsRunIDE
+M
+i
+
+DistroShort
+M
+s
+
+'devuelve la distribución madre como nombre corto xmi <br> @return String
+SysFile
+M
+s
+(ruta)s
+'migrado: alias de [exModSysFile.getFileSys]
+ProjInfo
+M
+String[]
+[(strPath)s]
+Ls
+M
+s
+(ruta)s
+AddressIP
+M
+s
+
+LastNIP
+M
+s
+
+Hdserial
+M
+s
+
+UUIDswap
+M
+s
+
+XDGFolder
+M
+String[]
+
+'Devuelve una matriz de texto con las rutas de las carpetas de musica, imagenes, documentos etc. del directorio /home/user
+cmd_checks
+M
+b
+(aCommands)String[];[(bDisplayDialog)b]
+'retorna verdadero si todo lo requerido en array esta instalado o presente
+cmd_exits
+M
+b
+(sCommand)s
+'devuelve el nombre del comando si existe, sino null
+#emn
+
+C
+'Se detecta toda informacion de red usando `/sbin/ifconfig` y `netstat` esto es estandar en Linux, FreeBSD y MacOS por ende es seguro usar ruta absoluta `/sbin/` y los comandos aqui son unix agnostic. Las llamadas de las funciones necesitan `netstat`, `ifconfig`, `awk`, `grep` y `head`.
+_requisites
+V
+s
+
+'variable interna para manejar el comando ejecutado en la rutina invocada
+'variable interna para resultado del comando ejecutado en la rutina invocada
+getImdef
+M
+s
+[(defIf)s]
+'obtener la mac que se usa para enviar y recibir datos en la red/internet de todas las activas<br> si @param defif se provee se usara este dispositivo de red como el activo para optener la ip
+getIfdef
+M
+s
+
+'obtener la interfaz que se usa para enviar y recibir datos en la red/internet de todas las activas
+getIpdef
+M
+s
+[(defIf)s]
+'obtener la ip que se usa para enviar y recibir datos en la red/internet de todas las activas<br> si @param defif se provee se usara este dispositivo de red como el activo para optener la ip
+getIfall
+M
+String[]
+
+'obtener todas las interfaces de red activas de las disponibles
+getIpall
+M
+String[]
+
+'obtener todas las ip/direcciones de red activas de las configuradas
+#emu
+
+C
+'Se trabaja con manipulacion de variables
+substr_count
+M
+i
+(strInput)s(pattern)s[(compare)i]
+'variable interna para resultado ofrecido por cada funcion
+'substr_count - Count the number of substring occurrences, default is case sensitive
+ucfirst
+M
+s
+(strInput)s
+ucwords
+M
+s
+(strInput)s
+gethttpbuf
+M
+s
+[(urltogetinfo)s]
+'obtiene todo el contenido de una url en una cadena/buffer para analizar **en crudo**, util para json, xml o para descargar binarios<br>@parameter url : la uri<br>@return string html de la respuesta, o string "" si invalido o no hay nada, string "-1" si invalido o agotado en server
+urisegment
+M
+s
+(strInput)s[(segment)i]
+urifilepath
+M
+s
+(strInput)s

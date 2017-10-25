@@ -1,0 +1,19 @@
+' Gambas module file
+
+
+Public Function main()
+    
+    ' ejemplos de como se usa los moduylos del framework
+    Print emn.getIfdef()
+    Print emn.getIpall()[1]
+    Print emf.getFileDev("/")
+    Print emf.getFileSys("/")
+    Print emi.ProjInfo()
+    Print emu.substr_count(" pepepep     adaadaasd   qoiehqopwiehoq aasa        aklsjbndka asada      asldaj", "aa", gb.IgnoreCase)
+    Print emu.ucfirst(" pepepep     adadasd   qoiehqopwiehoq aasa        aklsjbndka asada      asldaj")
+    Print emu.ucwords(" pepepep     adadasd   qoiehqopwiehoq aasa        aklsjbndka asada      asldaj")
+    Print emu.gethttpbuf("http://google.com")
+    
+    
+End
+

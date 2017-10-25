@@ -1,0 +1,107 @@
+' Gambas module file
+
+Export
+
+''' Se trabaja con manipulacion de variables
+
+Private outputfunction As String    '' variable interna para resultado ofrecido por cada funcion
+
+
+'' substr_count - Count the number of substring occurrences, default is case sensitive
+Public Function substr_count(strInput As String, pattern As String, Optional compare As Integer = gb.Binary) As Integer 
+
+  Dim i, n As Integer
+  While i <= Len(strInput)
+    i = InStr(strInput, pattern, i + 1, compare)
+    If i = 0 Then Break
+    Inc n
+  Wend
+  Return n
+
+End
+
+
+''Devuelve un texto con la primera letra en mayusculas y todas las siguientes en minúsculas.
+Public Function ucfirst(strInput As String) As String
+    
+    outputfunction = strInput
+    strInput = LTrim(outputfunction)
+    If Comp(Replace(strInput, " ", ""), "") <> 0 Then
+        outputfunction = String.UCase(String.Mid(strInput, 1, 1))
+        outputfunction &= String.LCase(String.Mid(strInput, 2, String.len(strInput) - 1))
+    Endif
+    Return outputfunction
+    
+End
+
+''Devuelve un texto con la primera letra en mayusculas de cada una de las palabras, removiendo espacios extra
+Public Function ucwords(strInput As String) As String
+    
+    Dim strtmp As String[]
+    Dim strtp As String
+
+    outputfunction = ""
+    strInput = LTrim(outputfunction)
+    strtmp = Split(strInput, " ")
+    For Each strtp In strtmp
+        If Comp(Replace(strtp, " ", ""), "", gb.IgnoreCase) = 0 Then
+            Continue
+        Else
+            outputfunction = outputfunction & " " & ucfirst(strtp)
+        Endif
+    Next
+    Return outputfunction
+
+End
+
+'' obtiene todo el contenido de una url en una cadena/buffer para analizar **en crudo**, util para json, xml o para descargar binarios<br>@parameter url : la uri<br>@return string html de la respuesta, o string "" si invalido o no hay nada, string "-1" si invalido o agotado en server
+Public Function gethttpbuf(Optional urltogetinfo As String = "") As String
+    
+    Dim gethttpobj As New HttpClient
+    Dim tiempoespera As Integer = 5
+    Dim tiempoquepas As Integer = 0
+    Dim Buffer As String
+    
+    If Comp(Replace(urltogetinfo, " ", ""), "") = 0 Then Return ""
+    gethttpobj.url = urltogetinfo
+    gethttpobj.Get()
+    
+    While (Lof(gethttpobj) = False And tiempoquepas < tiempoespera)
+        tiempoquepas = tiempoquepas + 1 'espero 1 segundo o que llegue a>5
+        Try Wait 1
+    Wend
+    If tiempoquepas >= tiempoespera Or Lof(gethttpobj) = False Then
+        Return "-1"
+    Endif
+    If Lof(gethttpobj) Then
+        Read #gethttpobj, Buffer, Lof(gethttpobj)
+    End If
+    gethttpobj.Close()
+    Return buffer
+    
+End
+
+''Devuelve el segmento ultimo o parte segun de un uri o ruta dada de archivos
+Public Function urisegment(strInput As String, Optional segment As Integer = 999) As String
+    
+    Dim strtmp As String[]
+    Dim index As Integer
+    outputfunction = ""
+    strtmp = Split(strInput, "/")
+    index = segment
+    If strtmp.Count < segment Then
+        index = strtmp.Count - 1
+    Endif
+    outputfunction = strtmp[index]
+    Return outputfunction
+End
+
+''Devuelve la ruta absoluta de un uri que termina en un archivo
+Public Function urifilepath(strInput As String) As String
+    
+    Dim strtp As String
+    outputfunction = ""
+    strtp = Mid(strInput, 1, RInStr(strInput, "/"))
+    'strtp = String.Left(strtp, String.Len(strtp) - 1) 
+    Return strtp
+End

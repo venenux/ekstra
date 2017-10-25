@@ -1,0 +1,25 @@
+# Gambas Project File 3.0
+# Compiled with Gambas 3.10.90
+Title=eladminuserm
+Startup=Main
+Version=0.1.0
+Component=gb.args
+Component=gb.db
+Component=gb.db.mysql
+Component=gb.db.odbc
+Component=gb.db.sqlite3
+Component=gb.settings
+Component=gb.net
+Component=gb.net.curl
+Component=gb.net.smtp
+Component=gb.pcre
+Component=gb.util
+Component=gb.vb
+Component=gb.xml
+Description="el administrador de usuarios, modulo servicio o demonio"
+Authors="Tyrone.Lucero <tyrone.lucero@gmail.com>"
+TabSize=4
+Language=en_US
+ModulePublic=1
+Vendor=elsistema
+Packager=1

@@ -1,0 +1,93 @@
+' Gambas class file
+
+Export
+
+''' clase de configuracion inicial, inicia parametros de la aplicacion sea cliente o servidor y establece a donde se conectara asi como datos de entidad y conectividad
+
+'' dia y hora, sin minutos, en que establece los datos
+Private diadb As String = Format$(Now, "yyyymmddhh")
+'' nombre de archivo trabajo local por el sistema, usa 'diadb' como sufijo
+Private fileconf As String = ".appconfigapp.conf"
+
+'' flag semaforo de configuracion lista o no
+Public configurado As Boolean = False
+'' arreglo de configuraciones
+Property configuracion As Collection
+'' arreglo interno que se escribe de configuraciones
+Private $configurados As Collection
+
+Public Sub _new()
+    
+    $configurados = New Collection
+    configurado = False
+    fileconf = "." & Application.Name & ".conf"
+    ' app detecta si esta e producion o desarrollo, en desarrollo usa configuracion automatica
+    If Not Exist(User.Home &/ fileconf) Then
+        Try Copy Application.path &/ "appconfigapp.conf" To User.Home &/ fileconf
+    Endif
+    ' en cualquier caso, esto solo es en desarrollo, en produccion, creara un archivo nuevo vacio porque no encontrara cual copiar
+    
+End
+
+Private Sub ReConfigurar() '' reconfigura todas las variables y establece un nuevo arreglo de datos de configuracion
+    
+    Dim hSettings As Settings
+    Dim nSettings As Boolean = False
+    
+    If Not Exist(User.Home &/ fileconf) Then
+        nSettings = False
+    Else
+        nSettings = True  ' existe configuracion, no cargar valores ni crear valores por defecto
+    Endif
+    ' creo la config, si archivo no existe lo crea, si valor no existe, lo fabrica con default abajo
+    hSettings = New Settings(User.Home &/ fileconf)
+    ' asignacion de datos respecto disponibilidad
+    $configurados["cod_localidad"] = hSettings["aplicacion/cod_localidad", "998"]
+    $configurados["cod_localusua"] = hSettings["aplicacion/cod_localusua", "999"]
+    $configurados["cod_maquina"] = hSettings["dbconexion/cod_maquina", emn.getImdef()]
+    $configurados["cnxsqlitename"] = hSettings["dbconexion/cnxsqlitename", "." & Application.Name & ".sqlite"]
+    $configurados["cnxmysqldbip"] = hSettings["dbconexion/cnxmysqldbip", emn.getIpdef()]
+    $configurados["cnxmysqldbusr"] = hSettings["dbconexion/cnxmysqldbusr", "root"]
+    $configurados["cnxmysqldbnam"] = hSettings["dbconexion/cnxmysqldbnam", "mysql"]
+    $configurados["cnxmysqldbpas"] = hSettings["dbconexion/cnxmysqldbpas", "root.1"] ' TODO: usar encryptacion md5, por ahora plano
+    ' relectura de datos y salvaguarda de estos
+    hSettings["aplicacion/cod_localidad"] = $configurados["cod_localidad"]
+    hSettings["aplicacion/cod_localusua"] = $configurados["cod_localusua"]
+    hSettings["aplicacion/cod_maquina"] = $configurados["cod_maquina"]
+    hSettings["dbconexion/cnxsqliteruta"] = $configurados["cnxsqliteruta"]
+    hSettings["dbconexion/cnxsqlitename"] = $configurados["cnxsqlitename"]
+    hSettings["dbconexion/cnxmysqldbip"] = $configurados["cnxmysqldbip"]
+    hSettings["dbconexion/cnxmysqldbusr"] = $configurados["cnxmysqldbusr"]
+    hSettings["dbconexion/cnxmysqldbnam"] = $configurados["cnxmysqldbnam"]
+    hSettings["dbconexion/cnxmysqldbpas"] = $configurados["cnxmysqldbpas"]
+    
+    Error.Clear
+    configurado = True
+    Try hSettings.Save
+    If Error Then configurado = False
+    
+End
+
+Public Function configurar() '' hacer que la aplicacion acceda a la configuracion y la lea/force si accede como funcion, sino como propiedad
+    
+    If Not configurado Then
+    ReConfigurar()  ' reconfiguro, asi si hay valores nuevos los vueve leer, y devuelve el arreglo
+    Endif
+    
+End
+
+
+Private Function configuracion_Read() As Collection
+    
+    If Not configurado Then
+    ReConfigurar()  ' reconfiguro, asi si hay valores nuevos los vueve leer, y devuelve el arreglo
+    Endif
+    Return $configurados
+    
+End
+
+Private Sub configuracion_Write(arregloconfiguraciones As Collection)
+    
+    $configurados = arregloconfiguraciones  ' devuelvo el arreglo(collecion) de valores configurados
+    
+End
