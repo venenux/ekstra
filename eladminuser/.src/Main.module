@@ -1,7 +1,22 @@
 ' Gambas module file
 
+ ' se invoca al daemonio... (¡zape gato, ñaragato!)
 Public Sub Main()
+   Dim um As New Usermanager
+   Dim rsc As Collection
+   Dim pos As Integer
+  Do
+  
+      Sleep 8 ' tiempo para dejar descansar el demonio
+     Print Date(Now)
+     rsc = um.operar()
+     If rsc.count > 0 Then ' indicar las operaciones que fueron efectuadas
+       For pos = 1 To rsc.max
+           Print rsc[pos]
+       Next
+     Else
+       Print "No se han efecuado operaciones."     
+     Endif 
     
-    Print "Iniciando demonio Adminusers..."
-    
+  Loop
 End
