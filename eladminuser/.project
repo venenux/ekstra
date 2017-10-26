@@ -1,6 +1,6 @@
 # Gambas Project File 3.0
 # Compiled with Gambas 3.10.90
-Title=eladminuserm
+Title=eladminuser
 Startup=Main
 Version=0.1.0
 Component=gb.args
