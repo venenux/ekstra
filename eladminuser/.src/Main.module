@@ -5,18 +5,22 @@ Public Sub Main()
    Dim um As New Usermanager
    Dim rsc As Collection
    Dim pos As Integer
+  
+   Print "Iniciando demonio Adminuser, versión 1.0 . \n" 
   Do
   
-      Sleep 8 ' tiempo para dejar descansar el demonio
-     Print Date(Now)
+     
+     Print "Demonio en Modo Activo.  Hora: " & Time(Now)
      rsc = um.operar()
      If rsc.count > 0 Then ' indicar las operaciones que fueron efectuadas
-       For pos = 1 To rsc.max
+       Print "Se listan las operaciones efectuadas:"     
+       For pos = 1 To rsc.Length
            Print rsc[pos]
        Next
      Else
-       Print "No se han efecuado operaciones."     
+       Print "No se han efectuado operaciones."     
      Endif 
-    
+     Print "Se pasa a Modo Pasivo. Hora: " & Time(Now) & "\n \n"
+     Sleep 8 ' tiempo para dejar descansar el demonio
   Loop
 End

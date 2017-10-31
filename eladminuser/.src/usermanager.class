@@ -4,15 +4,17 @@ Public $conexionmysql As Connection
 
 Public Function getConexionmysql() As Connection
     
-    Print "Creando conexión a la Base de Datos MYSQL ..."
+    'Print "Creando conexión a la Base de Datos MYSQL ..."
     $conexionmysql = New Connection
     
     $conexionmysql.Type = "mysql"
-    $conexionmysql.Name = "sysdbalmacen" '"sysdbadmins"
-    $conexionmysql.Host = "10.10.34.23" 'esto va asi??
-    $conexionmysql.Login = "sysdbuser" 
-    $conexionmysql.Password = "sysdbuser.1.com"
-    '   ______________________________________________________________
+       
+    $conexionmysql.Name = "sysdbadmins"
+       
+    ' $conexionmysql.Host = "10.10.34.23" 'esto va asi??
+    ' $conexionmysql.Login = "sysdbuser" 
+    ' $conexionmysql.Password = "sysdbuser.1.com"
+    ' '   ______________________________________________________________
     ' < muuuuuuchas loqueras con las bases de datos ¿será contagioso?  >  
     '   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     '  \  ^__^                                               ^__^  /
@@ -21,9 +23,9 @@ Public Function getConexionmysql() As Connection
     '           ||---w |                           | w---||
     '           ||    ||                           ||    ||
     '               * /
-    '  $conexionmysql.Host = "10.10.34.132"
-    ' $conexionmysql.Login = "sysdbadmin" '"sysdbuser" 
-    ' $conexionmysql.Password = "sysdb.1.com" '"sysdbuser.1.com"
+    $conexionmysql.Host = "10.10.34.132"
+    $conexionmysql.Login = "sysdbadmin" '"sysdbuser" 
+    $conexionmysql.Password = "sysdb.1.com" '"sysdbuser.1.com"
     
     Try $conexionmysql.Open
     If Error Then 
@@ -42,37 +44,51 @@ End
 Public Function operar() As Collection
     
     Dim rs, sr, sr2 As Result
-    Dim conex1, conex2 As Connection 
+    Dim conex1 As Connection 
     Dim op As New Collection 
     Dim cuenta, x As Integer
     Dim est, query, code As String
-    Dim aux As New String[] ' esta sera una cola 
+    Dim eliminaciones As New String[] ' esta sera una cola para eliminaciones para la tabla
+    Dim activaciones As New String[] ' esta sera una cola para esitar el estado para
+    ' empiezan las operaciones con la base de datos
     
+    Print "Solicitando acceso a la base de Datos..."
     conex1 = getConexionmysql()
-    conex2 = getConexionmysql() ' aqui puede ser la odbc, cuando se configure a futuro 
-    If (conex1 <> Null) And (conex2 <> Null) Then 
+'     conex2 = getConexionmysql() ' aqui puede ser la odbc, cuando se configure a futuro 
+    'configurar macabramente la conexión para obtener acceso a la base de datos sysdbpos
+    ' Observaciones: este truco se hace porque conex1 hace una conexión con la base de datos
+    ' sysdbadmin y no conecta con sysdbpos... al crear Connection1 lleva configurada la conexión
+    ' a sysdbpos 
+    Connections["Connection1"].Login = "sysdbadmin"
+    Connections["Connection1"].Password = "sysdb.1.com"
+    Connections["Connection1"].open
+    ' 
+    'If (conex1 <> Null) And (conex2 <> Null) Then 
+    If (conex1 <> Null) And (Connections["Connection1"] <> Null) Then 
         ' hacer query en la tabla de usuarios y determinar si debe haber algun cambio o no     
-        
+        Print "Se tiene Acceso a la base de datos, iniciando las operaciones programadas...  " 
         query = "SELECT sysdbadmins.adm_entidad_usuario.cod_entidad, sysdbadmins.adm_usuario.ficha, sysdbadmins.adm_usuario.intranet, sysdbadmins.adm_usuario.clave, sysdbadmins.adm_usuario.apellido,"
         query = query & "sysdbadmins.adm_usuario.nombre, sysdbadmins.adm_usuario.origen, sysdbadmins.adm_usuario.condicion, sysdbadmins.adm_usuario.estado, tipo_usuario, sysdbadmins.adm_usuario.clase_usuario, sysdbadmins.adm_usuario.sessionflag,"
         query = query & "sysdbadmins.adm_usuario.sessionficha From sysdbadmins.adm_usuario, sysdbadmins.adm_entidad_usuario where sysdbadmins.adm_usuario.intranet = sysdbadmins.adm_entidad_usuario.intranet"
         rs = conex1.Exec(query)
+      '  sr = conex2.Exec("Select * From sysdbpos.app_usuario limit 1")
+         sr = Connections["Connection1"].Exec("Select * From app_usuario limit 1")
         cuenta = 0 ' llev a la cuenta de operaciones
         ' se recorre el result
-        If rs.Available Then
+        If (rs.Available And sr.available) Then
             ' recorrer el result 
-            
+          
             For Each rs
                 Error.Clear
                 est = rs["estado"]  
                 
                 ' verificar si existe la cadena CREAR      
                 If Comp(est, "CREAR", gb.IgnoreCase) = 0 Then
-                    Print "Se efectúa la creación de nuevo usuario en la tabla sysdbpos.app_usuario."
+                    Print "Operación Programada: Creación de nuevo usuario ."
                     
                     ' hacer insert en la tabla: usar el objeto result con la el método create de conex2 
-                    sr = conex2.Create("sysdbpos.app_usuario.")
-                    
+               
+                    sr = Connections["Connection1"].Create("app_usuario") 
                     ' se  pasa cada dato del result rs al result sr"
                     sr["cod_entidad"] = rs["cod_entidad"]
                     sr["ficha"] = rs["ficha"]
@@ -82,47 +98,48 @@ Public Function operar() As Collection
                     sr["nombre"] = rs["nombre"]
                     sr["origen"] = rs["origen"]
                     sr["condicion"] = rs["condicion"]
-                    sr["estado"] = rs["estado"]
+                    sr["estado"] = "INACTIVO" '  
                     sr["tipo_usuario"] = rs["tipo_usuario"]
                     sr["clase_usuario"] = rs["clase_usuario"]
                     sr["sessionflag"] = rs["sessionflag"]
                     sr["sessionficha"] = rs["sessionficha"]
                     ' actualizar la tabla app_usuario
-                    sr.Update
+                    Try sr.Update
                     'ahora se trabaja con la tabla app_entidad_usuario
-                    sr2 = conex2.Create("sysdbpos.app_entidad_usuario")
+                    sr2 = Connections["Connection1"].Create("app_entidad_usuario")
                     sr2["cod_entidad"] = rs["cod_entidad"]
                     sr2["intranet"] = rs["intranet"] 
                     sr2["sessionflag"] = rs["sessionflag"] 
                     sr2["sessionficha"] = rs["sessionficha"]
-                    sr2.Update
+                    Try sr2.Update
                     If Error Then
                         ' error no se agrega nada y ya
-                        conex2.Rollback
-                        Print "Error: fallo la inserción de nuevo usuario"
+                        Connections["Connection1"].Rollback
+                        Print "Error: falló la creación de usuario"
                     Else
                         ' exito               
-                        conex2.Commit 
-                        Print "Exito en la inserción de nuevo usuario."
+                        Connections["Connection1"].Commit 
+                        Print "Exito en la creación de usuario."
                         cuenta = cuenta + 1 ' se incrementa la cuenta de operaciones
                         op.Add("Creación usuario.", cuenta)
+                        ' a la cola de edición...
                     Endif
                 Endif
                 ' verificar si existe la cadena  ACTIVAR     
                 If Comp(est, "ACTIVAR", gb.IgnoreCase) = 0 Then
-                    Print "Se efectúa Activación un usuario en la tabla sysdbpos.app_usuario."
-                    sr = conex2.Edit("sysdbpos.app_usuario", "ficha=" & rs["ficha"])
+                    Print " Operación Programada: Activación  de un usuario. "
+                    sr = Connections["edicioConnection1"].Edit("app_usuario", "ficha=" & rs["ficha"])
                     sr["estado"] = "ACTIVO"
-                    sr.Update
+                    Try sr.Update
                     If Error Then
                         ' error no se agrega nada y ya
-                        conex2.Rollback
-                        Print "Error: fallo la Activación de usuario."
+                        Connections["Connection1"].Rollback
+                        Print "Error: falló la Activación de usuario."
                         
                     Else
                         ' exito               
-                        conex2.Commit 
-                        Print "Exito en la Activación de usuario."
+                        Connections["Connection1"].Commit 
+                        Print "Exito en la Activación de  usuario."
                         cuenta = cuenta + 1  ' se incrementa la cuenta de operaciones
                         op.Add("Activación usuario.", cuenta)
                     Endif  
@@ -131,20 +148,20 @@ Public Function operar() As Collection
                 ' verificar si existe la cadena  ELIMINAR
                 If Comp(est, "ELIMINAR", gb.IgnoreCase) = 0 Then
                     ' eliminar ambos registros en cada tabla...
-                    Print "Se efectúa Eliminación de un usuario en la tabla sysdbpos.app_usuario."
-                    aux.Add = rs["ficha"] 'se guarda la ficha y luego, al salir del ciclo se elimina del registro, y si son varios igual, les llegara su hora
+                    Print "Operación Programada: Eliminación de un usuario."
+                    eliminaciones.Add = rs["ficha"] 'se guarda la ficha y luego, al salir del ciclo se elimina del registro, y si son varios igual, les llegara su hora
                     'eliminar en la tabla sysdbpos.app_usuario
-                    sr = conex2.Delete("sysdbpos.app_usuario", "ficha=" & rs["ficha"])
+                    Try sr = Connections["Connection1"].Delete("app_usuario", "ficha=" & rs["ficha"])
                     
-                    sr2 = conex2.Delete("sysdbpos.app_usuario", "cod_entidad=" & rs["cod_entidad"])
+                    Try sr2 = Connections["Connection1"].Delete("app_usuario", "cod_entidad=" & rs["cod_entidad"])
                     
                     If Error Then
                         ' error no se agrega nada y ya
-                        conex2.Rollback
-                        Print "Error: fallo la Eliminación de usuario"
+                        Connections["Connection1"].Rollback
+                        Print "Error: falló la Eliminación de usuario"
                     Else
                         ' exito               
-                        conex2.Commit 
+                        Connections["Connection1"].Commit 
                         Print "Exito en la Eliminación de usuario"
                         cuenta = cuenta + 1  ' se incrementa la cuenta de operaciones
                         op.Add("Creacion usuario.", cuenta)
@@ -152,17 +169,17 @@ Public Function operar() As Collection
                 Endif
                 ' verificar si existe la cadena
                 If Comp(est, "DESACTIVAR", gb.IgnoreCase) = 0 Then
-                    Print "Se efectúa Desactivación de un usuario en la tabla sysdbpos.app_usuario."
-                    sr = conex2.Edit("sysdbpos.app_usuario", "ficha=" & rs["ficha"])
+                    Print "Operación Programada: Desactivación de un usuario."
+                    sr = Connections["Connection1"].Edit("app_usuario", "ficha=" & rs["ficha"])
                     sr["estado"] = "INACTIVO"
-                    sr.Update
+                    Try sr.Update
                     If Error Then
                         ' error no se agrega nada y ya
-                        conex2.Rollback
-                        Print "Error: fallo la Desactivación de usuario."
+                        Connections["Connection1"].Rollback
+                        Print "Error: falló la Desactivación de usuario."
                     Else
                         ' exito               
-                        conex2.Commit 
+                        Connections["Connection1"].Commit 
                         Print "Exito en la Desactivación de usuario."
                         cuenta = cuenta + 1  ' se incrementa la cuenta de operaciones
                         op.Add("Desactivación usuario.", cuenta)
@@ -173,20 +190,20 @@ Public Function operar() As Collection
             ' ya se terminó del ciclo, ahora se eliminan los registros en la tabla
             ' preguntar si hay eliminación...
             
-            If aux.count > 0 Then  ' hay cola...
-                If aux.count == 1
-                    Print "Ejecutar operación pendiente:"
+            If eliminaciones.count > 0 Then  ' hay cola...
+                If eliminaciones.count == 1
+                    Print "Ejecutar operación de eliminación pendiente:"
                 Else
-                    Print "Ejecutar " & aux.count & " operaciones pendientes:"
+                    Print "Ejecutar " & eliminaciones.count & " operaciones de eliminación pendientes:"
                 Endif    
                 
-                For Each code In aux 
+                For Each code In eliminaciones
                     Print "Se efectúa Eliminación de un usuario en la tabla sysdbpos.app_usuario."
-                    rs = conex1.Delete("sysdbadmins.adm_usuario", "ficha=" & code)
+                    Try rs = conex1.Delete("sysdbadmins.adm_usuario", "ficha=" & code)
                     If Error Then
                         ' error no se agrega nada y ya
                         conex1.Rollback
-                        Print "Error: fallo la Eliminación de usuario."
+                        Print "Error: falló la Eliminación de usuario."
                     Else
                         ' exito               
                         conex1.Commit 
@@ -194,14 +211,25 @@ Public Function operar() As Collection
                         
                     Endif  
                 Next
+                ' ahora a cambiar el estado del usuario que fué creado a 
             Endif 
             
         Else
-            Print "Error: rs.available no tiene datos o "
+            ' mandar el mensaje que corresponda segun sea cual result no esta disponible
+            Print "Error:  Objeto result sin datos. Detalles:  "
+            If rs.Available Then
+              Print "No existen datos de la tabla sysdbpos.app_usuario"
+            Else
+              Print "No existen datos de la tablas sysdbadmins.adm_usuarios ni sysdbadmins.entidad_usuario"   
+            Endif
+            
         Endif   
         conex1.Close
-        conex2.close    
+        'conex2.close
+          Connections["Connection1"].close    
     Endif
+    '     
+    
     Return op
 
 End

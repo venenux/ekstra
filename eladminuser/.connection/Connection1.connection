@@ -1,0 +1,12 @@
+[Connection]
+Type="mysql"
+Host="10.10.34.132"
+User="sysdbadmin"
+RememberPassword=False
+IgnoreCharset=False
+DisplayMetadata=False
+RememberTemplate=False
+Database="sysdbpos"
+Port="3306"
+Requests=["Select * From sysdbpos.app_usuario limit 1"]
+
