@@ -11,7 +11,15 @@ Paginas en proceso y de recomendada lectura:
 
 # PROGRAMA para usar git
 
-GIGGLE: `apt-get install giggle giggle-personal-details-plugin giggle-terminal-view-plugin`
+Git es mas que todo lineas de comando **GIT NO TIENE REPOSITORIO CENTRAL, cualquera en su pc es el repositorio**
+
+### programa git:
+
+`apt-get install git git-core git-svn less patch rsync git-remote-bzr git-remote-hg git-sh
+
+### interfaz grafica git:
+
+`apt-get install giggle giggle-personal-details-plugin giggle-terminal-view-plugin`
 
 Giggle puede clonar, asignar datos de correo y usuario ver diferencias, abrir uan consola de operaciones y subir.
 
