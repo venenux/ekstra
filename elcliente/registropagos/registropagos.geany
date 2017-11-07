@@ -1,4 +1,3 @@
-
 [indentation]
 indent_width=4
 indent_type=1
@@ -18,11 +17,23 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=0
-FILE_NAME_0=127;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/controllers/Registropagos.php;0;4
-FILE_NAME_1=18958;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/config/config.php;0;4
-FILE_NAME_2=358;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/views/view_footer.php;0;4
-FILE_NAME_3=0;PHP;0;16;1;1;0;/home/systemas/Devel/ekstra/elcliente/registropagos/application/views/view_pagoform.php;0;4
+current_page=5
+FILE_NAME_0=937;PHP;0;EUTF-8;1;1;0;%2Fhome%2Fsystemas%2FDevel%2Fekstra%2Felcliente%2Fregistropagos%2Fapplication%2Fcontrollers%2FRegistropagos.php;0;4
+FILE_NAME_1=14577;PHP;0;EUTF-8;1;1;0;%2Fhome%2Fsystemas%2FDevel%2Fekstra%2Felcliente%2Fregistropagos%2Fapplication%2Fconfig%2Fconfig.php;0;4
+FILE_NAME_2=358;PHP;0;EUTF-8;1;1;0;%2Fhome%2Fsystemas%2FDevel%2Fekstra%2Felcliente%2Fregistropagos%2Fapplication%2Fviews%2Fview_footer.php;0;4
+FILE_NAME_3=0;PHP;0;EUTF-8;1;1;0;%2Fhome%2Fsystemas%2FDevel%2Fekstra%2Felcliente%2Fregistropagos%2Fapplication%2Fviews%2Fview_pagoform.php;0;4
+FILE_NAME_4=1859;PHP;0;EUTF-8;1;1;0;%2Fhome%2Fsystemas%2FDevel%2Fekstra%2Felcliente%2Fregistropagos%2Fapplication%2Fconfig%2Froutes.php;0;4
+FILE_NAME_5=1981;PHP;0;EUTF-8;1;1;0;%2Fhome%2Fsystemas%2FDevel%2Fekstra%2Felcliente%2Fregistropagos%2Fapplication%2Fcontrollers%2FLogin_usuario.php;0;4
+FILE_NAME_6=832;PHP;0;EUTF-8;1;1;0;%2Fhome%2Fsystemas%2FDevel%2Fekstra%2Felcliente%2Fregistropagos%2Fapplication%2Fviews%2Finiciosesion.php;0;4
+FILE_NAME_7=1513;PHP;0;EUTF-8;1;1;0;%2Fhome%2Fsystemas%2FDevel%2Fekstra%2Felcliente%2Fregistropagos%2Fapplication%2Fmodels%2FModelodatos.php;0;4
+FILE_NAME_8=2612;PHP;0;EUTF-8;1;1;0;%2Fhome%2Fsystemas%2FDevel%2Fekstra%2Felcliente%2Fregistropagos%2Fsystem%2Fcore%2FConfig.php;0;4
+FILE_NAME_9=751;PHP;0;EUTF-8;1;1;0;%2Fhome%2Fsystemas%2FDevel%2Fekstra%2Felcliente%2Fregistropagos%2Fapplication%2Fcontrollers%2FIndice.php;0;4
 
 [VTE]
 last_dir=/home/systemas
+
+[file_prefs]
+final_new_line=true
+ensure_convert_new_lines=true
+strip_trailing_spaces=false
+replace_tabs=false
