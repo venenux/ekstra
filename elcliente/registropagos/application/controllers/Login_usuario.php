@@ -50,43 +50,37 @@ class Login_usuario extends CI_Controller
 	{ 
 			$this->load->library('curl');
 			$sLogin= $this->input->post('username');
-			$sPass = $this->input->post('contrasena');
+			$sPass = $this->input->post('userclave');
 			$smodulo=$this->input->get_post('modulo');
 			if( $errl === null )
 				$errl = $this->input->get_post('errl');
 			if ($sLogin!='' AND $sPass!='' )
-				{   	
+			{
 						$transfsLogin=md5($sLogin);
 						$transfsPass=md5($sPass);
-						$arreglopost=array ('username1'=> $transfsLogin, 'userclave1'=> $transfsPass, 'z0'=>$smodulo) ;
-						$elrequest= $this->Modelodatos->request_for_login($arreglopost,$smodulo);
-						$sDatausuario['flecha']	=	$elrequest;
-						$response=json_decode($elrequest,TRUE);
-						$sDatausuario['patrimonios']=$response;// esto se mostrará en formulario
-							if (!is_array($response))
-							{ 			
-									$errl = 'Existe un error  en el Servidor: la respuesta recibida no era la esperada. ';
-									$this->index($errl);
-							}	
-							 else
-							{	
-									if (array_key_exists('status',$response))
-									{ 
-											$this->index();
-									}
-									else
-									{  
-											$sDatausuario['username']	= $sLogin ;	
-											$sDatausuario['logueado'] = TRUE;
-											$sDatausuario['accionpagina']='logueado';
-											$sDatausuario['controlador']	='RegistroPagos ';
-											$sDatausuario['modulo']	=$smodulo;
-											$this->load->helper(array('form', 'url','html'));
-											$this->load->view('view_header');
-											$this->session->set_userdata($sDatausuario);
-											redirect('Registropagos/index', 'refresh');
-									  } 
-							} 	
+						$arreglopost=array ('username1'=> $transfsLogin, 'userclave1'=> $transfsPass, 'modulo'=>$smodulo) ;
+						$respionse= $this->Modelodatos->request_for_login($arreglopost,$smodulo);
+						$dataresponse=json_decode($response,TRUE);
+						if ( array_key_exists('username',$dataresponse) ) 
+							$sDatausuario['username'] = $sLogin ;
+						if ( array_key_exists('userclave',$dataresponse) ) 
+							$sDatausuario['userclave'] = $sPass ;
+						if ( array_key_exists('userclave',$dataresponse) ) 
+							$sDatausuario['userclave'] = $sPass ;
+							if (is_array($dataresponse) AND array_key_exists('status',$dataresponse) )
+							{
+								$sDatausuario['username']	= $sLogin ;	
+								$sDatausuario['logueado'] = TRUE;
+								$sDatausuario['accionpagina']='logueado';
+								$sDatausuario['controlador']	='RegistroPagos ';
+								$sDatausuario['modulo']	=$smodulo;
+								$this->load->helper(array('form', 'url','html'));
+								$this->load->view('view_header');
+								$this->session->set_userdata($sDatausuario);
+								redirect('Registropagos/index', 'refresh');
+							} 
+						$errl = 'Existe un error  en el Servidor: la respuesta recibida no era la esperada. ';
+						$this->index($errl);
 			} 
 			else
 			{
