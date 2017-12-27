@@ -49,22 +49,22 @@ class Login_usuario extends CI_Controller
 	public function iniciarsesion($errl=null)
 	{ 
 			$this->load->library('curl');
-			$sLogin= $this->input->post('username');
-			$sPass = $this->input->post('userclave');
-			$smodulo=$this->input->get_post('modulo');
+			$sLogin= str_ireplace(' ','',$this->input->post('username'));
+			$sPass = str_ireplace(' ','',$this->input->post('userclave'));
+			$smodulourl=str_ireplace(' ','',$this->input->post('modulourl'));
 			if( $errl === null )
 				$errl = $this->input->get_post('errl');
 			if ($sLogin!='' AND $sPass!='' )
 			{
 						$transfsLogin=md5($sLogin);
 						$transfsPass=md5($sPass);
-						$arreglopost=array ('username1'=> $transfsLogin, 'userclave1'=> $transfsPass, 'modulo'=>$smodulo) ;
-						$respionse= $this->Modelodatos->request_for_login($arreglopost,$smodulo);
+						$arreglopost=array ('username'=> $transfsLogin, 'userclave'=> $transfsPass, 'modulourl'=>$smodulourl) ;
+						$response= $this->Modelodatos->check_user($arreglopost);
 						$dataresponse=json_decode($response,TRUE);
 						if ( array_key_exists('username',$dataresponse) ) 
-							$sDatausuario['username'] = $sLogin ;
+							$sDatausuario['username'] = $transfsLogin ;		// recibe en md5 tambien
 						if ( array_key_exists('userclave',$dataresponse) ) 
-							$sDatausuario['userclave'] = $sPass ;
+							$sDatausuario['userclave'] = $transfsPass ;		// recive en md5 tambien
 						if ( array_key_exists('userclave',$dataresponse) ) 
 							$sDatausuario['userclave'] = $sPass ;
 							if (is_array($dataresponse) AND array_key_exists('status',$dataresponse) )

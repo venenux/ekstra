@@ -5,12 +5,12 @@
 		echo '<h2><center>Registro de pagos: Inicie Sesión</center></h2>';
 		echo form_open('login_usuario/iniciarsesion', $htmlformaattributos) . PHP_EOL;
 		echo 'Usuario:'.form_input('username').PHP_EOL;
-		echo 'Clave :'.form_password('contrasena').PHP_EOL; 
+		echo 'Clave :'.form_password('userclave').PHP_EOL; 
 		$moduloindexarray = array();
-		$moduloindexarray['0'] = 'pagos-devel';
-		$moduloindexarray['1'] = 'pagos';
-		$moduloindexarray['2'] = 'bitacora';
-		echo form_dropdown('modulo', $moduloindexarray, '');
+		$moduloindexarray['0'] = 'pagos';
+		//$moduloindexarray['1'] = 'apps';
+		//$moduloindexarray['2'] = 'bitacora';
+		echo form_dropdown('modulourl', $moduloindexarray, '');
 		echo form_submit('login', 'Iniciar sesion');
 		echo form_close() . PHP_EOL;
 		echo br();

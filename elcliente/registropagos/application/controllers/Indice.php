@@ -19,10 +19,10 @@ class Indice extends CI_Controller
 
 	public function index()
 	{
-			if( $this->session->userdata('logueado') == FALSE)
+			if( $this->session->userdata('logueado') !== TRUE)
 			{ 
 				$this->load->helper('url');
-				redirect('login_usuario/iniciarsesion/?errl=inicie login');
+				redirect('login_usuario/iniciarsesion/?errl=Debe iniciar sesion con usuario y clave valida');
 			}
 			else
 			{  
