@@ -21,7 +21,7 @@ echo form_dropdown('patrimonio', $listapatrimonios); ?>
 <div><input type="submit" value="Enviar" /></div>
  </fieldset>
 <?php 
-echo anchor('Login_usuario/salir', 'Cerrar Sesión', 'title="Cerrar Sesión"');
+echo anchor('Indexlogin/salir', 'Cerrar Sesión', 'title="Cerrar Sesión"');
 ?>
 </form>
 

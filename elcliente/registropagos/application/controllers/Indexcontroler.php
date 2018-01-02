@@ -2,7 +2,7 @@
 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Indice extends CI_Controller
+class Indexcontroler extends CI_Controller
 {
 
 	public function __construct()
@@ -22,7 +22,7 @@ class Indice extends CI_Controller
 			if( $this->session->userdata('logueado') !== TRUE)
 			{ 
 				$this->load->helper('url');
-				redirect('login_usuario/iniciarsesion/?errl=Debe iniciar sesion con usuario y clave valida');
+				redirect('Indexlogin/iniciarsesion/?errl=Debe iniciar sesion con usuario y clave valida');
 			}
 			else
 			{  

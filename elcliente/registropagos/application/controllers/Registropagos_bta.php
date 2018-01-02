@@ -126,7 +126,7 @@ class Registropagos_bta extends CI_Controller
 			 {
 				if( $this->session->userdata('logueado') == FALSE)
 				 {   // mandarlo a... iniciarsesion
-					redirect('login_usuario/iniciarsesion');
+					redirect('Indexlogin/iniciarsesion');
 				 }
 		}
 	}// function index

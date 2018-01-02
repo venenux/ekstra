@@ -98,7 +98,7 @@ public function index()
 					 {
 						if( $this->session->userdata('logueado') == FALSE)
 						{ 
-								redirect('login_usuario/iniciarsesion');
+								redirect('Indexlogin/iniciarsesion');
 						}
 			}
 }

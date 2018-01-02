@@ -96,14 +96,29 @@ class Modelodatos extends CI_Model
 			return FALSE;
 		if ( ! array_key_exists ( 'username' , $userandclaveandmodulo ))
 			return FALSE;
-		$modulourl = $userandclaveandmodulo['modulourl'];
+		
+		$this->load->library('libu');
+		$ipnet = $this->libu->getipnet('server', TRUE);
 		$this->config->load('cli_modulourl');
-		$urldelsistemaweb = $this->config->item('modulourl'.$modulourl);
+		$urlnet = $this->config->item('modulourl'.$userandclaveandmodulo['modulourl']);
+		if( strripos($ipnet,'10.10.') !== FALSE OR strripos($ipnet,'37.10.') !== FALSE)
+			if ( strripos($ipnet,'37.10.') == 0)
+				$urldelsistemaweb = 'http://intranet1.net.ve/'.$urlnet;
+			else
+				$urldelsistemaweb = 'http://10.10.34.23/'.$urlnet;
+		if( strripos($ipnet,'127.0.0') !== FALSE OR strripos($ipnet,'localhost') !== FALSE)
+			if ( strripos($ipnet,'127.0.0') == 0)
+				$urldelsistemaweb = 'http://127.0.0.1/'.$urlnet;
+			else
+				$urldelsistemaweb = 'http://10.10.34.23/'.$urlnet;
+		else
+			$urldelsistemaweb = 'http://sabalnomina.no-ip.org/'.$urlnet;
+		log_message('info', 'Intentanto validar request hacia '.$urldelsistemaweb);
 		$scurl = curl_init();
 		curl_setopt($scurl, CURLOPT_URL, $urldelsistemaweb);
 		curl_setopt($scurl , CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 		curl_setopt($scurl , CURLOPT_POST, 1);
-		curl_setopt($scurl , CURLOPT_POSTFIELDS,$eljson);
+		curl_setopt($scurl , CURLOPT_POSTFIELDS,http_build_query($userandclaveandmodulo));
 		curl_setopt($scurl, CURLOPT_RETURNTRANSFER, true);
 		$response  = curl_exec($scurl );
 		curl_close($scurl ); 

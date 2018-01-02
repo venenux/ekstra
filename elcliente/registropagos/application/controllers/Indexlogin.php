@@ -2,7 +2,7 @@
 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Login_usuario extends CI_Controller
+class Indexlogin extends CI_Controller
 {
 
 	public function __construct()
@@ -51,16 +51,19 @@ class Login_usuario extends CI_Controller
 			$this->load->library('curl');
 			$sLogin= str_ireplace(' ','',$this->input->post('username'));
 			$sPass = str_ireplace(' ','',$this->input->post('userclave'));
-			$smodulourl=str_ireplace(' ','',$this->input->post('modulourl'));
+			$sMurl=str_ireplace(' ','',$this->input->post('modulourl'));
 			if( $errl === null )
 				$errl = $this->input->get_post('errl');
 			if ($sLogin!='' AND $sPass!='' )
 			{
 						$transfsLogin=md5($sLogin);
 						$transfsPass=md5($sPass);
-						$arreglopost=array ('username'=> $transfsLogin, 'userclave'=> $transfsPass, 'modulourl'=>$smodulourl) ;
+						$arreglopost=array ('username'=> $transfsLogin, 'userclave'=> $transfsPass, 'modulourl'=>$sMurl) ;
 						$response= $this->Modelodatos->check_user($arreglopost);
 						$dataresponse=json_decode($response,TRUE);
+						$errl = 'No se recibio respuesta, decodificacion erronea. ';
+						if ( !is_array($dataresponse) )
+							return $this->index($errl);
 						if ( array_key_exists('username',$dataresponse) ) 
 							$sDatausuario['username'] = $transfsLogin ;		// recibe en md5 tambien
 						if ( array_key_exists('userclave',$dataresponse) ) 

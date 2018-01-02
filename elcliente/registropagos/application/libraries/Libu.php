@@ -2,7 +2,7 @@
 defined("BASEPATH") or die("El acceso al script no está permitido");
 
 /** esta clase depende del CSS bootstrap y el CSS default*/
-class sys_utilities
+class Libu
 {
 	private $sessiondatauser = null;
 
@@ -15,6 +15,20 @@ class sys_utilities
 		$this->CI->load->library('session');
 		$this->CI->load->library('table');
 		$this->sessiondatauser = $this->CI->session->all_userdata();
+	}
+
+	/** utilidad para saber la ip server/cliente y sabrr a donde dirigir la llamada json/login/data */
+	function getipnet($side='client', $large=false)
+	{
+		$addresssrv = $_SERVER['REMOTE_ADDR'];
+		if($side == 'server')
+		$addresssrv = $_SERVER['SERVER_ADDR'];
+		$wherecut = strripos($addresssrv,'.');
+		if($wherecut < 4)
+		$addresssrv = '127.0.0.1';
+		if($large)
+		$addresssrv = substr($addresssrv, 0, $wherecut);
+		return $addresssrv;
 	}
 
 	/** asociacion 1_n sin tabla extra:
@@ -51,8 +65,10 @@ class sys_utilities
 	}
 
 	/** devuelve diferencia entre dos fechas, en formato YYYYMMDD , puede ser en meses (m), dias (d) o años (y) */
-	public function hace_cuanto($in1, $in2, $formatodate = "m")
+	public function hace_cuanto($in1 = null, $in2 = null, $formatodate = "m")
 	{
+		if ( $in1 == null OR $in2 == null)
+			return 0;
 		if ( intval($in1) < 3 OR intval($in2) < 3 )	// solo strings o null, arreglos o vacio no
 			return 0;
 		$dateobj1 = DateTime::createFromFormat('Ymd', $in1);
