@@ -36,7 +36,8 @@ Todo esto se explica en detalle a continuacion por partes
 * mysql (manejador y servidor DB que hara de pivote) `apt-get install mysql-client mysql-server`
 * geany (editor para manejo php asi como ver el preview) `apt-get install geany geany-plugin-webhelper`
 * lighttpd/apache2 (webserver localmente para trabajar el webview) `apt-get install lighttpd`
-* php5 (interprete) `apt-get install php*-cgi php*-mysql php*-gd php*-mcrypt php*-curl php*-xmlrcp`
+* php5 (interprete) en debian 9+ `apt-get install php5-cgi php5-mysql php5-sqlite php5-gd php5-mcrypt php5-curl`
+* php5 (interprete) en viejos 8- `apt-get install php-cgi php-mysql php-sqlite php-gd php-mcrypt php-curl`
 * curl (invocar urls) `apt-get install curl`
 
 Se recomienda usar mysql-workbench con `apt-get install mysql-workbench` para carga y trabajo con data sql.
