@@ -36,10 +36,10 @@ Todo esto se explica en detalle a continuacion por partes
 * mysql (manejador y servidor DB que hara de pivote) `apt-get install mysql-client mysql-server`
 * geany (editor para manejo php asi como ver el preview) `apt-get install geany geany-plugin-webhelper`
 * lighttpd/apache2 (webserver localmente para trabajar el webview) `apt-get install lighttpd`
-* php5 (interprete) `apt-get install php5-cgi php5-mysql php5-gd php5-mcrypt php5-curl php5-xmlrcp`
+* php5 (interprete) `apt-get install php*-cgi php*-mysql php*-gd php*-mcrypt php*-curl php*-xmlrcp`
 * curl (invocar urls) `apt-get install curl`
 
-Se recomienda usar mysql-workbench para carga y trabajo con data sql.
+Se recomienda usar mysql-workbench con `apt-get install mysql-workbench` para carga y trabajo con data sql.
 
 ### 2 Configurar tu entorno
 
@@ -53,10 +53,14 @@ git config --global user.email apellido_nombre@intranet1.net.ve
 su
 ln -s /home/systemas/Devel /var/www/Devel
 ln -s /home/systemas/Devel /var/www/html/Devel
+chown -R systemas:www-data /home/systemas/Devel
+find /home/systemas/Devel/ -type f -exec chmod 664 {} ";"
+find /home/systemas/Devel/ -type d -exec chmod 775 {} ";"
 ```
 
 **IMPORTANTE** Asumiendo que su usuario es `systemas`, los dos ultimos comandos como root.
 
+**IMPORTANTE** No usar variable `$HOME` ya que al usar su, esta sera igual a "root" y no su usuario.
 
 ### 3 clonar las fuentes
 
@@ -110,6 +114,8 @@ corregir la conexcion en el archivo `ekstra/elalmacenwebweb/config/database.php`
 El sistema central tiene una interfaz web, por ahora construida con `PHP/codeigniter`, en futuro con `GAMBAS`, 
 tiene una tabla de usuarios y una de usuario/modulos el usuario solo usa lo que aparece en esta ultima.
 
+El sistema automaticamente genera un menu basado en la cantidad de "controladores" o directorios (cada 
+uno de ellos se asume ser un modulo del sistema).
 
 ## Modelo de datos y base de datos
 
@@ -146,6 +152,23 @@ Se emplea Codeigniter 2 y no 3, se describe mas abajo como iniciar el codigo, se
 * **elalmacenwebweb/libraries** toma los datos y los amasa, moldea y manipula para usarse al momento o temporal
 * **elalmacenwebweb/models** toma los datos y los amasa, modea y prepara para ser presentados o guardados
 
+### Modulos y Menu automatico
+
+Los **Modulos** seran sub directorios dentro del directorio de controladores, cada 
+sub directorio sera un modulo del sistema, y dentro cada clase controller sera una llamada web url, 
+ademas de los que ya esten en el directorio `elalmacenwebweb/controllers` que tambien 
+seran una llamada web url.
+
+El **Menu** sera automaticamente construido a partir de los subdirectorios y controladores, 
+hay dos niveles de menu, el menu principal que es todo lo de primer nivel (directorios y los index) 
+y el menu de cada modulo, que se construye pasando el nombre del subdirectorio (solo lso controlers).
+
+En el directorio `elalmacenwebweb/controllers`, para todo archivo que tenga en el nombre "index" 
+sera incluido en el menu principal, adicional a todo subdirectorio, el resto de archivos, asi 
+como los archivos despues de dicho primer nivel no seran incluidos para generar el menu principal.
+Para el sub menu, segun el nombre el modulo (subdirectorio) de `elalmacenwebweb/controllers`, 
+se buscara todo archivo controller y sera incluido en la generacion de el submenu, y este se 
+muestra debajo del menu principal.
 
 ## Como trabajar con git
 
@@ -183,6 +206,9 @@ despues que tiene todo a lo ultimo se editar un archivo nuevo y se acomete
 
 Este proyecto emplea un esquema de migracion hibrida, se emplea una db base mas no central, donde se hace 
 pivote de usuario, acceso y acciones
+
+En cada controlador solo se debe usar el "checku" y este se encargara de sacar o no de sesion 
+a el usuario si no ha iniciado sesion, esto es todo, no hay que realizar mayores verificaciones.
 
 En la tabla `esk_usuario` se lista usuario y clave, pero su acceso se define realmente por `esk_usuario_modulo` 
 que define a donde puede ir, cada entrada de modulo es un directorio de controlador que puede invocar, 
