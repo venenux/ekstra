@@ -68,8 +68,8 @@ como usuario `systemas` clonar las fuentes en Devel de home:
 ``` 
 mkdir -p ~/Devel
 cd Devel
-git clone --recursive http://200.82.144.73/lagranja/elsistema/elalmacenweb.git
-cd elalmacenweb
+git clone --recursive http://200.82.144.73/lagranja/elsistema/ekstra/.git
+cd ekstra/elalmacenweb
 git pull
 git submodule init
 git submodule update --rebase
@@ -87,8 +87,8 @@ git submodule foreach git pull
     * activar webhelper(ayudante web), treebrowser(visor de arbol) y addons(añadidos extras)
     * aceptar y probar el visor web (que se recarga solo) abajo en la ultima pestaña de las de abajo
     * cargar abajo en la ultima pestaña de webpreview la ruta http://127.0.0.1/Devel/ y visitar el proyecto
-* en el menu proyectos abrir, cargar el archivo `Devel/elalmacenweb/elalmacenweb.geany` y cargara el proyecto
-    * en la listado seleccionar el proyecto o el directorio `~/Devel/elalmacenweb`
+* en el menu proyectos abrir, cargar el archivo `Devel/ekstra/elalmacenweb/elalmacenweb.geany` y cargara el proyecto
+    * en la listado seleccionar el proyecto o el directorio `~/Devel/ekstra/elalmacenweb`
     * instalar `elalmacenweb` sino esta aun instalado, esto es carga la db en 127.0.0.1 y se recarga solo
 
 **NOTA IMPORTANTE** esto es asumiendo que su usuario se llama `systemas` y 
@@ -102,7 +102,7 @@ si no es asi debe modificar el proyecto para que cumpla con su ruta:
 
 En el directorio [elalmacenwebdb](elalmacenwebdb) esta el archivo `elalmacenwebdb.sql` cargar 
 esto en el servidor localhost de la maquina instalado en "localhost" y especificar o 
-corregir la conexcion en el archivo `elalmacenwebweb/config/database.php` del grupo correspondiente "elalmacenwebdb".
+corregir la conexcion en el archivo `ekstra/elalmacenwebweb/config/database.php` del grupo correspondiente "elalmacenwebdb".
 
 # Estructura de desarrollo
 ===========================
@@ -184,7 +184,7 @@ despues que tiene todo a lo ultimo se editar un archivo nuevo y se acomete
 Este proyecto emplea un esquema de migracion hibrida, se emplea una db base mas no central, donde se hace 
 pivote de usuario, acceso y acciones
 
-En la tabla `yan_usuario` se lista usuario y clave, pero su acceso se define realmente por `yan_usuario_modulo` 
+En la tabla `esk_usuario` se lista usuario y clave, pero su acceso se define realmente por `esk_usuario_modulo` 
 que define a donde puede ir, cada entrada de modulo es un directorio de controlador que puede invocar, 
 cada controlador es una presentacion de datos especifica, por ende si no esta listada en la tabla de 
 los modulos no puede ser visitada, adicional si no esta en la de relacion de usuario-modulo tampoco.
@@ -210,9 +210,9 @@ Ninguna de las funciones de este retorna valores, porque este controlador altera
 ### Libreria Login
 
 Se encarga de el transporte de informacion y datos entre la representacion de los datos y el manejo de acceso.
-La libreia usa el modelo yan_usuario para verificar las credenciales,y toda operacion de acceso de datos.
+La libreia usa el modelo esk_usuario para verificar las credenciales,y toda operacion de acceso de datos.
 
-* userlogin: validation user credentials, instancia el modelo yan_usuario y verifica las credenciales en db
+* userlogin: validation user credentials, instancia el modelo esk_usuario y verifica las credenciales en db
      * @access	public
      * @param	string    usuaername o ficha
      * @param	string    userclave
@@ -235,7 +235,7 @@ La libreia usa el modelo yan_usuario para verificar las credenciales,y toda oper
     * @param  string newer password
     * @return integer 0 si no se pudo o usuario invalido
 
-### Modelo yan_usuario
+### Modelo esk_usuario
 
 Interactua con al libreria login para abstraer un usuario de la base de datos y maneja la informacion con la libreia.
 La libreria usa el modelo para obtener datos y verificarlos asi como cambiarlos, el inicio de sesion es 
