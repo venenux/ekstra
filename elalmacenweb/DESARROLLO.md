@@ -58,6 +58,8 @@ find /home/systemas/Devel/ -type f -exec chmod 664 {} ";"
 find /home/systemas/Devel/ -type d -exec chmod 775 {} ";"
 ```
 
+Despues para verificar navegar a "http://127.0.0.1/Devel" y revisar.
+
 **IMPORTANTE** Asumiendo que su usuario es `systemas`, los dos ultimos comandos como root.
 
 **IMPORTANTE** No usar variable `$HOME` ya que al usar su, esta sera igual a "root" y no su usuario.
