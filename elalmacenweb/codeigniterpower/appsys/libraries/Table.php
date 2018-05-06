@@ -281,11 +281,12 @@ class CI_Table {
 	 *
 	 * @access	public
 	 * @param	string
-	 * @return	void
+	 * @return	CI_Table
 	 */
 	function set_caption($caption)
 	{
 		$this->caption = $caption;
+		return $this;
 	}
 
 	// --------------------------------------------------------------------
@@ -564,7 +565,7 @@ class CI_Table {
 			if( $this->enabledatatable != '0' AND $this->datatableoptions != '' )
 			{
 				// lest generatin a vanilla datatable code for table id
-				$tablejscodetags = '<script src="'.base_url() . APPPATH . 'scripts/vanilla-dataTables.js"></script>';
+				$tablejscodetags = '<script src="'.base_url() . APPPATH . 'scripts/vanilla-dataTables.js?'.time().'"></script>';
 				$tablejscodetags .= '
 					<script>
 					var table'.$tableid.' = document.getElementById(\''.$tableid.'\');

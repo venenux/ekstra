@@ -331,9 +331,6 @@ class CI_Loader {
 			return FALSE;
 		}
 
-		if( $active_record == NULL )
-			$active_record = FALSE;
-
 		require_once(BASEPATH.'database/DB.php');
 
 		if ($return === TRUE)
