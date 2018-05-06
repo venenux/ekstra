@@ -8,7 +8,7 @@ El proyecto usa varias bases de datos, pero se conecta a tres DBMS unicamente:
 * SYBASE: se conecta a la `37.10.252.253` empleando las db `OP_001035` principalmente y otras.
 * MSSQLSERVER: se conecta a la `170.10.1.100` empleando distintas db aun no claramente definidas.
 
-El proyecto usa dos tipos de acceso, **MySQL** en el php o en gambas.
+El proyecto usa dos tipos de acceso, **ODBC** y **MySQL** en el php o en gambas.
 
 En el directorio [elyanerodb](elyanerodb) esta el archivo `elyanerodb.sql` cargar 
 esto en el servidor localhost de la maquina instalado en "localhost" y especificar o 
@@ -38,10 +38,17 @@ REVOKE ALL PRIVILEGES ON sdbprestamos.* FROM 'sysdbuser'@'%';
 GRANT ALL PRIVILEGES ON sdbprestamos.* TO 'sysdbuser'@'%' WITH GRANT OPTION ;
 ```
 
-### Configuracion
+### Configuracion y ODBC
 
 Para configurar el acceso ODBC se requeire previa preparacion, leer [odbc-README.md](odbc-README.md) 
 en donde se cubre los aspectos importantes para conectarse usando ODBC y DSN definidos.
+
+### Base de datos Oasis
+
+En la base de datos `OP_001037` se preparan tablas proxy de la db `elyanerodb` para portabilidad.
+Las tablas proxy son conexciones directas desde Sybase hacia otras bases de datos, en donde 
+se puede usar directamente tablas externas desde esa otra base de datos.
+La configuracion de estas se cubre en [sybase-README.md](sybase-README.md#tablas-proxy)
 
 ### Diseño de la DB
 
