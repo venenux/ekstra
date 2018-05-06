@@ -335,7 +335,7 @@ lighty-disable-mod flv-streaming javagateway no-www proxyjabber rrdtool simple-v
 service lighttpd restart
 exit
 mkdir -p ~
-ln ~/Devel/elalmacenweb ~/public_html/elalmacenweb
+ln ~/Devel/ekstra/elalmacenweb ~/public_html/elalmacenweb
 ```
 
 **NOTA** esto asume que tiene lighttpd usando public_html como directorio web en el home,en VenenuX es Html
