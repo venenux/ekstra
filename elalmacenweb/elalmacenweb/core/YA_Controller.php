@@ -59,21 +59,76 @@ class YA_Controller extends CI_Controller
             $redirurl = $this->userurl;
     }
 
-    /** generacion temporal d emenu para que se avanze en desarrollo */
-    public function menu()
+	/* 
+	 * name: genmenu genera un menu de enlaces plano usando `getcontrollers` segun los nombres de controladores del directorio
+	 * @param string $moduledir nombre del directorio de controllers especifico sino directorios de modulos
+	 * @return string html table con los nombres de archivos de controladores o los directorios si no se especifica modulo dir
+	 */
+    public function genmenu($modulename = NULL)
     {
         $permited = $this->permite;
-//        $permited = $this->login->usercheck();
         if( $permited == 0 OR $permited == FALSE)
             return '';
-        $menuarraymain['0'] = anchor('indexlogin/salirlogin','Salir','class=" btn btn-10 form" ');
-        $menuarraymain['1'] = anchor('mproductos/oaproductos/index','Buscar productos','class=" btn btn-10 form" ');
-        $menuarraymain['2'] = anchor('mcierreventa/mcierreventa/index','Cierre/replicacion','class=" btn btn-10 form" ');
-        $this->table->clear();
-        $this->table->add_row($menuarraymain);
-        return $menu1 = $this->table->generate();
-        
+		$arraylinkscontrollers = $this->getcontrollers($modulename);
+		if($modulename == NULL OR $modulename == '')
+		{
+			foreach($arraylinkscontrollers as $menuidex=>$menulink)
+			{
+				$findname = '/'.$modulename.'/';
+				$menuname = preg_replace($findname, '', $menulink, 1);
+				$menuname = stristr($menuname,'index');
+				$menuname = str_replace('indexm','',$menuname);
+				$menuname = ucfirst($menuname);
+				$menuarraymain[$menuidex] = anchor($menulink,ucfirst($menuname),'class=" btn btn-10 form" ');
+			}
+			$menuarraymain[] = anchor('indexlogin/salirlogin','Salir','class=" btn btn-10 form" ');
+		}
+		else
+		{
+			// TODO hacer logica para submenu
+			foreach($arraylinkscontrollers as $menuidex=>$menulink)
+			{
+				$menuname = stristr($menulink,'m');
+				$findname = '/'.$modulename.'/';
+				$menuname = preg_replace($findname, '', $menulink, 1);
+				$menuname = str_replace('/','',$menuname);
+				$menuname = ucfirst($menuname);
+				$menuarraymain[$menuidex] = anchor($menulink,$menuname,'class=" btn btn-10 form" ');
+			}
+		}
+		$this->table->clear();
+		$this->table->add_row($menuarraymain);
+		return $this->table->generate();
     }
+
+	/* 
+	 * name: getcontrollers obtiene nombre de controladores o nombre de directorios de controladores
+	 * @param string $moduledir nombre del directorio de controllers especifico sino directorios de modulos
+	 * @return array con los nombres de archivos de controladores o los directorios si no se especifica modulo dir
+	 */
+	public function getcontrollers($moduledir = NULL)
+	{
+		if($moduledir == NULL)
+			$moduledir = '';
+		$controllers = array();
+		$moduledir = str_replace(' ','',$moduledir);
+		// Scan files in the /application/controllers{moduledir} directory
+		$this->load->helper('file');
+			$files = get_dir_file_info(APPPATH.'controllers/'.$moduledir, TRUE);
+		if(!is_array($files) OR count($files)<1)
+			$files = get_dir_file_info(APPPATH.'controllers/', TRUE);
+		foreach(array_keys($files) as $file)
+		{
+			if( strpos($file,'htm') !== FALSE)
+				continue;
+			if( strpos($file,'php') === FALSE AND $moduledir == '')
+				$name = str_replace(EXT, '', $file).'/index'.str_replace(EXT, '', $file);
+			else
+				$name = $moduledir.'/'.str_replace(EXT, '', $file);
+			$controllers[] = $name;
+		}
+		return $controllers;
+	}
 
     /** permite repintar sin llamar tanto o escribir tanto, automaticamente carga header y footer */
     public function render($view, $data = NULL) 
@@ -82,14 +137,14 @@ class YA_Controller extends CI_Controller
             $data['currenturl'] = $this->currenturl;
         if( !isset($data['userurl']) )
             $data['userurl'] = $this->userurl;
-        if( !isset($data['menu']) )
-            $data['menu'] = $this->menu();
-        $this->load->view('header',$data);
-        if(!is_array($view) )
+		$data['menu'] = $this->genmenu();
+		$this->load->view('header',$data);
+		if(!is_array($view) )
 		{
-			$this->load->view($view, $data);
-        }
-        else
+			if($view != '' OR $view != NULL)
+				$this->load->view($view, $data);
+		}
+		else
 		{
 			foreach($view as $vistas=>$vistacargar)
 				$this->load->view($vistacargar, $data);

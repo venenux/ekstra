@@ -52,5 +52,10 @@ $this->load->helper('url');
 				<?php if( isset($menu) ) echo $menu.PHP_EOL ?>
 			</center>
 		</div>
+		<div id="menusub">
+			<center>
+				<?php if( isset($menusub) ) echo $menusub.PHP_EOL ?>
+			</center>
+		</div>
 	<center>
 
