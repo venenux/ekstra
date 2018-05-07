@@ -91,19 +91,20 @@ COMMENT = 'productos que estan en el almacen, es como uan copia del pro' /* comm
 
 
 -- -----------------------------------------------------
--- Table `elalmacenwebdb`.`esk_almacen_ubicaciones`
+-- Table `elalmacenwebdb`.`esk_almacen_ubicacion_producto`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `elalmacenwebdb`.`esk_almacen_ubicaciones` ;
+DROP TABLE IF EXISTS `elalmacenwebdb`.`esk_almacen_ubicacion_producto` ;
 
-CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_almacen_ubicaciones` (
-  `cod_posicion` VARCHAR(40) NOT NULL COMMENT 'en que anden o andamio o lugar del almacen' ,
+CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_almacen_ubicacion_producto` (
+  `cod_ubicacion` VARCHAR(40) NOT NULL COMMENT 'posicion en que anden o andamio o lugar del almacen' ,
   `cod_producto` VARCHAR(40) NOT NULL COMMENT 'codigo del producto segun el ajuste' ,
-  `des_posicion` VARCHAR(40) NULL COMMENT 'ientificacion humana de esta pposicion' ,
+  `can_producto` DECIMAL(20,2) NOT NULL DEFAULT 0 COMMENT 'directa la existencia en cada posicion del cada producto' ,
+  `des_anotacion` VARCHAR(40) NULL COMMENT 'opcional nota sobre colocar este producto en esta ubicacion' ,
   `sessionflag` VARCHAR(40) NULL COMMENT 'YYYYMMDDhhmmss.entidad.username quien altero' ,
   `sessionficha` VARCHAR(40) NULL COMMENT 'YYYYMMDDhhmmss.entidad.username quien lo creo' ,
-  PRIMARY KEY (`cod_posicion`, `cod_producto`) )
+  PRIMARY KEY (`cod_ubicacion`, `cod_producto`) )
 ENGINE = InnoDB
-COMMENT = 'ubicaciones de posiciones del almacen';
+COMMENT = 'ubicaciones de cada producto y cuanto de este';
 
 
 -- -----------------------------------------------------
@@ -120,6 +121,168 @@ CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_movimientos_tipo` (
   PRIMARY KEY (`tipo_movimiento`) )
 ENGINE = InnoDB
 COMMENT = 'tipo de movimiento';
+
+
+-- -----------------------------------------------------
+-- Table `elalmacenwebdb`.`esk_almacen_ubicacion`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elalmacenwebdb`.`esk_almacen_ubicacion` ;
+
+CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_almacen_ubicacion` (
+  `cod_ubicacion` VARCHAR(40) NOT NULL COMMENT 'id de laubicaicon codigo' ,
+  `cod_almacen` VARCHAR(40) NOT NULL ,
+  `des_ubicacion` VARCHAR(40) NULL COMMENT 'identifiacion humnann o direccion entendible humana' ,
+  `estado_ubicacion` VARCHAR(40) NULL DEFAULT 'ACTIVA' COMMENT 'ACTIVA,INACTIVA - si inactiva es que quitaron ese andamio o repisa' ,
+  `cor_mapa_x` VARCHAR(40) NULL COMMENT 'del mapa visto arriba eje x' ,
+  `cor_mapa_y` VARCHAR(40) NULL COMMENT 'del mapa visto arriba eje y' ,
+  `cor_mapa_z` VARCHAR(40) NULL COMMENT 'en mayor casos es el piso' ,
+  `sessionflag` VARCHAR(40) NULL COMMENT 'YYYYMMDDhhmmss.entidad.username quien altero' ,
+  `sessionficha` VARCHAR(40) NULL COMMENT 'YYYYMMDDhhmmss.entidad.username quien lo creo' ,
+  PRIMARY KEY (`cod_ubicacion`, `cod_almacen`) )
+ENGINE = InnoDB
+COMMENT = 'almacen  que ubicaciones tiene y su detalle de cada ubicacio' /* comment truncated */;
+
+
+-- -----------------------------------------------------
+-- Table `elalmacenwebdb`.`esk_almacen_mapa`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elalmacenwebdb`.`esk_almacen_mapa` ;
+
+CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_almacen_mapa` (
+  `cod_almacen` VARCHAR(40) NOT NULL COMMENT 'enlazar con la entidad correspondiente de clase ALMACEN' ,
+  `map_almacen_piso` VARCHAR(40) NOT NULL DEFAULT 0 COMMENT 'señala si se inicializo o no, cero es que se tien q hacer inventario' ,
+  `map_almacen_file` TEXT NOT NULL DEFAULT NULL COMMENT 'ruta de la imagen del mapa' ,
+  `des_almacen_piso` VARCHAR(40) NULL COMMENT 'nombre del almacen, si tiene varios pisos el mismo nombre' ,
+  `sessionficha` VARCHAR(40) NULL DEFAULT NULL ,
+  `sessionflag` VARCHAR(40) NULL DEFAULT NULL ,
+  PRIMARY KEY (`cod_almacen`, `map_almacen_piso`, `map_almacen_file`) )
+COMMENT = 'de el almacen, cada mapa de cada piso.. ';
+
+
+-- -----------------------------------------------------
+-- Table `elalmacenwebdb`.`esk_movimiento`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elalmacenwebdb`.`esk_movimiento` ;
+
+CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_movimiento` (
+  `cod_movimiento` VARCHAR(40) NOT NULL COMMENT 'identificador del movimiento EL PRODUCTO' ,
+  `fecha_llegada` VARCHAR(40) NULL DEFAULT NULL COMMENT 'fecha llegada del despacho' ,
+  `cod_entidad` VARCHAR(40) NULL DEFAULT NULL COMMENT 'entidad que recibe este despacho' ,
+  `cod_despacho` VARCHAR(40) NULL DEFAULT NULL COMMENT 'codigo del despacho recibido' ,
+  `cod_medio` VARCHAR(40) NULL DEFAULT NULL COMMENT 'identificacion del medio, el objeto referenciado incluira placa etc chofer...' ,
+  `estado` VARCHAR(40) NULL DEFAULT 'EMITIDO' COMMENT 'EMITIDO|TRANSITO|RECIBIDO|INVALIDO' ,
+  `resultado` VARCHAR(40) NULL DEFAULT NULL COMMENT 'COMPLETO|INCOMPLETO' ,
+  `sessionflag` VARCHAR(40) NULL COMMENT 'YYYYMMDDhhmmss.entidad.username de este registro' ,
+  PRIMARY KEY (`cod_movimiento`) )
+COMMENT = 'relacion de movimientos, diminutovos de flecha';
+
+
+-- -----------------------------------------------------
+-- Table `elalmacenwebdb`.`esk_despacho`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elalmacenwebdb`.`esk_despacho` ;
+
+CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_despacho` (
+  `cod_despacho` VARCHAR(40) NOT NULL COMMENT 'DESYYYYMMDDhhmmss : identificador del despacho realizado' ,
+  `cod_ejecuta` VARCHAR(40) NOT NULL COMMENT 'sello donde se corre el sistema y estos datos' ,
+  `fecha` VARCHAR(40) NULL DEFAULT NULL COMMENT 'fecha que se coloco en el camion y se fue' ,
+  `estado` VARCHAR(40) NULL DEFAULT 'JAULA' COMMENT 'JAULA|TRANSITO|RECIBIDO' ,
+  `cod_orden` VARCHAR(40) NULL DEFAULT NULL COMMENT 'cuando se completa se asocia el pedido correspondiente' ,
+  `cod_medio` VARCHAR(40) NULL DEFAULT NULL COMMENT 'identificacion del medio y quien responsable del transporte' ,
+  `tipo_despacho` VARCHAR(40) NULL DEFAULT 'INTERNO' COMMENT 'TRASLADO|INTERNO|EXTERNO' ,
+  `cod_facturacion` VARCHAR(40) NULL DEFAULT NULL COMMENT 'codigo que usara el facturador para asociarse al sistema y el despacho' ,
+  `sessionficha` VARCHAR(40) NULL DEFAULT NULL COMMENT 'YYYYMMDDhhmmss . entidad . intranet quien creo y el responsable de este despacho' ,
+  `sessionflag` VARCHAR(40) NULL DEFAULT NULL COMMENT 'YYYYMMDDhhmmss . entidad . intranet quien altero o ultimo en tocar este despacho' ,
+  PRIMARY KEY (`cod_despacho`, `cod_ejecuta`) )
+COMMENT = 'despacho cabecera: definicion de documento para transito y r';
+
+
+-- -----------------------------------------------------
+-- Table `elalmacenwebdb`.`esk_despacho_producto`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elalmacenwebdb`.`esk_despacho_producto` ;
+
+CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_despacho_producto` (
+  `cod_despacho` VARCHAR(40) NOT NULL DEFAULT NULL COMMENT 'LOTEYYYYMMDDhhmmss id contenido del despacho' ,
+  `cod_producto` VARCHAR(40) NOT NULL DEFAULT NULL COMMENT 'los productos de este despacho' ,
+  `can_producto` DECIMAL(40,2) NULL DEFAULT NULL COMMENT 'cantidad de este producto en el despacho relacionado' ,
+  `cod_bulto` VARCHAR(40) NULL DEFAULT NULL COMMENT 'identificador del bulto en donde se coloca producto' ,
+  `mon_precio` DECIMAL(40,2) NULL DEFAULT NULL ,
+  `sessionficha` VARCHAR(40) NULL DEFAULT NULL COMMENT 'YYYYMMDDhhmmss . entidad . intranet quien puso este producto en el despacho' ,
+  PRIMARY KEY (`cod_despacho`, `cod_producto`) )
+COMMENT = 'despacho detalle : que productos son los que se despachan de';
+
+
+-- -----------------------------------------------------
+-- Table `elalmacenwebdb`.`esk_orden`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elalmacenwebdb`.`esk_orden` ;
+
+CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_orden` (
+  `cod_orden` VARCHAR(40) NOT NULL COMMENT 'ORDYYYYMMDDhhmmss : identificador de la orden' ,
+  `cod_ejecuta` VARCHAR(40) NOT NULL COMMENT 'sello donde se corre el sistema y estos datos' ,
+  `fecha` VARCHAR(40) NULL DEFAULT NULL COMMENT 'YYYYMMDD fecha limite ejecutese al despacho la fecha creacion esta en sessionficha' ,
+  `estado` VARCHAR(40) NULL DEFAULT 'PICKING' COMMENT 'PICKING|PREDESPACHO|CERRADO|ANULADO' ,
+  `cod_origen` VARCHAR(40) NULL DEFAULT NULL COMMENT 'entidad origen sello heredado de pedido y opcion alterarse' ,
+  `cod_destino` VARCHAR(40) NULL DEFAULT NULL COMMENT 'entidad destino sello hereddo de pedido y opcion alterarse' ,
+  `cod_juridico` VARCHAR(40) NULL DEFAULT NULL COMMENT 'proveedor que se desea despache, si la entidad origen tiene se toma de alli' ,
+  `cod_pedido` VARCHAR(40) NULL DEFAULT NULL COMMENT 'codigo pedido asociado que origino la orden y su picking' ,
+  `sessionficha` VARCHAR(40) NULL DEFAULT NULL COMMENT 'YYYYMMDDhhmmss . entidad . intranet quien creo esta orden' ,
+  `sessionflag` VARCHAR(40) NULL DEFAULT NULL COMMENT 'YYYYMMDDhhmmss . entidad . intranet quien altero esta orden' ,
+  PRIMARY KEY (`cod_orden`, `cod_ejecuta`) )
+COMMENT = 'orden maestro: orden para despachar el pedido y hacer el pic';
+
+
+-- -----------------------------------------------------
+-- Table `elalmacenwebdb`.`esk_orden_producto`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elalmacenwebdb`.`esk_orden_producto` ;
+
+CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_orden_producto` (
+  `cod_orden` VARCHAR(40) NOT NULL COMMENT 'LOTEYYYYMMDDhhmmss : id contenido de la orden' ,
+  `cod_producto` VARCHAR(40) NOT NULL COMMENT 'cada codigo de producto de esta orden por contenido' ,
+  `can_producto` DECIMAL(40,2) NOT NULL COMMENT 'cantidad de este producto de esta orden por contenido' ,
+  `cod_bulto` VARCHAR(40) NULL DEFAULT NULL COMMENT 'identificador del bulto en donde se coloca agrupados los producto' ,
+  `mon_precio` DECIMAL(40,2) NULL DEFAULT NULL ,
+  `sessionficha` VARCHAR(40) NULL DEFAULT NULL COMMENT 'YYYYMMDDhhmmss . entidad . intranet quien puso este producto en la orden' ,
+  PRIMARY KEY (`cod_orden`, `cod_producto`) )
+COMMENT = 'orden detalle: productos contenidos en la orden especifica';
+
+
+-- -----------------------------------------------------
+-- Table `elalmacenwebdb`.`esk_pedido_producto`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elalmacenwebdb`.`esk_pedido_producto` ;
+
+CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_pedido_producto` (
+  `cod_pedido` VARCHAR(40) NOT NULL COMMENT 'LOTEYYYYMMDDhhmmss : id contenido de la solicitud' ,
+  `cod_producto` VARCHAR(40) NOT NULL DEFAULT NULL COMMENT 'el productos de este pedido relacionado' ,
+  `can_producto` DECIMAL(40,2) NULL DEFAULT NULL COMMENT 'cantidad de este producto' ,
+  `cod_unidad` VARCHAR(40) NULL DEFAULT NULL COMMENT 'unidad de cantidad de este producto' ,
+  `mon_precio` DECIMAL(40,2) NULL DEFAULT NULL COMMENT 'precio unitario de este producto la unidad es caracteristica del producto en si' ,
+  `sessionficha` VARCHAR(40) NULL DEFAULT NULL COMMENT 'YYYYMMDDhhmmss . entidad . intranet quien puso este producto en el pedido' ,
+  PRIMARY KEY (`cod_producto`, `cod_pedido`) )
+COMMENT = 'pedido detalle : productos contenidos en el pedido especific';
+
+
+-- -----------------------------------------------------
+-- Table `elalmacenwebdb`.`esk_pedido`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `elalmacenwebdb`.`esk_pedido` ;
+
+CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_pedido` (
+  `cod_pedido` VARCHAR(40) NOT NULL COMMENT 'PEDYYYYMMDDhhmmss : identificador del pedido en nuestro sistema' ,
+  `cod_ejecuta` VARCHAR(40) NOT NULL COMMENT 'sello donde se corre el sistema y estos datos' ,
+  `fecha` VARCHAR(40) NULL DEFAULT NULL COMMENT 'YYYYMMDD fecha limite ejecutese AL galpon la fecha creacion esta en sessionficha' ,
+  `estado` VARCHAR(40) NULL DEFAULT 'ABIERTO' COMMENT 'ABIERTO|CERRADO' ,
+  `cod_origen` VARCHAR(40) NULL DEFAULT NULL COMMENT 'entidad origen sello que emita o despache a quien se pide' ,
+  `cod_destino` VARCHAR(40) NULL DEFAULT NULL COMMENT 'la enttidad destino o sello a donde se pide' ,
+  `cod_juridico` VARCHAR(40) NULL DEFAULT NULL COMMENT 'proveedor que se desea despache, si la entidad origen tiene se toma de alli' ,
+  `cod_reserv` VARCHAR(40) NULL DEFAULT NULL COMMENT 'codigo si el pedido es de un sistema externo' ,
+  `sessionficha` VARCHAR(40) NULL DEFAULT NULL COMMENT 'YYYYMMDDhhmmss . entidad . intranet quien creo o importo este pedido' ,
+  `sessionflag` VARCHAR(40) NULL DEFAULT NULL COMMENT 'YYYYMMDDhhmmss . entidad . intranet quien altero esta solicitud' ,
+  PRIMARY KEY (`cod_pedido`, `cod_ejecuta`) )
+COMMENT = 'solicitud maestra: tabla de referencia para llevar pedidos b';
 
 
 
