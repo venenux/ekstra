@@ -45,24 +45,24 @@
 | the active record class
 */
 
-$active_group = 'elyanerodb';
+$active_group = 'elalmacenwebdb';
 $active_record = FALSE;
 
 /* db central de la app la usa para determinar quien entra y sale y ve que cosa*/
-$db['elyanerodb']['hostname'] = 'localhost';
-$db['elyanerodb']['username'] = 'root';
-$db['elyanerodb']['password'] = 'root.1';
-$db['elyanerodb']['database'] = 'elyanerodb'; // usar el script que esta en directorio elyanerodb
-$db['elyanerodb']['dbdriver'] = 'mysql';
-$db['elyanerodb']['dbprefix'] = ''; /*blanks means use public , catalogo not use that due xtreme security */
-$db['elyanerodb']['pconnect'] = TRUE;
-$db['elyanerodb']['db_debug'] = TRUE;
-$db['elyanerodb']['cache_on'] = FALSE;
-$db['elyanerodb']['cachedir'] = '';
-$db['elyanerodb']['char_set'] = 'utf8';
-$db['elyanerodb']['dbcollat'] = 'utf8_general_ci';
-$db['elyanerodb']['swap_pre'] = '';
-$db['elyanerodb']['stricton'] = FALSE;
+$db['elalmacenwebdb']['hostname'] = 'localhost';
+$db['elalmacenwebdb']['username'] = 'root';
+$db['elalmacenwebdb']['password'] = 'root.1';
+$db['elalmacenwebdb']['database'] = 'elalmacenwebdb'; // usar el script que esta en directorio elalmacenwebdb
+$db['elalmacenwebdb']['dbdriver'] = 'mysql';
+$db['elalmacenwebdb']['dbprefix'] = ''; /*blanks means use public , catalogo not use that due xtreme security */
+$db['elalmacenwebdb']['pconnect'] = TRUE;
+$db['elalmacenwebdb']['db_debug'] = TRUE;
+$db['elalmacenwebdb']['cache_on'] = FALSE;
+$db['elalmacenwebdb']['cachedir'] = '';
+$db['elalmacenwebdb']['char_set'] = 'utf8';
+$db['elalmacenwebdb']['dbcollat'] = 'utf8_general_ci';
+$db['elalmacenwebdb']['swap_pre'] = '';
+$db['elalmacenwebdb']['stricton'] = FALSE;
 
 /*db de oasis para reportes y manejo de pos a migrar en futuro*/
 $db['oasisdb']['hostname'] = 'DRIVER=FreeTDS;SERVER=37.10.252.253;UID=dba;PWD=sql;DATABASE=OP_001037;TDS_Version=5.0;Port=2638;';
