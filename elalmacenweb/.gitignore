@@ -1,0 +1,18 @@
+
+# ignore the codeigniter logs
+*/*/logs/*.php
+
+# denied those workbench confused restore files
+*.bak
+
+# ---> CodeIgniter
+*/*/config/development
+*/*/logs/log-*.php
+!*/*/logs/index.html
+*/*/cache/*
+!*/*/cache/index.html
+!*/*/cache/.htaccess
+
+# ---> SVN
+.svn/
+
