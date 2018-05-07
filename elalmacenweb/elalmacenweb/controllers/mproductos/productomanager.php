@@ -32,40 +32,41 @@ class Productomanager extends YA_Controller {
 	{
 		$renderdata =TRUE;
 		$txt_referencia = $this->input->get_post('referencia');
-		$txt_descripcion_larga =  $this->input->get_post('descripcion');
+		$des_producto =  $this->input->get_post('descripcion');
 
-		if($txt_referencia == null AND $txt_descripcion_larga == null)
+		if($txt_referencia == null AND $des_producto == null)
 			$renderdata = FALSE;
 
-		$txt_descripcion_larga == str_replace(' ', '', $txt_descripcion_larga);
+		$des_producto == str_replace(' ', '', $des_producto);
 		$txt_referencia == str_replace(' ', '', $txt_referencia);
 
-		if($txt_referencia == '' AND $txt_descripcion_larga == '')
+		if($txt_referencia == '' AND $des_producto == '')
 			$renderdata = FALSE;
 
 		if( $renderdata!==TRUE )
 		{
 			$data = array();
-			$this->render('mproductos/Productomanagerindex',$data); // invalid se vuelve al formulario
+			$data['menusub'] = $this->genmenu('mproductos');
+			$this->render('mproductos/productomanagerindex',$data); // invalid se vuelve al formulario
 			return;
 		}
 
 		$parametros=array();
 		if ($txt_referencia != '')
 			$parametros['txt_referencia']=$txt_referencia;
-		if ($txt_descripcion_larga != '')
-			$parametros['txt_descripcion_larga']=$txt_descripcion_larga;
+		if ($des_producto != '')
+			$parametros['des_producto']=$des_producto;
 
-		$this->load->model('mproductos/Productomanagermodel');
-		$productos_query=$this->Productomanagermodel->get_producto_simple(null,$parametros,FALSE);
+		$this->load->model('mproductos/productomodel');
+		$productos_query=$this->productomodel->get_producto_simple(null,$parametros,FALSE);
 
-		$data['txt_descripcion_larga']=$txt_descripcion_larga;
+		$data['des_producto']=$des_producto;
 		$data['txt_referencia']=$txt_referencia;
 		$data['productos_query']=$productos_query;
 
 		$data['menusub'] = $this->genmenu('mproductos');
-		$render['1']='mproductos/Productomanagerindex';
-		$render['2']='mproductos/Productomanagermostrar';
+		$render['1']='mproductos/productomanagerindex';
+		$render['2']='mproductos/productosmostrar';
 
 		$this->render($render,$data); // abajo se muestra los resultados
 	}
@@ -97,17 +98,18 @@ class Productomanager extends YA_Controller {
 		if( $renderdata!==TRUE )
 		{
 			$data = array();
-			$this->render('mproductos/Productomanagerindex',$data); // invalid se vuelve al formulario
+			$data['menusub'] = $this->genmenu('mproductos');
+			$this->render('mproductos/productomanagerindex',$data); // invalid se vuelve al formulario
 			return;
 		}
 
 		$this->load->library('sys'); // aqui en esta lib llenar el codigo de compeltar ceros y llamarlo
 		$cod_producto = $this->sys->completar_codigo($cod_producto);
 
-		$this->load->model('mproductos/Productomanagermodel'); // yo llenare el modelo, $parametros debe tener el codigo y debe ser arreglo
+		$this->load->model('mproductos/productomodel'); // yo llenare el modelo, $parametros debe tener el codigo y debe ser arreglo
 		$parametros['cod_producto']=$cod_producto;
 
-		$productos_detalle=$this->Productomanagermodel->get_producto_existencia(null,$parametros,FALSE);
+		$productos_detalle=$this->productomodel->get_producto_existencia(null,$parametros,FALSE);
 		if( $productos_detalle === FALSE OR $productos_detalle == 0)
 			$infodata = "No se pudo consultar OP, problemas con la conexcion intentar mas tarde";
 		else if( $productos_detalle  === NULL )
@@ -127,7 +129,7 @@ class Productomanager extends YA_Controller {
 
 		$data['menusub'] = $this->genmenu('mproductos');
 		$render['1']='mproductos/productomanagerindex';
-		$render['2']='mproductos/productomanagerexistencia';
+		$render['2']='mproductos/productosmostrar';
 		$this->render($render,$data); // abajo se muestra los resultados
 	}
 

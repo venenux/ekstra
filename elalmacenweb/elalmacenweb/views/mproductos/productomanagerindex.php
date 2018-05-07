@@ -2,15 +2,20 @@
 
 /** vista que se pinta para enviar los parametros de busqueda por formulario via GET/POST a oaproductos */
 
+	
+	$controllermodu = $this->uri->segment(1);
+	$controllerform = $this->uri->segment(2);
+	$formuri = $controllermodu .'/'.$controllerform;
+	
 
 	$camposfiltroH1 = form_hidden('userurl',$this->userurl).PHP_EOL; // $this->input->get_post('userurl') url es una variable URL invocada'.PHP_EOL;
 	$camposfiltroH2 = form_hidden('currenturl',$this->currenturl).PHP_EOL; // $currenturl es una variable ACTUAL'.PHP_EOL;
 
 	if( !isset($txt_referencia) ) $txt_referencia = '';
-	if( !isset($txt_descripcion_larga) ) $txt_descripcion_larga = '';
+	if( !isset($des_producto) ) $des_producto = '';
 	$htmlformaattributosbuscr = array('name'=>'formulariofiltros','onSubmit'=>'return validageneric(this);');
-	$htmlformularioproductosbuscarAbre = form_open('mproductos/oaproductos/mostrarproductos', $htmlformaattributosbuscr) . PHP_EOL;
-	$camposfiltro1 = form_input('descripcion',$txt_descripcion_larga);
+	$htmlformularioproductosbuscarAbre = form_open($formuri.'/mostrarproductos', $htmlformaattributosbuscr) . PHP_EOL;
+	$camposfiltro1 = form_input('descripcion',$des_producto);
 	$camposfiltro2 = form_input('referencia',$txt_referencia);
 	$camposfiltroB = form_submit('consultarbusca', '(Re)Consultar', 'class="btn-primary btn"');
 	$this->load->library('table');
@@ -37,7 +42,7 @@
 
 	if( !isset($cod_producto) ) $cod_producto = '';
 	$htmlformaattributosexis = array('name'=>'formularioexistencia','onSubmit'=>'return validageneric(this);');
-	$htmlformularioproductosexisteAbre = form_open('mproductos/oaproductos/existenciaproductos', $htmlformaattributosexis) . PHP_EOL;
+	$htmlformularioproductosexisteAbre = form_open($formuri.'/existenciaproductos', $htmlformaattributosexis) . PHP_EOL;
 	$campocodigo1 = form_input('cod_producto',$cod_producto);
 	$campocodigoB = form_submit('consultarexis', '(Re)Consultar', 'class="btn-primary btn"');
 	$this->load->library('table');

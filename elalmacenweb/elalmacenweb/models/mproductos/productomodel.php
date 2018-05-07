@@ -20,9 +20,9 @@ class Productomodel extends CI_Model {
 	 * la primera columna siempre trae el total
 	 *
 	 * @param       string  $usuario    nombre del usaurio intranet de la sesion que ejecuta la consulta
-	 * @param       array/string  $parametros    txt_descripcion_larga del producto, o arreglo con txt_descripcion_larga y txt_referencia
+	 * @param       array/string  $parametros    des_producto del producto, o arreglo con des_producto y txt_referencia
 	 * @param       boolean  $exportarcsv    Si TRUE solo escupe un string con el fluo del archivo CSV a rellenar
-	 * @return      array   array(resultado, cod_interno, txt_descripcion_larga, txt_referencia, precio )
+	 * @return      array   array(resultado, cod_interno, des_producto, txt_referencia, precio )
 	 */
 	public function get_producto_simple($usuario = NULL, $parametros = NULL, $exportarodt = FALSE)
 	{
@@ -41,14 +41,14 @@ class Productomodel extends CI_Model {
 				if( array_key_exists('txt_referencia',$parametros))
 				{
 					$txt_referencia = $parametros['txt_referencia'];
-					$txt_referencia = $this->dbmy->escape_srt($txt_referencia,TRUE);
+					//$txt_referencia = $this->dbmy->escape_srt($txt_referencia,TRUE);
 					$queryfiltros = " and txt_referencia like '%".$txt_referencia."%' ";
 				}
 				if( array_key_exists('des_producto',$parametros))
 				{
-					$txt_descripcion_larga = $parametros['des_producto'];
-					$txt_descripcion_larga = $this->dbmy->escape_str($txt_descripcion_larga,TRUE);
-					$queryfiltros = " and des_producto like '%".$txt_descripcion_larga."%' ";
+					$des_producto = $parametros['des_producto'];
+					$des_producto = $this->dbmy->escape_str($des_producto,TRUE);
+					$queryfiltros = " and des_producto like '%".$des_producto."%' ";
 				}
 		  }		
 		}
@@ -59,7 +59,7 @@ class Productomodel extends CI_Model {
 		FROM
 			esk_producto_almacen c 
 		WHERE
-			c cod_producto <> ''
+			c.cod_producto <> ''
 			".$queryfiltros." 
 		";
 
@@ -76,9 +76,9 @@ class Productomodel extends CI_Model {
 		FROM
 			esk_producto_almacen c 
 		WHERE
-			c cod_producto <> ''
+			c.cod_producto <> ''
 			".$queryfiltros." 
-		ORDER BY a.cod_producto 
+		ORDER BY c.cod_producto 
 		LIMIT 40000 OFFSET 0
 		";
 		
@@ -107,7 +107,7 @@ class Productomodel extends CI_Model {
 
 	public function get_producto_existencia($usuario = NULL, $parametros = NULL, $exportarodt = FALSE)
 	{
-		$this->dbmy = $this->load->database('oasisdb', TRUE);
+		$this->dbmy = $this->load->database('elalmacenwebdb', TRUE);
 		$driverconected = $this->dbmy->initialize();
 		if($driverconected != TRUE)
 			return FALSE;
@@ -131,25 +131,26 @@ class Productomodel extends CI_Model {
 			return $arreglo_reporte = FALSE;
 		}
 
-		$proveedores = '';
-		$proveedorarray = array();
-		$proveedorarray = $this->get_producto_proveedores($usuario, $cod_producto, FALSE);
-		foreach($proveedorarray as $key => $values)
-			$proveedores .= $values['cod_proveedor'] . ',';
+	//	$proveedores = '';
+	//	$proveedorarray = array();
+	//	$proveedorarray = $this->get_producto_proveedores($usuario, $cod_producto, FALSE);
+	//	foreach($proveedorarray as $key => $values)
+	//		$proveedores .= $values['cod_proveedor'] . ',';
 
 		// enviar lso detalles como texto enel query, todo junto mijo
 		// consulta de las exisstencia, a este le adoso los detalles tantas veces exista filas, todo en uno
 		$sqlexist = "
 			SELECT 
-				nom_sucursal, cod_sucursal, saldo_producto, cod_interno, txt_descripcion_larga, cod_msc, txt_referencia, 
+	/*			nom_sucursal, cod_sucursal, saldo_producto, cod_interno, des_producto, cod_msc, txt_referencia, 
 				dpto || ' ' || (select txt_descrip_dep from EXTDEPAT where cod_departamento=dpto LIMIT 1 OFFSET 0) as dpto, 
 				familia || ' ' || (select txt_familia FROM EXTFAMILIA where cod_departamento=dpto and cod_familia=familia LIMIT 1 OFFSET 0) as familia, 
 				clase || ' ' || (select descripcion FROM td_clase where cod_clase=clase LIMIT 1 OFFSET 0) as clase, 
-				'".$proveedores."' as proveedores, 
-				(select mto_precio as precio FROM ta_precio_producto c WHERE cod_interno = '".$cod_producto."' AND cod_precio = 0  ORDER BY fec_desde DESC LIMIT 1 OFFSET 0) as precio 
+				'"./*$proveedores.*/"' as proveedores, 
+				(select mto_precio as precio FROM ta_precio_producto c WHERE cod_interno = '".$cod_producto."' AND cod_precio = 0  ORDER BY fec_desde DESC LIMIT 1 OFFSET 0) as precio */
+				*
 			FROM
-				DBA.EXT2
-			WHERE
+				esk_producto_almacen
+/*			WHERE
 				cod_interno = '".$cod_producto."'
 				AND cod_msc IN (
 					SELECT 
@@ -160,7 +161,7 @@ class Productomodel extends CI_Model {
 						ta_usuario_sucursal ON tm_usuario.cod_usuario = ta_usuario_sucursal.cod_usuario
 					GROUP BY cod_msc1)
 			ORDER BY saldo_producto DESC  
-		 ";
+	*/	 ";
 		$query = $this->dbmy->query($sqlexist);	// sino devuelve el count pero en arreglo
 		$arreglo_rep = $query->result_array();
 		if(count($arreglo_rep) < 1)

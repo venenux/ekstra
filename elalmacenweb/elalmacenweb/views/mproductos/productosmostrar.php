@@ -22,7 +22,7 @@
 			foreach($productos_query as $rowproducto)
 			{
 				$rowproducto = array_slice($rowproducto, 1, 4);
-				$rowproducto['cod_interno'] = anchor('mproductos/oaproductos/existenciaproductos/'.$rowproducto['cod_interno'],$rowproducto['cod_interno']);
+				$rowproducto['cod_producto'] = anchor('mproductos/productomanager/existenciaproductos/'.$rowproducto['cod_interno'],$rowproducto['cod_interno']);
 				$productos_query[$row] = $rowproducto;
 				$row++;
 			}
@@ -43,7 +43,7 @@
 	echo form_fieldset_close() . PHP_EOL;
 
 	$htmlformaattributos = array('name'=>'formulariodescargacsv','onSubmit'=>'return validageneric(this);');
-	echo form_open('mproductos/oaproductos/descargar_en_csv', $htmlformaattributos) . PHP_EOL;
+	echo form_open('mproductos/productomanager/descargar_en_csv', $htmlformaattributos) . PHP_EOL;
 	echo form_submit('download_csv', 'Descargar en CSV', 'class="btn-primary btn"');
 	echo form_hidden('userurl',$this->userurl).PHP_EOL; // $this->input->get_post('userurl') url es una variable URL invocada'.PHP_EOL;
 	echo form_hidden('currenturl',$this->currenturl).PHP_EOL; // $currenturl es una variable ACTUAL'.PHP_EOL;
