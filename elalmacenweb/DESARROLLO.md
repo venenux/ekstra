@@ -8,7 +8,7 @@ Este documento le indicara instrucciones de como comenzar desarrollar y que usar
  * [2 Configurar tu entorno](#2-configurar-tu-entorno)
  * [3 clonar las fuentes](#3-clonar-las-fuentes)
  * [4 Cargar en Geany y ver en web](#4-cargar-en-geany-y-ver-en-web)
- * [5 Inicializar la base de datos](#inicializar-la-base-de-datos)
+ * [5 Inicializar la base de datos](#5-inicializar-la-base-de-datos)
 * [Estructura de desarrollo](#estructura-de-desarrollo)
  * [Modelo de datos y base de datos](#modelo-de-datos-y-base-de-datos)
  * [Codigo y fuentes](#codigo-y-fuentes)
@@ -105,9 +105,9 @@ si no es asi debe modificar el proyecto para que cumpla con su ruta:
 * en la variable `base_path=` cambiar la ruta de home `systemas` sustituya "systemas" por su usuario linux
 * borrar toda la seccion files si existiese y salvar el archivo
 
-5. Inicializar la base de datos
+### 5 Inicializar la base de datos
 
-En el directorio [elalmacenwebdb](elalmacenwebdb) esta el archivo `elalmacenwebdb.sql` cargar 
+**SCRIPT SQL**: En el directorio [elalmacenwebdb](elalmacenwebdb) esta el archivo `elalmacenwebdb.sql` cargar 
 esto en el servidor localhost de la maquina instalado en "localhost" y especificar o 
 corregir la conexcion en el archivo `ekstra/elalmacenweb/config/database.php` del grupo correspondiente "elalmacenwebdb".
 
@@ -117,6 +117,26 @@ echo "conectarse y debera ingresar su calve"
 mysql -u root -p -e 'CREATE SCHEMA elalmacenwebdb'`
 mysql -u root -p elalmacenwebdb < ekstra/elalmacenwebdb/elalmacenwebdb.sql
 ```
+
+**CREDENCIALES** despues hay que configurar para que el sistema webpueda conectarse a la db, 
+esto es en el directorio [elalmacenweb/config](elalmacenweb/config) en el archivo `database.php` 
+alli las conexiones a DB estan configuradas por grupos, el primer grupo es `elsistemawebdb` y 
+el nombre de cada grupo es el que se emplea para realizar uan conexcion en los archivos php.
+
+Alli debe colocar el usuario y contraseña asi como host correctos de la db, el archivo es autoexplicativo.
+Para iniciar uan conecion en un php dentro del framework sera asi:
+
+``` php
+	$dbmy = $this->load->database('oasisdb', TRUE);
+	$driverconected = $dbmy->initialize();
+	if($driverconected != TRUE)
+		return FALSE;
+	$queryprovprod = $dbmy->query("SELECT * FROM tabla");
+	$arreglo_reporte = $queryprovprod->result_array();
+```
+
+**IMPORTANTE** este codigo y las consultas deben realizarse en archivos php en el directorio `elalmacenweb/model`
+
 
 # Estructura de desarrollo
 ===========================
