@@ -75,11 +75,11 @@ COMMENT = 'que usuario puede usar que applicacion';
 
 
 -- -----------------------------------------------------
--- Table `elalmacenwebdb`.`esk_producto_almacen`
+-- Table `elalmacenwebdb`.`esk_productos`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `elalmacenwebdb`.`esk_producto_almacen` ;
+DROP TABLE IF EXISTS `elalmacenwebdb`.`esk_productos` ;
 
-CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_producto_almacen` (
+CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_productos` (
   `cod_producto` VARCHAR(40) NOT NULL COMMENT 'codigo de id del producto' ,
   `cod_alterno` VARCHAR(40) NOT NULL COMMENT 'producto relacionado' ,
   `des_producto` VARCHAR(40) NULL COMMENT 'descripcion del producto' ,
@@ -91,20 +91,19 @@ COMMENT = 'productos que estan en el almacen, es como uan copia del pro' /* comm
 
 
 -- -----------------------------------------------------
--- Table `elalmacenwebdb`.`esk_almacen_ubicacion_producto`
+-- Table `elalmacenwebdb`.`esk_almacen_producto`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `elalmacenwebdb`.`esk_almacen_ubicacion_producto` ;
+DROP TABLE IF EXISTS `elalmacenwebdb`.`esk_almacen_producto` ;
 
-CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_almacen_ubicacion_producto` (
+CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_almacen_producto` (
   `cod_ubicacion` VARCHAR(40) NOT NULL COMMENT 'posicion en que anden o andamio o lugar del almacen' ,
   `cod_producto` VARCHAR(40) NOT NULL COMMENT 'codigo del producto segun el ajuste' ,
   `can_producto` DECIMAL(20,2) NOT NULL DEFAULT 0 COMMENT 'directa la existencia en cada posicion del cada producto' ,
-  `des_anotacion` VARCHAR(40) NULL COMMENT 'opcional nota sobre colocar este producto en esta ubicacion' ,
   `sessionflag` VARCHAR(40) NULL COMMENT 'YYYYMMDDhhmmss.entidad.username quien altero' ,
   `sessionficha` VARCHAR(40) NULL COMMENT 'YYYYMMDDhhmmss.entidad.username quien lo creo' ,
   PRIMARY KEY (`cod_ubicacion`, `cod_producto`) )
 ENGINE = InnoDB
-COMMENT = 'ubicaciones de cada producto y cuanto de este';
+COMMENT = 'existencia y localizacion del producto en una sola tabla';
 
 
 -- -----------------------------------------------------
@@ -129,18 +128,24 @@ COMMENT = 'tipo de movimiento';
 DROP TABLE IF EXISTS `elalmacenwebdb`.`esk_almacen_ubicacion` ;
 
 CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_almacen_ubicacion` (
-  `cod_ubicacion` VARCHAR(40) NOT NULL COMMENT 'id de laubicaicon codigo' ,
-  `cod_almacen` VARCHAR(40) NOT NULL ,
-  `des_ubicacion` VARCHAR(40) NULL COMMENT 'identifiacion humnann o direccion entendible humana' ,
-  `estado_ubicacion` VARCHAR(40) NULL DEFAULT 'ACTIVA' COMMENT 'ACTIVA,INACTIVA - si inactiva es que quitaron ese andamio o repisa' ,
+  `cod_ubicacion` VARCHAR(40) NOT NULL COMMENT 'YYYYMMDDhhmmss el digo posicion es el de la suma de las columnas' ,
+  `cod_posicion` VARCHAR(40) NULL COMMENT 'dado no es fiable, es la suma separada por \"-\" de valores de columnas' ,
+  `estado_ubicacion` VARCHAR(40) NULL DEFAULT 'ACTIVA' COMMENT 'ACTIVA,INACTIVA - inactiva es que se elimino o cambio, pero no se puede borrar nunca para que se conserve historico en productos' ,
+  `cod_almacen` VARCHAR(40) NULL DEFAULT '000' COMMENT 'en que almacen esta esta posicion' ,
+  `cod_pasillo` VARCHAR(40) NULL DEFAULT '000' COMMENT 'identificacion del pasillo' ,
+  `cod_lado` VARCHAR(40) NULL DEFAULT '000' COMMENT 'identificacion o lado de el pasillo' ,
+  `cod_modulo` VARCHAR(40) NULL DEFAULT '9999999999999' COMMENT 'identificacion del andamio o mueble o modulo, 13 digitos' ,
+  `cod_altura` VARCHAR(40) NULL DEFAULT '000' COMMENT 'en que nivel del modulo' ,
+  `cod_area` VARCHAR(40) NULL DEFAULT 'ALM' COMMENT 'NOR,SUR,EST,OES,ALM - hacia que zona del almacen, ALM si no se define' ,
   `cor_mapa_x` VARCHAR(40) NULL COMMENT 'del mapa visto arriba eje x' ,
   `cor_mapa_y` VARCHAR(40) NULL COMMENT 'del mapa visto arriba eje y' ,
   `cor_mapa_z` VARCHAR(40) NULL COMMENT 'en mayor casos es el piso' ,
+  `ind_reparar` VARCHAR(40) NULL DEFAULT 'NO' COMMENT 'SI|NO - indicador si hay que corregir esta posicion por datos incorrectos' ,
   `sessionflag` VARCHAR(40) NULL COMMENT 'YYYYMMDDhhmmss.entidad.username quien altero' ,
   `sessionficha` VARCHAR(40) NULL COMMENT 'YYYYMMDDhhmmss.entidad.username quien lo creo' ,
-  PRIMARY KEY (`cod_ubicacion`, `cod_almacen`) )
+  PRIMARY KEY (`cod_ubicacion`) )
 ENGINE = InnoDB
-COMMENT = 'almacen  que ubicaciones tiene y su detalle de cada ubicacio' /* comment truncated */;
+COMMENT = 'las pociciones o ubicaciones del alamacen';
 
 
 -- -----------------------------------------------------
@@ -149,13 +154,12 @@ COMMENT = 'almacen  que ubicaciones tiene y su detalle de cada ubicacio' /* comm
 DROP TABLE IF EXISTS `elalmacenwebdb`.`esk_almacen_mapa` ;
 
 CREATE  TABLE IF NOT EXISTS `elalmacenwebdb`.`esk_almacen_mapa` (
-  `cod_almacen` VARCHAR(40) NOT NULL COMMENT 'enlazar con la entidad correspondiente de clase ALMACEN' ,
-  `map_almacen_piso` VARCHAR(40) NOT NULL DEFAULT 0 COMMENT 'señala si se inicializo o no, cero es que se tien q hacer inventario' ,
-  `map_almacen_file` TEXT NOT NULL DEFAULT NULL COMMENT 'ruta de la imagen del mapa' ,
-  `des_almacen_piso` VARCHAR(40) NULL COMMENT 'nombre del almacen, si tiene varios pisos el mismo nombre' ,
+  `cod_almacen` VARCHAR(40) NOT NULL COMMENT 'id sello o que se yo, enlazar con la entidad correspondiente de clase ALMACEN' ,
+  `map_almacen` TEXT NOT NULL DEFAULT NULL COMMENT 'ruta de la imagen del mapa, incluyendo todos los pisos, imagen grande' ,
+  `des_almacen` VARCHAR(40) NULL COMMENT 'nombre del almacen' ,
   `sessionficha` VARCHAR(40) NULL DEFAULT NULL ,
   `sessionflag` VARCHAR(40) NULL DEFAULT NULL ,
-  PRIMARY KEY (`cod_almacen`, `map_almacen_piso`, `map_almacen_file`) )
+  PRIMARY KEY (`cod_almacen`, `map_almacen`) )
 COMMENT = 'de el almacen, cada mapa de cada piso.. ';
 
 
