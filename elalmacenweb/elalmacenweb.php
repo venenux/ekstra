@@ -72,7 +72,7 @@ if (defined('ENVIRONMENT'))
  * NO TRAILING SLASH!
  *
  */
-	$application_folder = 'elalmacenwebweb';
+	$application_folder = 'elalmacenweb';
 	$upload_folder = 'elalmacenwebarchivos';
 	$views_folder = 'views';
 
