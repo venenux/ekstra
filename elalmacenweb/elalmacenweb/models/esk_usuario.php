@@ -1,12 +1,12 @@
 <?php 
 /**
- * yan_usuario.php
+ * esk_usuario.php
  * 
  * abstraccion para obtener datos de usuario en codeigniter
  *
  * tabla y campos
- * * yan_usuario(ficha,username,userclave,)
- * * yan_usuario_modulo(username, cod_perfil)
+ * * esk_usuario(ficha,username,userclave,)
+ * * esk_usuario_modulo(username, cod_perfil)
  *
  * objeto sesion manejado
  * * ci_session:
@@ -19,7 +19,7 @@
  * it under the terms of the GNU General Public License v3 or any other.
  * 
  */
-class Yan_usuario extends CI_Model 
+class Esk_usuario extends CI_Model 
 {
 
 	public $db1;
@@ -27,7 +27,7 @@ class Yan_usuario extends CI_Model
 	public function __construct() 
 	{
 		parent::__construct();
-		$this->db1 = $this->load->database('elyanerodb', TRUE);
+		$this->db1 = $this->load->database('elalmacenwebdb', TRUE);
 	}
 
 	/**
@@ -43,7 +43,7 @@ class Yan_usuario extends CI_Model
 	{
 		$clavelen = strlen($clavename);
 	
-		$this->db1 = $this->load->database('elyanerodb', TRUE);
+		$this->db1 = $this->load->database('elalmacenwebdb', TRUE);
 
 		// determino que es lo que se pide un usuario en todo perfil o todos los usuarios
 		if ( trim($username) != '*' AND trim($username) != '' AND $clavelen != 32 )
@@ -59,7 +59,7 @@ class Yan_usuario extends CI_Model
 		// primero cuento cuantos hay en la misma entidad // TODO hacer join con las entidades asociadas
 		$sqldbusuarios1c = "
 			SELECT count(*) as cuantos 
-			FROM elyanerodb.`yan_usuario` 
+			FROM elalmacenwebdb.`esk_usuario` 
 			WHERE ( ".$queryfiltro1." ) AND `username` <> '' LIMIT 1 OFFSET 0";
 		$querydbusuarios1c = $this->db1->query($sqldbusuarios1c);
 		// el resultado es el mismo usuario repetido tantas entidades tenga asociada, esto se cuenta cuantos hay
@@ -67,17 +67,17 @@ class Yan_usuario extends CI_Model
 		$cuantos = $resultobjusuario['cuantos'];
 		// una vez el numero, se inserta como parte del sql para que se vaya en el arreglo de respuesta
 		$sqldbusuarios2u = "
-			SELECT ".$cuantos." as cuantos,`yan_usuario`.* 
-			FROM elyanerodb.`yan_usuario` 
+			SELECT ".$cuantos." as cuantos,`esk_usuario`.* 
+			FROM elalmacenwebdb.`esk_usuario` 
 			WHERE ( ".$queryfiltro1." ) AND `username` <> '' ";
 		$querydbusuarios2u = $this->db1->query($sqldbusuarios2u);	// sino devuelve el count pero en arreglo
 
 		if ( $cuantos < 1 ) 
-			$yan_usuarios_result = $querydbusuarios1c->result_array();	// pero solo si hay 1 o mas
+			$esk_usuarios_result = $querydbusuarios1c->result_array();	// pero solo si hay 1 o mas
 		else
-			$yan_usuarios_result = $querydbusuarios2u->result_array();
+			$esk_usuarios_result = $querydbusuarios2u->result_array();
 
-		return $yan_usuarios_result;	// devuelve un arreglo y el primer elemento del elemento '0' es 'cuantos'
+		return $esk_usuarios_result;	// devuelve un arreglo y el primer elemento del elemento '0' es 'cuantos'
 	}
 
 	/**
@@ -94,8 +94,8 @@ class Yan_usuario extends CI_Model
 		if($datauser == NULL OR $filter == NULL)
 			return false;
 
-		$this->db1 = $this->load->database('elyanerodb', TRUE);
-		$sqluser = $this->db1->update_string('yan_usuario', $datauser, $filter);
+		$this->db1 = $this->load->database('elalmacenwebdb', TRUE);
+		$sqluser = $this->db1->update_string('esk_usuario', $datauser, $filter);
 		$queryrst = $this->db1->query($sqluser);
 		return $queryrst;
     }
@@ -109,13 +109,13 @@ class Yan_usuario extends CI_Model
 	 */
 	public function getuserinfo($username)
 	{
-		$this->db1 = $this->load->database('elyanerodb', TRUE);
+		$this->db1 = $this->load->database('elalmacenwebdb', TRUE);
 
 		$queryfiltro1 = " `username`='".$username."' ";
 		// primero cuento cuantos hay en la misma entidad // TODO hacer join con las entidades asociadas
 		$sqldbusuarios1c = "
 			SELECT count(*) as cuantos 
-			FROM elyanerodb.`yan_usuario` 
+			FROM elalmacenwebdb.`esk_usuario` 
 			WHERE ( ".$queryfiltro1." ) AND `username` <> '' ";
 		$querydbusuarios1c = $this->db1->query($sqldbusuarios1c);
 		// el resultado es el mismo usuario repetido tantas entidades tenga asociada, esto se cuenta cuantos hay
@@ -124,16 +124,16 @@ class Yan_usuario extends CI_Model
 		// una vez el numero, se inserta como parte del sql para que se vaya en el arreglo de respuesta
 		$sqldbusuarios2u = "
 			SELECT ".$cuantos." as unicidad,`ficha`,`username`,`cod_nivel`,`ses_ip`,`sessionlast` 
-			FROM elyanerodb.`yan_usuario` 
+			FROM elalmacenwebdb.`esk_usuario` 
 			WHERE ( ".$queryfiltro1." ) AND `username` <> '' ";
 		$querydbusuarios2u = $this->db1->query($sqldbusuarios2u);	// sino devuelve el count pero en arreglo
 
 		if ( $cuantos < 1 )
-			$yan_usuarios_result = $querydbusuarios1c->result_array();	// pero solo si hay 1 o mas
+			$esk_usuarios_result = $querydbusuarios1c->result_array();	// pero solo si hay 1 o mas
 		else
-			$yan_usuarios_result = $querydbusuarios2u->result_array();
+			$esk_usuarios_result = $querydbusuarios2u->result_array();
 
-		return $yan_usuarios_result;	// devuelve un arreglo y el primer elemento del elemento '0' es 'cuantos'
+		return $esk_usuarios_result;	// devuelve un arreglo y el primer elemento del elemento '0' es 'cuantos'
 	}
 
 	/**
@@ -143,7 +143,7 @@ class Yan_usuario extends CI_Model
 	 */
 	public function getpermisos($controlador = "none")
 	{
-		$this->db1 = $this->load->database('elyanerodb', TRUE);
+		$this->db1 = $this->load->database('elalmacenwebdb', TRUE);
 		$queryfiltro1 = "";
 
 		// para saber si encontro el controlador y devolver null
@@ -179,7 +179,7 @@ class Yan_usuario extends CI_Model
 
 		$sqldbusuarios1c = "
 			SELECT *
-			FROM elyanerodb.`adm_acceso`
+			FROM elalmacenwebdb.`adm_acceso`
 			WHERE 1=1 AND ".$queryfiltro1." ";
 		$querydbusuarios1c = $this->db1->query($sqldbusuarios1c);
 
@@ -203,7 +203,7 @@ class Yan_usuario extends CI_Model
 	 */
 	public function getmenuaindex()
 	{
-		$this->db1 = $this->load->database('elyanerodb', TRUE);
+		$this->db1 = $this->load->database('elalmacenwebdb', TRUE);
 		$queryfiltro1 = "";
 
 		$this->load->library('encrypt');
@@ -219,10 +219,10 @@ class Yan_usuario extends CI_Model
 		}
 		else
 			return FALSE;
-		// TODO: SELECT * FROM elyanerodb.sys_menu; TODO: pendiente
+		// TODO: SELECT * FROM elalmacenwebdb.sys_menu; TODO: pendiente
 		$sqldbusuarios1c = "
 			SELECT * 
-			FROM elyanerodb.adm_acceso 
+			FROM elalmacenwebdb.adm_acceso 
 			WHERE nam_acceso LIKE '%aindex%' AND `username` = '".$username. "' 
 			ORDER BY des_acceso";
 		$querydbusuarios1c = $this->db1->query($sqldbusuarios1c);
@@ -257,14 +257,14 @@ class Yan_usuario extends CI_Model
 		$numeroparametros = count($parametros);
 		if ( $numeroparametros < 2 )
 			return TRUE;
-		$this->db1 = $this->load->database('elyanerodb', TRUE);
-		$sqldbusuario = "SELECT count(username) as existe FROM elyanerodb.yan_usuario WHERE username = '".$username."'";
+		$this->db1 = $this->load->database('elalmacenwebdb', TRUE);
+		$sqldbusuario = "SELECT count(username) as existe FROM elalmacenwebdb.esk_usuario WHERE username = '".$username."'";
 		$querydbusuario = $this->db1->query($sqldbusuario);
 		$queryexiste = $querydbusuario->row()->existe; 
 		if ( (int)$queryexiste == 0 )
-			$sqldbusuario = $this->db1->insert_string("elyanerodb.yan_usuario", $parametros);
+			$sqldbusuario = $this->db1->insert_string("elalmacenwebdb.esk_usuario", $parametros);
 		else
-			$sqldbusuario = $this->db1->update_string("elyanerodb.yan_usuario", $parametros, "username = '".$username."'");
+			$sqldbusuario = $this->db1->update_string("elalmacenwebdb.esk_usuario", $parametros, "username = '".$username."'");
 		$rsdbusuario = $this->db1->query($sqldbusuario);
 		if($rsdbusuario === TRUE)
 			return TRUE;
@@ -313,7 +313,7 @@ class Yan_usuario extends CI_Model
 			if ( $parametros != '' and !empty($parametros) )
 				$username = $parametros;
 		}
-		$this->db1 = $this->load->database('elyanerodb', TRUE);
+		$this->db1 = $this->load->database('elalmacenwebdb', TRUE);
 		// armarndo consulta sql parcial de los filtros
 		$queryfiltros = "";
 		if( !is_array($username) )
@@ -378,9 +378,9 @@ class Yan_usuario extends CI_Model
 				us.sessionflag,
 				us.sessionficha
 			FROM 
-				elyanerodb.yan_usuario AS us
+				esk_usuario AS us
 			LEFT JOIN 
-				elyanerodb.adm_localidad as lo
+				adm_localidad as lo
 			ON 
 				us.origen = lo.cod_localidad
 			WHERE 

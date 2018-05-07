@@ -20,7 +20,7 @@ class Login
 
 
 	/**
-	 * validation user credentials, instancia el modelo yan_usuario y verifica las credenciales en db
+	 * validation user credentials, instancia el modelo esk_usuario y verifica las credenciales en db
 	 *
 	 * @access	public
 	 * @param	string    usuaername o ficha
@@ -41,8 +41,8 @@ class Login
 
 		$usuario = array('cuantos' => 0);
 		log_message('info', 'Usuario access ' . $user_email . ' from '.$this->CI->input->ip_address());
-		$this->CI->load->model('yan_usuario');
-		$usuarios = $this->CI->yan_usuario->getusuario($user_email, $user_pass);
+		$this->CI->load->model('esk_usuario');
+		$usuarios = $this->CI->esk_usuario->getusuario($user_email, $user_pass);
 
 		if( is_array($usuarios) )
 			$usuario = $usuarios[0];
@@ -68,7 +68,7 @@ class Login
 		$datauser['ses_ip'] = $this->CI->input->ip_address();
 		$datauser['ses_cookie'] = $this->CI->session->userdata('session_id');
 		$datauser['sessionflag'] = date('YmdHis').'.'.$this->CI->input->ip_address();
-		$permited = $this->CI->yan_usuario->updusuario($datauser, $filter);
+		$permited = $this->CI->esk_usuario->updusuario($datauser, $filter);
 		if($permited != TRUE OR $permited == 0)
 			return 0;//false es cero universalmente
 		log_message('info', 'Usuario session ' . $user_email . '/'.$usuario['username'].' - '.$this->CI->input->ip_address());
@@ -101,8 +101,8 @@ class Login
 			$datauser['ses_ip'] = '';
 			$datauser['ses_cookie'] = '';
 			$datauser['sessionlast'] = date('YmdHis').'.'.$this->CI->input->ip_address();
-			$this->CI->load->model('yan_usuario');
-			$permited = $this->CI->yan_usuario->updusuario($datauser, $filter);
+			$this->CI->load->model('esk_usuario');
+			$permited = $this->CI->esk_usuario->updusuario($datauser, $filter);
 		}
 		log_message('info', 'Usuario logout ' . $user_email . '='.$permited.' from '.$this->CI->input->ip_address());
 	}
@@ -135,8 +135,8 @@ class Login
 			return 0;
 		$user_pass = $userclave;
 
-		$this->CI->load->model('yan_usuario');
-		$usuarios = $this->CI->yan_usuario->getusuario($user_email, $user_pass);
+		$this->CI->load->model('esk_usuario');
+		$usuarios = $this->CI->esk_usuario->getusuario($user_email, $user_pass);
 
 		if( is_array($usuarios) )
 			$usuario = $usuarios[0];
@@ -149,7 +149,7 @@ class Login
             $datauser['ses_ip'] = $this->CI->input->ip_address();
             $datauser['ses_cookie'] = $this->CI->session->userdata('session_id');
             $datauser['sessionflag'] = date('YmdHis').'.'.$this->CI->input->ip_address();
-            $permited = $this->CI->yan_usuario->updusuario($datauser, $filter);
+            $permited = $this->CI->esk_usuario->updusuario($datauser, $filter);
             log_message('info', 'Usuario session ' . $user_email . '/'.$username.' from '.$this->CI->input->ip_address());
             return 1;
     }
@@ -220,10 +220,10 @@ class Login
 		if($user_email != null)
 			$user_email = str_replace(' ', '', $user_email);
 
-		$this->CI->load->model('yan_usuario');
+		$this->CI->load->model('esk_usuario');
 
         log_message('info', 'Usuario info ' . $user_email . ' from '.$this->CI->input->ip_address());
-        $usuarios = $this->CI->yan_usuario->getuserinfo($user_email);
+        $usuarios = $this->CI->esk_usuario->getuserinfo($user_email);
         if( !is_array($usuarios) )
             return 'sin informacion';
 

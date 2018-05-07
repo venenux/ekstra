@@ -59,7 +59,7 @@ find /home/systemas/Devel/ -type f -exec chmod 664 {} ";"
 find /home/systemas/Devel/ -type d -exec chmod 775 {} ";"
 ```
 
-Despues para verificar navegar a "http://127.0.0.1/Devel" y revisar.
+Despues para verificar navegar a "http://127.0.0.1/Devel" y deveria cargar unos directorios y aparecer el del proyecto.
 
 **IMPORTANTE** Asumiendo que su usuario es `systemas`, los dos ultimos comandos como root.
 
@@ -109,7 +109,14 @@ si no es asi debe modificar el proyecto para que cumpla con su ruta:
 
 En el directorio [elalmacenwebdb](elalmacenwebdb) esta el archivo `elalmacenwebdb.sql` cargar 
 esto en el servidor localhost de la maquina instalado en "localhost" y especificar o 
-corregir la conexcion en el archivo `ekstra/elalmacenwebweb/config/database.php` del grupo correspondiente "elalmacenwebdb".
+corregir la conexcion en el archivo `ekstra/elalmacenweb/config/database.php` del grupo correspondiente "elalmacenwebdb".
+
+``` bash
+su
+echo "conectarse y debera ingresar su calve"
+mysql -u root -p -e 'CREATE SCHEMA elalmacenwebdb'`
+mysql -u root -p elalmacenwebdb < ekstra/elalmacenwebdb/elalmacenwebdb.sql
+```
 
 # Estructura de desarrollo
 ===========================
