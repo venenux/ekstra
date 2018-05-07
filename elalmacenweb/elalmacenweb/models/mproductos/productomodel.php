@@ -1,13 +1,12 @@
 <?php
 /* @Autor:Tyrone Lucero
- * @Descripción: Modelo para acceder a base de datos Oasis y hacer 
- *               consultas de busquedas sobre productos
+ * @Descripción: Modelo para consultas de busquedas sobre productos
  * @Fecha: 22 febrero 2018
  */ 
-class oaproductosmodel extends CI_Model {
+class Productomodel extends CI_Model {
 
-	public $dbmy;
-	public $dboa;
+	public $dbmy; // cargar el conex aqui la conex principal.. 
+	public $dboa; // cargar otra conex a otra db aqui
 
 	public function __construct() 
 	{
@@ -27,8 +26,8 @@ class oaproductosmodel extends CI_Model {
 	 */
 	public function get_producto_simple($usuario = NULL, $parametros = NULL, $exportarodt = FALSE)
 	{
-		$this->dboa = $this->load->database('oasisdb', TRUE);
-		$driverconected = $this->dboa->initialize();
+		$this->dbmy = $this->load->database('elalmacenwebdb', TRUE);
+		$driverconected = $this->dbmy->initialize();
 		if($driverconected != TRUE)
 			return FALSE;
 
@@ -36,20 +35,20 @@ class oaproductosmodel extends CI_Model {
 		if( $parametros != NULL)
 		{
 			if( !is_array($parametros) )
-			$queryfiltros=	" and txt_descripcion_larga like '%".$parametros."%' ";
+			$queryfiltros=	" and des_producto like '%".$parametros."%' ";
 			else
 			{	
 				if( array_key_exists('txt_referencia',$parametros))
 				{
 					$txt_referencia = $parametros['txt_referencia'];
-					$txt_referencia = $this->dboa->escape_srt($txt_referencia,TRUE);
+					$txt_referencia = $this->dbmy->escape_srt($txt_referencia,TRUE);
 					$queryfiltros = " and txt_referencia like '%".$txt_referencia."%' ";
 				}
-				if( array_key_exists('txt_descripcion_larga',$parametros))
+				if( array_key_exists('des_producto',$parametros))
 				{
-					$txt_descripcion_larga = $parametros['txt_descripcion_larga'];
-					$txt_descripcion_larga = $this->dboa->escape_str($txt_descripcion_larga,TRUE);
-					$queryfiltros = " and txt_descripcion_larga like '%".$txt_descripcion_larga."%' ";
+					$txt_descripcion_larga = $parametros['des_producto'];
+					$txt_descripcion_larga = $this->dbmy->escape_str($txt_descripcion_larga,TRUE);
+					$queryfiltros = " and des_producto like '%".$txt_descripcion_larga."%' ";
 				}
 		  }		
 		}
@@ -58,17 +57,13 @@ class oaproductosmodel extends CI_Model {
 		SELECT 
 			count(*) as cuantos 
 		FROM
-			tv_existencia a, tv_producto b, ta_proveedor_producto c 
+			esk_producto_almacen c 
 		WHERE
-			a.cod_interno = b.cod_interno 
-			AND a.cod_interno = c.cod_interno 
-			AND cod_proveedor='000000000000' 
-			and cod_sucursal='79'  
-			and almacen='0'  
+			c cod_producto <> ''
 			".$queryfiltros." 
 		";
 
-		$querydbusuarios1c = $this->dboa->query($sqlprimerocuenta);
+		$querydbusuarios1c = $this->dbmy->query($sqlprimerocuenta);
 		$resultchequeo = $querydbusuarios1c->result();
 		foreach ($resultchequeo  as $row)
 			$cuantos = $row->cuantos;
@@ -76,24 +71,18 @@ class oaproductosmodel extends CI_Model {
 		$sqlsegundotraer = "
 		SELECT 
 			".$cuantos." as resultado,
-			a.cod_interno as cod_interno, 
-			txt_descripcion_larga, 
-			txt_referencia, 
-			(select mto_precio as precio FROM ta_precio_producto c WHERE cod_interno = a.cod_interno AND cod_precio = 0  ORDER BY fec_desde DESC LIMIT 1 OFFSET 0) as precio 
+			c.cod_producto,
+			c.des_producto
 		FROM
-			tv_existencia a, tv_producto b, ta_proveedor_producto c 
+			esk_producto_almacen c 
 		WHERE
-			a.cod_interno = b.cod_interno 
-			AND a.cod_interno = c.cod_interno 
-			AND cod_proveedor='000000000000'  
-			and cod_sucursal='79' 
-			and almacen='0'  
+			c cod_producto <> ''
 			".$queryfiltros." 
-		ORDER BY a.cod_interno 
+		ORDER BY a.cod_producto 
 		LIMIT 40000 OFFSET 0
 		";
 		
-		$querydbusuarios2u = $this->dboa->query($sqlsegundotraer);	// sino devuelve el count pero en arreglo
+		$querydbusuarios2u = $this->dbmy->query($sqlsegundotraer);	// sino devuelve el count pero en arreglo
 		$arreglo_reporte = $querydbusuarios2u->result_array();
 
 		if($cuantos < 0)
@@ -118,8 +107,8 @@ class oaproductosmodel extends CI_Model {
 
 	public function get_producto_existencia($usuario = NULL, $parametros = NULL, $exportarodt = FALSE)
 	{
-		$this->dboa = $this->load->database('oasisdb', TRUE);
-		$driverconected = $this->dboa->initialize();
+		$this->dbmy = $this->load->database('oasisdb', TRUE);
+		$driverconected = $this->dbmy->initialize();
 		if($driverconected != TRUE)
 			return FALSE;
 
@@ -172,7 +161,7 @@ class oaproductosmodel extends CI_Model {
 					GROUP BY cod_msc1)
 			ORDER BY saldo_producto DESC  
 		 ";
-		$query = $this->dboa->query($sqlexist);	// sino devuelve el count pero en arreglo
+		$query = $this->dbmy->query($sqlexist);	// sino devuelve el count pero en arreglo
 		$arreglo_rep = $query->result_array();
 		if(count($arreglo_rep) < 1)
 			return $arreglo_rep = FALSE;
@@ -191,10 +180,10 @@ class oaproductosmodel extends CI_Model {
 
 	public function get_producto_proveedores($usuario = NULL, $parametros = NULL, $exportarodt = FALSE)
 	{
-		$driverconected = $this->dboa->initialize();
+		$driverconected = $this->dbmy->initialize();
 		if($driverconected != TRUE)
 		{
-			$this->dboa = $this->load->database('oasisdb', TRUE);
+			$this->dbmy = $this->load->database('oasisdb', TRUE);
 			if($driverconected != TRUE)
 				return FALSE;
 		}
@@ -221,7 +210,7 @@ class oaproductosmodel extends CI_Model {
 		$sqltest = "
 			SELECT * FROM ProveedorEmpaque where cod_interno='".$cod_producto."';
 		 ";
-		$queryprovprod = $this->dboa->query($sqltest);
+		$queryprovprod = $this->dbmy->query($sqltest);
 		$arreglo_reporte = $queryprovprod->result_array();
 		if(count($arreglo_reporte) < 1)
 			return $arreglo_reporte = array('0'=>'No hay asociados');

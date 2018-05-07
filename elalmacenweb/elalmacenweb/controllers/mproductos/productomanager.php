@@ -1,11 +1,11 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
- * Oaproductos elyanero Controller Class de busqueda de productos
+ * Productomanager elyanero Controller Class de busqueda de productos
  * 
  * @author		PICCORO Lenz McKAY
  */
-class Oaproductos extends YA_Controller {
+class Productomanager extends YA_Controller {
 
 	function __construct()
 	{
@@ -17,22 +17,8 @@ class Oaproductos extends YA_Controller {
 	public function index()
 	{
 		$data = array();
-		        //path to directory to scan
-$directory = APPPATH.'/controllers/';
- 
-//get all image files with a .jpg extension.
-$images = glob($directory . "*");
-$arraymodulesdetected = array();
-//print each file name
-foreach($images as $image)
-{
-	if(is_dir($image))
-array_push($arraymodulesdetected, str_replace($directory, '', $image));
-}
-echo print_r($arraymodulesdetected,TRUE);
-
-
-		$this->render('mproductos/oaproductosindex',$data);
+		$data['menusub'] = $this->genmenu('mproductos');
+		$this->render('mproductos/productomanagerindex',$data);
 	}
 
 	/**
@@ -60,7 +46,7 @@ echo print_r($arraymodulesdetected,TRUE);
 		if( $renderdata!==TRUE )
 		{
 			$data = array();
-			$this->render('mproductos/oaproductosindex',$data); // invalid se vuelve al formulario
+			$this->render('mproductos/Productomanagerindex',$data); // invalid se vuelve al formulario
 			return;
 		}
 
@@ -70,15 +56,16 @@ echo print_r($arraymodulesdetected,TRUE);
 		if ($txt_descripcion_larga != '')
 			$parametros['txt_descripcion_larga']=$txt_descripcion_larga;
 
-		$this->load->model('mproductos/oaproductosmodel');
-		$productos_query=$this->oaproductosmodel->get_producto_simple(null,$parametros,FALSE);
+		$this->load->model('mproductos/Productomanagermodel');
+		$productos_query=$this->Productomanagermodel->get_producto_simple(null,$parametros,FALSE);
 
 		$data['txt_descripcion_larga']=$txt_descripcion_larga;
 		$data['txt_referencia']=$txt_referencia;
 		$data['productos_query']=$productos_query;
 
-		$render['1']='mproductos/oaproductosindex';
-		$render['2']='mproductos/oaproductosmostrar';
+		$data['menusub'] = $this->genmenu('mproductos');
+		$render['1']='mproductos/Productomanagerindex';
+		$render['2']='mproductos/Productomanagermostrar';
 
 		$this->render($render,$data); // abajo se muestra los resultados
 	}
@@ -110,17 +97,17 @@ echo print_r($arraymodulesdetected,TRUE);
 		if( $renderdata!==TRUE )
 		{
 			$data = array();
-			$this->render('mproductos/oaproductosindex',$data); // invalid se vuelve al formulario
+			$this->render('mproductos/Productomanagerindex',$data); // invalid se vuelve al formulario
 			return;
 		}
 
 		$this->load->library('sys'); // aqui en esta lib llenar el codigo de compeltar ceros y llamarlo
 		$cod_producto = $this->sys->completar_codigo($cod_producto);
 
-		$this->load->model('mproductos/oaproductosmodel'); // yo llenare el modelo, $parametros debe tener el codigo y debe ser arreglo
+		$this->load->model('mproductos/Productomanagermodel'); // yo llenare el modelo, $parametros debe tener el codigo y debe ser arreglo
 		$parametros['cod_producto']=$cod_producto;
 
-		$productos_detalle=$this->oaproductosmodel->get_producto_existencia(null,$parametros,FALSE);
+		$productos_detalle=$this->Productomanagermodel->get_producto_existencia(null,$parametros,FALSE);
 		if( $productos_detalle === FALSE OR $productos_detalle == 0)
 			$infodata = "No se pudo consultar OP, problemas con la conexcion intentar mas tarde";
 		else if( $productos_detalle  === NULL )
@@ -138,13 +125,14 @@ echo print_r($arraymodulesdetected,TRUE);
 		$data['cod_producto']=$cod_producto;
 		$data['productosarreglo']=$infodata;
 
-		$render['1']='mproductos/oaproductosindex';
-		$render['2']='mproductos/oaproductosexistencia';
+		$data['menusub'] = $this->genmenu('mproductos');
+		$render['1']='mproductos/productomanagerindex';
+		$render['2']='mproductos/productomanagerexistencia';
 		$this->render($render,$data); // abajo se muestra los resultados
 	}
 
 
 }
 
-/* End of file oaproductos.php */
-/* Location: ./application/controllers/oaproductos.php */
+/* End of file Productomanager.php */
+/* Location: ./application/controllers/Productomanager.php */
