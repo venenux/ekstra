@@ -98,70 +98,48 @@ class Productomodel extends CI_Model {
 
 
 	/**
-	 * Devuyelve la existencia de un producto consultado  por codigo
+	 * Devuelve la existencia y en que posicion de todos los productos en cada una de las posiciones
 	 *
 	 * @param       string  $usuario    nombre del usaurio intranet de la sesion que ejecuta la consulta
 	 * @param       array/string  $parametros   $cod_producto como arreglo
 	 * @return      array   array( )
 	 */
 
-	public function get_producto_existencia($usuario = NULL, $parametros = NULL, $exportarodt = FALSE)
+	public function get_producto_existencia_posicion($usuario = NULL, $parametros = NULL, $exportarodt = FALSE, $porposicion = TRUE)
 	{
 		$this->dbmy = $this->load->database('elalmacenwebdb', TRUE);
 		$driverconected = $this->dbmy->initialize();
 		if($driverconected != TRUE)
 			return FALSE;
 
-		if( $parametros != NULL)
-		{
-			if( !is_array($parametros) )
-			{
-				$cod_producto =$parametros;
-			}
-			else
-			{	
-				if( array_key_exists('cod_producto',$parametros))
-					$cod_producto = $parametros['cod_producto'];
-				else
-					return $arreglo_reporte = FALSE;
-			}
-		}
+		if(!$porposicion)
+			$canprodcolum = "'en todos' as cod_posicion, a.can_producto";
 		else
-		{
-			return $arreglo_reporte = FALSE;
-		}
+			$canprodcolum = "e.des_almacen , SUM(a.can_producto) as can_producto";
 
-	//	$proveedores = '';
-	//	$proveedorarray = array();
-	//	$proveedorarray = $this->get_producto_proveedores($usuario, $cod_producto, FALSE);
-	//	foreach($proveedorarray as $key => $values)
-	//		$proveedores .= $values['cod_proveedor'] . ',';
-
-		// enviar lso detalles como texto enel query, todo junto mijo
-		// consulta de las exisstencia, a este le adoso los detalles tantas veces exista filas, todo en uno
 		$sqlexist = "
 			SELECT 
-	/*			nom_sucursal, cod_sucursal, saldo_producto, cod_interno, des_producto, cod_msc, txt_referencia, 
-				dpto || ' ' || (select txt_descrip_dep from EXTDEPAT where cod_departamento=dpto LIMIT 1 OFFSET 0) as dpto, 
-				familia || ' ' || (select txt_familia FROM EXTFAMILIA where cod_departamento=dpto and cod_familia=familia LIMIT 1 OFFSET 0) as familia, 
-				clase || ' ' || (select descripcion FROM td_clase where cod_clase=clase LIMIT 1 OFFSET 0) as clase, 
-				'"./*$proveedores.*/"' as proveedores, 
-				(select mto_precio as precio FROM ta_precio_producto c WHERE cod_interno = '".$cod_producto."' AND cod_precio = 0  ORDER BY fec_desde DESC LIMIT 1 OFFSET 0) as precio */
-				*
+				p.cod_codigo, 
+				p.des_producto,
+				b.cod_posicion,
+				".$canprodcolum."
 			FROM
-				esk_producto_almacen
-/*			WHERE
-				cod_interno = '".$cod_producto."'
-				AND cod_msc IN (
-					SELECT 
-						ta_usuario_sucursal.cod_msc AS cod_msc1
-					FROM
-						tm_usuario
-					JOIN
-						ta_usuario_sucursal ON tm_usuario.cod_usuario = ta_usuario_sucursal.cod_usuario
-					GROUP BY cod_msc1)
-			ORDER BY saldo_producto DESC  
-	*/	 ";
+				esk_almacen_producto AS a
+				LEFT JOIN
+					esk_almacen_ubicacion AS b
+				ON 
+					a.cod_ubicacion = b.cod_ubicacion
+				LEFT JOIN
+					esk_productos AS p 
+				ON 
+					a.cod_producto = p.cod_producto
+				LEFT JOIN
+					esk_almacen_mapa AS e
+				ON
+					e.cod_entidad = b.cod_entidad
+			ORDER BY
+				p.cod_codigo ASC, b.cod_ubicacion ASC
+		 ";
 		$query = $this->dbmy->query($sqlexist);	// sino devuelve el count pero en arreglo
 		$arreglo_rep = $query->result_array();
 		if(count($arreglo_rep) < 1)
@@ -172,52 +150,17 @@ class Productomodel extends CI_Model {
 	}
 
 	/**
-	 * Devuyelve la existencia de un producto consultado  por codigo
+	 * Devuelve la existencia y en que almacen de todos los productos en todas las posiciones
 	 *
 	 * @param       string  $usuario    nombre del usaurio intranet de la sesion que ejecuta la consulta
 	 * @param       array/string  $parametros   $cod_producto como arreglo
 	 * @return      array   array( )
 	 */
 
-	public function get_producto_proveedores($usuario = NULL, $parametros = NULL, $exportarodt = FALSE)
+	public function get_producto_existencia_almacen($usuario = NULL, $parametros = NULL, $exportarodt = FALSE)
 	{
-		$driverconected = $this->dbmy->initialize();
-		if($driverconected != TRUE)
-		{
-			$this->dbmy = $this->load->database('oasisdb', TRUE);
-			if($driverconected != TRUE)
-				return FALSE;
-		}
-
-		if( $parametros != NULL)
-		{
-			if( !is_array($parametros) )
-			{
-				$cod_producto =$parametros;
-			}
-			else
-			{	
-				if( array_key_exists('cod_producto',$parametros))
-					$cod_producto = $parametros['cod_producto'];
-				else
-					return $arreglo_reporte = array('0'=>array('cuantos'=>0));
-			}
-		}
-		else
-		{
-			return $arreglo_reporte = array('0'=>array('cuantos'=>0));
-		}
-
-		$sqltest = "
-			SELECT * FROM ProveedorEmpaque where cod_interno='".$cod_producto."';
-		 ";
-		$queryprovprod = $this->dbmy->query($sqltest);
-		$arreglo_reporte = $queryprovprod->result_array();
-		if(count($arreglo_reporte) < 1)
-			return $arreglo_reporte = array('0'=>'No hay asociados');
-		else
-			return $arreglo_reporte;
-
+		$arreglo_rep = $this->get_producto_existencia_posicion($usuario,$parametros,$exportarodt,FALSE)
+		return $arreglo_rep;
 	}
 
 }
