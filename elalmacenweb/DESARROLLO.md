@@ -59,7 +59,9 @@ find /home/systemas/Devel/ -type f -exec chmod 664 {} ";"
 find /home/systemas/Devel/ -type d -exec chmod 775 {} ";"
 ```
 
-Despues para verificar navegar a "http://127.0.0.1/Devel" y deveria cargar unos directorios y aparecer el del proyecto.
+Despues para verificar navegar a "http://127.0.0.1/Devel" 
+y deberia cargar unos directorios y aparecer el del proyecto `ekstra` 
+y dentro de `ekstra` al darle click deberia estar `elalmacenweb`.
 
 **IMPORTANTE** Asumiendo que su usuario es `systemas`, los dos ultimos comandos como root.
 
@@ -127,7 +129,7 @@ Alli debe colocar el usuario y contraseña asi como host correctos de la db, el 
 Para iniciar uan conecion en un php dentro del framework sera asi:
 
 ``` php
-	$dbmy = $this->load->database('oasisdb', TRUE);
+	$dbmy = $this->load->database('elalmacenweb', TRUE);
 	$driverconected = $dbmy->initialize();
 	if($driverconected != TRUE)
 		return FALSE;
@@ -135,7 +137,8 @@ Para iniciar uan conecion en un php dentro del framework sera asi:
 	$arreglo_reporte = $queryprovprod->result_array();
 ```
 
-**IMPORTANTE** este codigo y las consultas deben realizarse en archivos php en el directorio `elalmacenweb/model`
+**IMPORTANTE** este codigo y las consultas deben realizarse 
+en archivos php en el directorio `elalmacenweb/model`
 
 
 # Estructura de desarrollo
@@ -182,6 +185,8 @@ Se emplea Codeigniter 2 y no 3, se describe mas abajo como iniciar el codigo, se
 * **elalmacenwebweb/libraries** toma los datos y los amasa, moldea y manipula para usarse al momento o temporal
 * **elalmacenwebweb/models** toma los datos y los amasa, modea y prepara para ser presentados o guardados
 
+La documentacion de estos esta en [desarrollo-modulos-controlador.md](desarrollo-modulos-controlador.md)
+
 ### Modulos y Menu automatico
 
 Los **Modulos** seran sub directorios dentro del directorio de controladores, cada 
@@ -192,6 +197,7 @@ seran una llamada web url.
 El **Menu** sera automaticamente construido a partir de los subdirectorios y controladores, 
 hay dos niveles de menu, el menu principal que es todo lo de primer nivel (directorios y los index) 
 y el menu de cada modulo, que se construye pasando el nombre del subdirectorio (solo lso controlers).
+La documentacion esta en [desarrollo-gencontroler-y-menu.md](desarrollo-gencontroler-y-menu.md)
 
 En el directorio `elalmacenwebweb/controllers`, para todo archivo que tenga en el nombre "index" 
 sera incluido en el menu principal, adicional a todo subdirectorio, el resto de archivos, asi 
@@ -202,7 +208,7 @@ muestra debajo del menu principal.
 
 ## Como trabajar con git
 
-El repositorio principal "elalmacenweb" contine adentro el de codeingiter, de esta forma si se actualiza, 
+El repositorio principal "ekstra/elalmacenweb" contine adentro el de codeingiter, de esta forma si se actualiza, 
 si tiene contenido nuevo, hay que primero traerlo al principal, 
 y despues actualizar la referencia de esta marca, entonces el repositorio principal tendra los cambios marcados.
 

@@ -60,6 +60,7 @@ class YA_Controller extends CI_Controller
     }
 
 	/* 
+	 * la logica de menu esta descrita en docs/desarrollo-gencontroler-y-menu.md
 	 * name: genmenu genera un menu de enlaces plano usando `getcontrollers` segun los nombres de controladores del directorio
 	 * @param string $moduledir nombre del directorio de controllers especifico sino directorios de modulos
 	 * @return string html table con los nombres de archivos de controladores o los directorios si no se especifica modulo dir
@@ -74,12 +75,15 @@ class YA_Controller extends CI_Controller
 		{
 			foreach($arraylinkscontrollers as $menuidex=>$menulink)
 			{
-				$findname = '/'.$modulename.'/';
-				$menuname = preg_replace($findname, '', $menulink, 1);
-				$menuname = stristr($menuname,'index');
-				$menuname = str_replace('indexm','',$menuname);
-				$menuname = ucfirst($menuname);
-				$menuarraymain[$menuidex] = anchor($menulink,ucfirst($menuname),'class=" btn btn-10 form" ');
+				if(strpos($menulink,'m') >0 OR strpos($menulink,'index')>0)
+				{
+					$findname = '/'.$modulename.'/';
+					$menuname = preg_replace($findname, '', $menulink, 1);
+					$menuname = stristr($menuname,'index');
+					$menuname = str_replace('indexm','',$menuname);
+					$menuname = ucfirst($menuname);
+					$menuarraymain[$menuidex] = anchor($menulink,ucfirst($menuname),'class=" btn btn-10 form" ');
+				}
 			}
 			$menuarraymain[] = anchor('indexlogin/salirlogin','Salir','class=" btn btn-10 form" ');
 		}
@@ -102,6 +106,7 @@ class YA_Controller extends CI_Controller
     }
 
 	/* 
+	 * esta logica esta descrita en docs/desarrollo-gencontroler-y-menu.md
 	 * name: getcontrollers obtiene nombre de controladores o nombre de directorios de controladores
 	 * @param string $moduledir nombre del directorio de controllers especifico sino directorios de modulos
 	 * @return array con los nombres de archivos de controladores o los directorios si no se especifica modulo dir
