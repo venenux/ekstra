@@ -45,8 +45,10 @@ Se recomienda usar mysql-workbench con `apt-get install mysql-workbench` para ca
 ### 2 Configurar tu entorno
 
 configura el usuario git y coloca un enlace en la raiz del webserver a Devel para usar el proyecto:
+esto es (asumiendo su usuario es `systemas`) asi:
 
 ```
+mkdir -p ~/Devel
 git config --global status.submoduleSummary true
 git config --global diff.submodule log
 git config --global fetch.recurseSubmodules on-demand
@@ -58,18 +60,17 @@ find /home/systemas/Devel/ -type f -exec chmod 664 {} ";"
 find /home/systemas/Devel/ -type d -exec chmod 775 {} ";"
 ```
 
-Despues para verificar navegar a "http://127.0.0.1/Devel" 
-y deberia cargar unos directorios y aparecer el del proyecto `ekstra` 
-y dentro de `ekstra` al darle click deberia estar `elalmacenweb`.
+Despues ejecutar `CRTL`+`D` para verificar navegar a "http://127.0.0.1/Devel" 
 
-**IMPORTANTE** Asumiendo que su usuario es `systemas`, los dos ultimos comandos como root.
+**IMPORTANTE** Asumiendo que su usuario es `systemas`, los cuatro ultimos comandos como root.
 
 **IMPORTANTE** No usar variable `$HOME` ya que al usar su, esta sera igual a "root" y no su usuario.
 
 ### 3 clonar las fuentes
 
 Se usa git para tener las fuentes y se arranca el ide geany para condificar, 
-como usuario `systemas` clonar las fuentes en Devel de home:
+como usuario `systemas` (asumiendo su usuario es `systemas`) 
+debe clonar las fuentes en Devel de su home:
 
 **NOTA** usar ip 10.10.34.20 en vez de 200.82.144.73 si esta en ruices!
 
@@ -111,11 +112,14 @@ que esta en el directorio `docs` de este proyecto un nivel superior.
     * activar webhelper(ayudante web), treebrowser(visor de arbol) y addons(añadidos extras)
     * aceptar y probar el visor web (que se recarga solo) abajo en la ultima pestaña de las de abajo
     * cargar abajo en la ultima pestaña de webpreview la ruta http://127.0.0.1/Devel/ y visitar el proyecto
+
+**IMPORTANTE** se asume el suario es de nombre `systemas` caso contrario seguir las intrucciones mas abajo:
+
 * en el menu proyectos abrir, cargar el archivo `Devel/ekstra/elalmacenweb/elalmacenweb.geany` y cargara el proyecto
     * en la listado seleccionar el proyecto o el directorio `~/Devel/ekstra/elalmacenweb`
     * instalar `elalmacenweb` sino esta aun instalado, esto es carga la db en 127.0.0.1 y se recarga solo
 
-**NOTA IMPORTANTE** esto es asumiendo que su usuario se llama `systemas` y 
+**USUARIO NO SYSTEMAS**: esto es asumiendo que su usuario se llama `systemas` y 
 si no es asi debe modificar el proyecto para que cumpla con su ruta:
 
 * con un editor de texto plano abrir el archivo elalmacenweb.geany NO ABRIR CON EL GEANY!!
