@@ -77,17 +77,32 @@ como usuario `systemas` clonar las fuentes en Devel de home:
 mkdir -p ~/Devel
 cd Devel
 git clone --recursive http://200.82.144.73/lagranja/elsistema/ekstra/.git
-cd ekstra/elalmacenweb
+cd ekstra/
 git config user.email lenz_gerardo@intranet1.net.ve
 git pull
 git submodule init
 git submodule update --rebase
 git submodule foreach git checkout master
 git submodule foreach git pull
+chown -R systemas:www-data $(pwd)
+find $(pwd) -type f -exec chmod 664 {} ";"
+find $(pwd) -type d -exec chmod 775 {} ";"
+cd elalmacenweb
 ```
+
+Si siguio los pasos del apartado 2 entonces visitar en el navegador: http://127.0.0.1/Devel/ekstra/elalmacenweb/elalmacenweb.php
 
 **IMPORTANTE** Asumiendo que `200.82.144.73` es la ip de ruices publica.
 
+#### Error de directorio acceso 403 no encontrado o permitido
+
+Esto es porque ud es flojo y no leyo ni siguio las instrucciones que decian nada de apache2 
+y esto solo sale cuando se usa apache2, asique installe lighttpd o sino use el archvo `.htaccess` 
+que esta en el directorio `docs` de este proyecto un nivel superior.
+
+1. Tome el archivo Archivo: [../docs/.htaccess](../docs/.htaccess)
+2. copielo y coloquelo directo en la raiz de `Devel`
+3. recarge el navegador directamente en http://127.0.0.1/Devel/ekstra/elalmacenweb/elalmacenweb.php
 
 ### 4 Cargar en Geany y ver en web
 
