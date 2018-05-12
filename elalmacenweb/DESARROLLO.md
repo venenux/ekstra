@@ -50,7 +50,6 @@ configura el usuario git y coloca un enlace en la raiz del webserver a Devel par
 git config --global status.submoduleSummary true
 git config --global diff.submodule log
 git config --global fetch.recurseSubmodules on-demand
-git config --global user.email apellido_nombre@intranet1.net.ve
 su
 ln -s /home/systemas/Devel /var/www/Devel
 ln -s /home/systemas/Devel /var/www/html/Devel
@@ -79,6 +78,7 @@ mkdir -p ~/Devel
 cd Devel
 git clone --recursive http://200.82.144.73/lagranja/elsistema/ekstra/.git
 cd ekstra/elalmacenweb
+git config user.email lenz_gerardo@intranet1.net.ve
 git pull
 git submodule init
 git submodule update --rebase
