@@ -205,6 +205,9 @@ Se emplea Codeigniter 2 y no 3, se describe mas abajo como iniciar el codigo, se
 * **elalmacenwebweb/libraries** toma los datos y los amasa, moldea y manipula para usarse al momento o temporal
 * **elalmacenwebweb/models** toma los datos y los amasa, modea y prepara para ser presentados o guardados
 
+**EL EJEMPLO MAS SIMPLE USANDO EL SISTEMA Y LOS DATOS ES EL DE unidadmanager** revisar el directorio 
+situado en `elalmacenwebweb/controllers/malmacen` esta alli el archivo `unidadmanager.php`.
+
 La documentacion de estos esta en [desarrollo-modulos-controlador.md](desarrollo-modulos-controlador.md)
 
 ### Modulos y Menu automatico
