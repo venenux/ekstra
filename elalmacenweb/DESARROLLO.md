@@ -225,6 +225,18 @@ Para el sub menu, segun el nombre el modulo (subdirectorio) de `elalmacenwebweb/
 se buscara todo archivo controller y sera incluido en la generacion de el submenu, y este se 
 muestra debajo del menu principal.
 
+### Ejemplo de camos inputs y llamadas controllers
+
+Como se menciono hay un subdirectorio para cada modulo en los directorios `controllers`, `views` y `models` 
+este subdirectorio representara un modelo.
+
+En el subdirectorio `mproductos` hay una vista ejemplo y un controller index, el codigo tiene 
+campos inputs con un form en la vista, y el controller recibe la llamada rescata los campos y 
+si estos son validos los muestra o simplemente sigue en el mismo index
+
+Su llamada es manual no hay enlaces: asi:
+`http://127.0.0.1/Devel/ekstra/elalmacenweb/elalmacenweb.php/mproductos/indexmproductos/ejemploforminputs`
+
 ## Como trabajar con git
 
 El repositorio principal "ekstra/elalmacenweb" contine adentro el de codeingiter, de esta forma si se actualiza, 
