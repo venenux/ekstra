@@ -14,6 +14,7 @@ Este documento le indicara instrucciones de como comenzar desarrollar y que usar
  * [Codigo y fuentes](#codigo-y-fuentes)
  * [Querys SQL](#querys-sql)
  * [codigo PHP](#codigo-php)
+ * [Ejemplo de controller y form view](ejemplo-de-campos-inputs-y-llamadas-controllers)
  * [Como trabajar git](#como-trabajar-git)
 * [Logica aplicacion web](#logica-aplicacion-web)
  * [Inicio sesion y modelo usuario](#inicio-sesion-y-modelo-usuario)
@@ -225,13 +226,14 @@ Para el sub menu, segun el nombre el modulo (subdirectorio) de `elalmacenwebweb/
 se buscara todo archivo controller y sera incluido en la generacion de el submenu, y este se 
 muestra debajo del menu principal.
 
-### Ejemplo de camos inputs y llamadas controllers
+### Ejemplo de campos inputs y llamadas controllers
 
 Como se menciono hay un subdirectorio para cada modulo en los directorios `controllers`, `views` y `models` 
-este subdirectorio representara un modelo.
+este subdirectorio representara un modelo. En `controllers` hay un index que tiene un ejemplo:
 
-En el subdirectorio `mproductos` hay una vista ejemplo y un controller index, el codigo tiene 
-campos inputs con un form en la vista, y el controller recibe la llamada rescata los campos y 
+En el subdirectorio `mproductos` hay un controller index, este tiene un metodo `ejemploforminputs` 
+con una respectiva vista ejemplo `productonuevoinput.php` , el codigo tiene campos inputs 
+con un form en la vista, y el controller recibe la llamada rescata los campos y 
 si estos son validos los muestra o simplemente sigue en el mismo index
 
 Su llamada es manual no hay enlaces: asi:
