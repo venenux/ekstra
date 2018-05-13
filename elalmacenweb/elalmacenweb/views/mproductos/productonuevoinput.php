@@ -10,13 +10,17 @@
 
 	echo 'input1:'.form_input('username1','admin').PHP_EOL;
 
+	echo br();
+
 	echo 'input2 :'.form_password('userdescripcion1','1').PHP_EOL;
+
+	echo br();
 
 	echo form_submit('Enviar', 'valorenviar', 'class="btn-primary btn"');
 
-	echo form_hidden('inputhidden1',$valorinputhidden1).PHP_EOL;
+	//echo form_hidden('inputhidden1',$valorinputhidden1).PHP_EOL;
 
-	echo form_hidden('inputhidden2',$valorinputhidden2).PHP_EOL;
+	//echo form_hidden('inputhidden2',$valorinputhidden2).PHP_EOL;
 
 	echo form_close() . PHP_EOL;
 
@@ -26,7 +30,9 @@
 	
 	if($semaforo == 1)
 	{
-		echo 'enviado : '.$username1.PHP_EOL;
+		echo 'enviado1 : '.$respuesta1.br().PHP_EOL;
+	echo br();
+	echo 'enviado2 : '.$respuesta2.br().PHP_EOL;
 
 	}
 	else
