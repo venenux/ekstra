@@ -77,13 +77,11 @@ class YA_Controller extends CI_Controller
 			{
 				if(strpos($menulink,'m') >0 OR strpos($menulink,'index')>0)
 				{
-					//$menuname = $menulink;
 					$findname = '/'.$modulename.'/';
 					$menuname = preg_replace($findname, '', $menulink, 1);
 					$menuname = stristr($menuname,'index');
 					$menuname = str_replace('indexm','',$menuname);
 					$menuname = ucfirst($menuname);
-					//$menuname = strpos($menuname,'m');
 					if(stripos($menulink,'ndexm') >0 AND stripos($menulink,'ndexm')<9)
 						$menuarraymain[$menuidex] = anchor($menulink,ucfirst($menulink.'('.$menuname ),'class=" btn btn-10 form" ');
 					if(stripos($menuname,'ndex') >0 AND stripos($menuname,'ndex')<7)
