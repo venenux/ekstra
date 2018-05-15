@@ -82,9 +82,9 @@ class YA_Controller extends CI_Controller
 					$menuname = stristr($menuname,'index');
 					$menuname = str_replace('indexm','',$menuname);
 					$menuname = ucfirst($menuname);
-					if(stripos($menulink,'ndexm') >0 AND stripos($menulink,'ndexm')<9)
-						$menuarraymain[$menuidex] = anchor($menulink,ucfirst($menulink.'('.$menuname ),'class=" btn btn-10 form" ');
-					if(stripos($menuname,'ndex') >0 AND stripos($menuname,'ndex')<7)
+					if(stripos($menulink,'m') !== FALSE AND stripos($menulink,'m')<1)
+						$menuarraymain[$menuidex] = anchor($menulink,ucfirst($menuname),'class=" btn btn-10 form" ');
+					if(stripos($menuname,'ndex') !== FALSE AND stripos($menuname,'ndex')<2)
 						$menuarraymain[$menuidex] = anchor($menulink,ucfirst($menuname),'class=" btn btn-10 form" ');
 				}
 			}
