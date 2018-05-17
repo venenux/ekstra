@@ -1,12 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
- * Ingresodigital elalmacenweb fugaz Controller Class index de ingreso por archivo digital
+ * Pedidodigital elalmacenweb fugaz Controller Class index de pedido por archivo digital
  *
  * @package     malmacen
  * @author      Lenz McKAY PICCORO
  */
-class Ingresodigital extends YA_Controller {
+class Pedido extends YA_Controller {
 
 	function __construct()
 	{
@@ -22,32 +22,39 @@ class Ingresodigital extends YA_Controller {
 	 */
 	public function index()
 	{
-		$this->ingreso0digital();
+		$this->pedido0digital();
 	}
 
 	/** 
-	 * entrada index si no se especifica destiino del controlador
+	 * ofrece formulario para paso 1 crear el pepdido
+	 * @name	ajuste0crear
 	 * @access	public
-	 * @param	void
 	 * @return	void
 	 */
-	public function ingreso0digital()
+	public function pedido0digital($data=NULL)
 	{
+		if($data==NULL)
+			$data = array();
+		$this->load->library('sys');
+		//$this->load->model('mproductos/oajustemodel');
+		// arreglo de sucursales para enviar el msc escoger
+		//$list_sucursales = $this->oajustemodel->get_sucursales_galpones();
+		//$data['list_sucursales']=$list_sucursales;
+		// ultimo correlativo de las formas 23
 		$this->load->model('malmacen/almacenmodel'); // este contiene abstraccion de tabla unidad unidcamente
 		$almaceneslist=$this->almacenmodel->get_almacenes_box($this->username,NULL,FALSE);
-		$data['almaceneslist']=$almaceneslist;
-
+		$data['list_almacenes_origen']=$almaceneslist;
+		$data['list_almacenes_destino']=$almaceneslist;
 		$data['menusub'] = $this->genmenu('malmacen');
-
-		$this->render('malmacen/ingreso0digital',$data); // abajo se muestra los resultados
+		$this->render('malmacen/pedido0digital',$data); // abajo se muestra los resultados
 	}
 
 	/**
-	 * realiza el proceso de ingreso pero usndo un archivo preparado
+	 * realiza el proceso de pedido pero usndo un archivo preparado
 	 * @access	public
 	 * @return	void
 	 */
-	public function ingreso1digital($cod_almacen = NULL)
+	public function pedido1digital($cod_almacen = NULL)
 	{
 		$renderdata = TRUE;
 

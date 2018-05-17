@@ -33,14 +33,28 @@ class Almacenmodel extends CI_Model {
 		if( $parametros != NULL)
 		{
 			if( !is_array($parametros) )
-			$queryfiltros=	" and c.des_almacen like '%".$this->dbmy->escape_srt($parametros)."%' ";
+			{
+				$queryfiltros=	" and c.des_almacen like '%".$this->dbmy->escape_like_str($parametros)."%' ";
+			}
 			else
-			{	
+			{
 				if( array_key_exists('cod_almacen',$parametros))
 				{
 					$cod_almacen = $parametros['cod_almacen'];
-					$cod_almacen = $this->dbmy->escape_srt($cod_almacen,TRUE);
-					$queryfiltros = " and c.cod_almacen = '".$txt_referencia."' ";
+					if(stripos($cod_almacen,',') !== FALSE)
+					{
+						$cod_almacenes = explode(',',$cod_almacen);
+						foreach($cod_almacenes as $alm=>$cod_almacen)
+						{
+							$cod_almacen = $this->dbmy->escape($cod_almacen,TRUE);
+							$queryfiltros .= " and c.cod_almacen = ".$cod_almacen." ";
+						}
+					}
+					else
+					{
+						$cod_almacen = $this->dbmy->escape($cod_almacen,TRUE);
+						$queryfiltros = " and c.cod_almacen = ".$cod_almacen." ";
+					}
 				}
 				if( array_key_exists('des_almacen',$parametros))
 				{
@@ -48,7 +62,7 @@ class Almacenmodel extends CI_Model {
 					$des_almacen = $this->dbmy->escape_str($des_almacen,TRUE);
 					$queryfiltros = " and c.des_almacen like '%".$des_almacen."%' ";
 				}
-		  }		
+			}
 		}
 
 		$sqlsegundotraer = "

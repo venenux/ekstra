@@ -6,7 +6,7 @@
  * @package     malmacen
  * @author      Lenz McKAY PICCORO
  */
-class Unidadmanager extends YA_Controller {
+class Unidad extends YA_Controller {
 
 	function __construct()
 	{

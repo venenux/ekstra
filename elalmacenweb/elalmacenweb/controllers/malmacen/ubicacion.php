@@ -6,7 +6,7 @@
  * @package     mcierreventa
  * @author      Lenz McKAY PICCORO
  */
-class Ubicacionmanager extends YA_Controller {
+class Ubicacion extends YA_Controller {
 
 	function __construct()
 	{
