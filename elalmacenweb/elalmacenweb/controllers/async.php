@@ -10,7 +10,7 @@ class Async extends YA_Controller {
 	function __construct()
 	{
 		parent::__construct();
-		$this->checku();
+		//$this->checku();
 	}
 
 	/** entrada index si no se especifica destiino del controlador */
@@ -39,21 +39,30 @@ class Async extends YA_Controller {
 		//{
 		//	 echo 'Unable to write the file';
 		//}
-		$configm['protocol'] = 'mail';// en sysdevel y sysnet envia pero syscenter no
-		$configm['wordwrap'] = FALSE;
-		$configm['starttls'] = TRUE; // requiere sendmail o localmail use courierd START_TLS_REQUIRED=1 sendmail no envia
-		$configm['smtp_crypto'] = 'tls';
 		$this->load->library('email');
-		$this->email->initialize($configm);
+		$configm1['protocol'] = 'smtp'; 		// esta configuracion requiere mejoras
+		$configm1['smtp_host'] = 'ssl://intranet1.net.ve'; // porque en la libreia, no conecta bien ssl
+		$configm1['smtp_port'] = '465';
+		$configm1['smtp_timeout'] = '8';
+		$configm1['smtp_user'] = 'usuarioqueenviacorreo';
+		$configm1['smtp_pass'] = 'superclave';
+		$configm1['charset'] = 'utf-8';
+		$configm1['starttls'] = TRUE;
+		$configm1['smtp_crypto'] = 'tls';
+		$configm1['newline'] = "\n";
+		$configm1['mailtype'] = 'text'; // or html
+		$configm1['validation'] = FALSE; // bool whether to validate email or not
+		$this->email->initialize($configm1);
 		$this->email->from($correode, $correode);
 		$this->email->to($correoa);
 		$this->email->cc('soporte-vnz@intranet1.net.ve');
 		$this->email->reply_to('soporte@intranet1.net.ve', 'soporte');
 		$this->email->subject($correoas);
 		$this->email->message($correome); 
-		$this->email->send();
 		//$this->email->attach($filenameneweordendespachoadjuntar);
 		$this->email->send();
+		$this->email->print_debugger();
+		log_message('info','Correo de notificacion enviado de '.$correome);
 	}
 
 }
