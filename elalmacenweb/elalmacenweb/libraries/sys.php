@@ -248,6 +248,25 @@ class sys
 		$this->CI->csvimport->column_headers(TRUE);
 		//$csv_array = $this->csvimport->get_array($filenameorig,TRUE,TRUE,0,'|');
 		$csv_array = $this->CI->csvimport->get_array();
-		return $csv_array;
+		$list_codigos = '';
+		$list_cantida = '';
+		foreach($csv_array as $lineas => $arreglolinea)
+		{
+			foreach($arreglolinea as $cabecera => $valorcampo)
+			{
+				if(array_key_exists('list_codigos',$arreglolinea))
+					$list_codigos = $valorcampo.PHP_EOL;
+				else
+					$list_codigos .= '0'.PHP_EOL;
+				if(array_key_exists('list_cantida',$arreglolinea))
+					$list_cantida .= $valorcampo.PHP_EOL;
+				else
+					$list_cantida .= '0'.PHP_EOL.'0'.PHP_EOL;
+			}
+		}
+		$retornar = array();
+		$retornar['list_codigos'] = $list_codigos;
+		$retornar['list_cantida'] = $list_cantida;
+		return $retornar;
 	}
 }

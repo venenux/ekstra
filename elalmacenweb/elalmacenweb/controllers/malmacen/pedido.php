@@ -97,9 +97,9 @@ class Pedido extends YA_Controller {
 			$tienearchivo = TRUE;
 			$this->load->library('sys');
 			$pedido_digital_archivo_data = $this->sys->procesar_archivo_pedido_csv('pedido_digital_archivo');
+			$data['list_codigos'] = $pedido_digital_archivo_data['list_codigos'];
+			$data['list_cantida'] = $pedido_digital_archivo_data['list_cantida'];
 		}
-		//if( $tienearchivo AND !$tienecampos)
-			//$list_codigos = implode("\n ", array_keys($fruits))
 		$data['pedido_digital_archivo'] = $pedido_digital_archivo;
 		$data['pedido_digital_archivo_data'] = $pedido_digital_archivo_data;
 

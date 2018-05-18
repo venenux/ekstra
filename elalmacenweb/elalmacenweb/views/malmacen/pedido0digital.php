@@ -36,7 +36,7 @@
 			$this->table->add_row('Cantidad solicitada: ',$inputAjustes);
 
 			$inputArchivo = form_upload('pedido_digital_archivo',$pedido_digital_archivo).PHP_EOL;
-			$this->table->add_row('Usar un archo digital ¿?: ',$inputArchivo . '( Cargado: archivo '.$pedido_digital_archivo.')');
+			$this->table->add_row('Usar archivo digital? (list_codigos|list_cantidad): ',$inputArchivo . '( Cargado: archivo '.$pedido_digital_archivo.')');
 
 			$buttonPedido0 = form_submit('but_proceso1', 'A_Procesar_Paso_1', 'class="btn-primary btn"');
 			$buttonPedido1 = form_submit('but_proceso1', 'A_Procesar_Archivo', 'class="btn-primary btn"');
