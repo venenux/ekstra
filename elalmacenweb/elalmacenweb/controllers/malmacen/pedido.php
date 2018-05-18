@@ -11,6 +11,7 @@ class Pedido extends YA_Controller {
 	function __construct()
 	{
 		parent::__construct();
+		$this->load->library('table');
 		$this->checku(); // OJO para todo el controller este saca o deja seguir si no hay o hay sesion
 	}
 
@@ -41,10 +42,24 @@ class Pedido extends YA_Controller {
 		//$list_sucursales = $this->oajustemodel->get_sucursales_galpones();
 		//$data['list_sucursales']=$list_sucursales;
 		// ultimo correlativo de las formas 23
+
+		$pedido_digital_archivo = '';
+		if(array_key_exists('pedido_digital_archivo',$_FILES))
+			$pedido_digital_archivo = $_FILES['pedido_digital_archivo']['name'];
+		$this->load->library('sys');
+		if($pedido_digital_archivo != '')
+			$pedido_digital_archivo_data = $this->sys->procesar_archivo('pedido_digital_archivo');
+		else
+			$pedido_digital_archivo_data = array();
+		$pedido_digital_archivo = 'pepe';
+		$data['pedido_digital_archivo'] = $pedido_digital_archivo;
+		$data['pedido_digital_archivo_data'] = $pedido_digital_archivo_data;
+
 		$this->load->model('malmacen/almacenmodel'); // este contiene abstraccion de tabla unidad unidcamente
 		$almaceneslist=$this->almacenmodel->get_almacenes_box($this->username,NULL,FALSE);
-		$data['list_almacenes_origen']=$almaceneslist;
-		$data['list_almacenes_destino']=$almaceneslist;
+		$data['list_entidades_origen']=$almaceneslist;
+		$data['list_entidades_destino']=$almaceneslist;
+
 		$data['menusub'] = $this->genmenu('malmacen');
 		$this->render('malmacen/pedido0digital',$data); // abajo se muestra los resultados
 	}
@@ -57,15 +72,35 @@ class Pedido extends YA_Controller {
 	public function pedido1digital($cod_almacen = NULL)
 	{
 		$renderdata = TRUE;
+		$entidad_origen = $this->input->get_post('entidad_origen');
+		$entidad_destino = $this->input->get_post('entidad_destino');
+		$list_codigos = $this->input->get_post('list_codigos');
+		$list_cantida = $this->input->get_post('list_cantida');
+		$pedido_digital_archivo = $this->input->get_post('pedido_digital_archivo');
+		$data['entidad_origen'] = $entidad_origen;
+		$data['entidad_destino'] = $entidad_destino;
+		$data['list_codigos'] = $list_codigos;
+		$data['list_cantida'] = $list_cantida;
+		$data['pedido_digital_archivo'] = $pedido_digital_archivo;
 
-		$archivo_digital = $this->input->get_post('archivo_digital');
-		$archivo_digital = str_replace(' ', '', $archivo_digital);
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('entidad_origen', 'Origen', 'trim|required|alpha_numeric');
+		$this->form_validation->set_rules('entidad_destino', 'Destino', 'trim|required|alpha_numeric');
+		if ($this->form_validation->run() == FALSE)
+		{
+			$this->pedido0digital($data);
+			return;
+		}
+		
+		$this->form_validation->set_rules('list_codigos', 'Codigos', 'trim|required|alpha_numeric');
+		$this->form_validation->set_rules('list_cantida', 'Cantidad', 'trim|required|alpha_numeric');
+		$this->form_validation->set_rules('pedido_digital_archivo', 'Archvo digital', 'required');
 
-		$archivo_codigo = $this->input->get_post('archivo_codigo');
-		$archivo_codigo = str_replace(' ', '', $archivo_codigo);
-
-		if(empty($archivo_codigo) AND empty($archivo_digital))
+		if(empty($pedido_digital_archivo) AND empty($pedido_digital_archivo))
 			$renderdata = FALSE;
+
+		$this->load->library('sys');
+		$pedido_digital_archivo_data = $this->sys->procesar_archivo('pedido_digital_archivo');
 
 		if( $renderdata!==TRUE )
 		{

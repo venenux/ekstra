@@ -186,4 +186,39 @@ class sys
 			$excodigo=substr($incodigo,-1,$digitos);
 		return $excodigo;
 	}
+
+	/*
+	 * procesa un archivo de un input segun los parametros
+	 * name: sys::procesar_archivo
+	 * @param
+	 * @return
+	 */
+	public function procesar_archivo($campoinput, $modulo = '', $nombre = '')
+	{
+		// CARGA DEL ARCHIVO ****************************************************** /
+		$cargaconfig['upload_path'] = 'assets/elalmacenwebarchivos/';
+		$cargaconfig['allowed_types'] = 'txt|.|csv';
+		$cargaconfig['max_size']  = 0; //'100'; // en kilobytes
+		$cargaconfig['max_width'] = 0;
+		$cargaconfig['max_height'] = 0;
+		//$cargaconfig['remove_spaces'] = true;
+		$cargaconfig['encrypt_name'] = TRUE;
+		$this->CI->load->helper('inflector');
+		$this->CI->load->library('upload', $cargaconfig);
+		$this->CI->upload->initialize($cargaconfig);
+		$this->CI->upload->do_upload($campoinput); // nombre del campo alla en el formulario
+		log_message('info', 'cargando archivo....');
+		$file_data = $this->CI->upload->data();
+		$filenamen = $modulo . date('Ymdhis') . $nombre .'.txt';
+        $filenameorig =  $file_data['file_path'] . $file_data['file_name'];
+        $filenamenewe =  $file_data['file_path'] . $filenamen;
+        log_message('info', 'renombrando archivo....');
+		copy( $filenameorig, $filenamenewe); // TODO: rename
+        unlink($filenameorig);
+		$resultado = $this->CI->upload->data();
+		log_message('info', $filenameorig . '  y  ' . $filenamenewe .'trabajados');
+		$resultado['filenameorig'] = $filenameorig;
+		$resultado['filenamenewe'] = $filenamenewe;
+		return $resultado;
+	}
 }
