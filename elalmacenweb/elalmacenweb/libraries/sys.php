@@ -195,6 +195,7 @@ class sys
 	 */
 	public function procesar_archivo($campoinput, $modulo = '', $nombre = '')
 	{
+		log_message('info', 'iniciando file archivo....');
 		// CARGA DEL ARCHIVO ****************************************************** /
 		$cargaconfig['upload_path'] = 'assets/elalmacenwebarchivos/';
 		$cargaconfig['allowed_types'] = 'txt|.|csv';
@@ -206,19 +207,47 @@ class sys
 		$this->CI->load->helper('inflector');
 		$this->CI->load->library('upload', $cargaconfig);
 		$this->CI->upload->initialize($cargaconfig);
-		$this->CI->upload->do_upload($campoinput); // nombre del campo alla en el formulario
+		$results = $this->CI->upload->do_upload($campoinput); // nombre del campo alla en el formulario
+		if( $results === FALSE )
+		{
+			$resultado['filenameorig'] = 'Error';
+			return $resultado;
+		}
 		log_message('info', 'cargando archivo....');
 		$file_data = $this->CI->upload->data();
 		$filenamen = $modulo . date('Ymdhis') . $nombre .'.txt';
-        $filenameorig =  $file_data['file_path'] . $file_data['file_name'];
-        $filenamenewe =  $file_data['file_path'] . $filenamen;
-        log_message('info', 'renombrando archivo....');
-		copy( $filenameorig, $filenamenewe); // TODO: rename
-        unlink($filenameorig);
-		$resultado = $this->CI->upload->data();
-		log_message('info', $filenameorig . '  y  ' . $filenamenewe .'trabajados');
+		$filenameorig =  $file_data['file_path'] . $file_data['file_name'];
+		$filenamenewe =  $file_data['file_path'] . $filenamen;
+		log_message('info', 'renombrando archivo....');
+		if(file_exists($filenameorig))
+		{
+			copy( $filenameorig, $filenamenewe); // TODO: rename
+			unlink($filenameorig);
+			$resultado = $this->CI->upload->data();
+			log_message('info', $filenameorig . '  y  ' . $filenamenewe .'trabajados');
+			$resultado['filenamenewe'] = $filenamenewe;
+		}
 		$resultado['filenameorig'] = $filenameorig;
-		$resultado['filenamenewe'] = $filenamenewe;
 		return $resultado;
+	}
+
+	/*
+	 * procesa un archivo csv de un input segun sus parametros
+	 * name: sys::procesar_archivo_pedido_csv
+	 * @param
+	 * @return
+	 */
+	public function procesar_archivo_pedido_csv($campoinput, $modulo = '', $nombre = '')
+	{
+		$resultado = $this->procesar_archivo($campoinput, $modulo, $nombre);
+		$this->CI->load->library('csvimport');
+		$this->CI->csvimport->filepath($resultado['filenamenewe']);
+		$this->CI->csvimport->delimiter('|');
+		$this->CI->csvimport->initial_line(0);
+		$this->CI->csvimport->detect_line_endings(TRUE);
+		$this->CI->csvimport->column_headers(TRUE);
+		//$csv_array = $this->csvimport->get_array($filenameorig,TRUE,TRUE,0,'|');
+		$csv_array = $this->CI->csvimport->get_array();
+		return $csv_array;
 	}
 }

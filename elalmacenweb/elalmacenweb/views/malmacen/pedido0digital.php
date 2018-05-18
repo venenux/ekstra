@@ -4,6 +4,9 @@
 	if( !isset($accionejecutada) ) $accionejecutada = 'cargardatos';
 	if( !isset($list_codigos) ) $list_codigos = '';
 	if( !isset($list_cantida) ) $list_cantida = '';
+	if( !isset($entidad_origen) ) $entidad_origen = '';
+	if( !isset($entidad_destino) ) $entidad_destino = '';
+	if( !isset($pedido_digital_archivo) ) $pedido_digital_archivo = '';
 	if( !isset($list_entidades_origen) ) $list_entidades_origen = array('codigomsc' => 'narnai 1','codigomsc2' => 'narnia 2');
 	if( !isset($list_entidades_destino) ) $list_entidades_destino = array('codigomsc' => 'narnia 3','codigomsc2' => 'narnia 4');
 
@@ -19,11 +22,11 @@
 			$this->table->set_template($tablapl);
 			$this->table->set_heading(FALSE);
 			$this->table->set_datatables(FALSE);
-			
-			$inputOrigen = form_dropdown('entidad_origen', $list_entidades_origen);
+
+			$inputOrigen = form_dropdown('entidad_origen', $list_entidades_origen, $entidad_origen);
 			$this->table->add_row('Origen (automatico sera su sucursal primaria):',$inputOrigen);
 
-			$inputDestino = form_multiselect('entidad_destino[]', $list_entidades_destino);
+			$inputDestino = form_multiselect('entidad_destino[]', $list_entidades_destino, $entidad_destino);
 			$this->table->add_row('Destino (las sucursales a donde enviara los items:',$inputDestino);
 
 			$inputCodigos = form_textarea('list_codigos',$list_codigos);
@@ -35,8 +38,8 @@
 			$inputArchivo = form_upload('pedido_digital_archivo',$pedido_digital_archivo).PHP_EOL;
 			$this->table->add_row('Usar un archo digital ¿?: ',$inputArchivo . '( Cargado: archivo '.$pedido_digital_archivo.')');
 
-			$buttonPedido0 = form_submit('but_proceso2', 'A_Procesar_Paso_1', 'class="btn-primary btn"');
-			$buttonPedido1 = form_submit('but_proceso2', 'A_Procesar_Archivo', 'class="btn-primary btn"');
+			$buttonPedido0 = form_submit('but_proceso1', 'A_Procesar_Paso_1', 'class="btn-primary btn"');
+			$buttonPedido1 = form_submit('but_proceso1', 'A_Procesar_Archivo', 'class="btn-primary btn"');
 			$this->table->add_row($buttonPedido0,$buttonPedido1);
 
 			echo $this->table->generate();
