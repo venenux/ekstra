@@ -26,6 +26,21 @@ class Pedido extends YA_Controller {
 		$this->pedido0digital();
 	}
 
+	private function _procesa_listado($pedido_digital_archivo_data)
+	{
+		$list_codigos = $pedido_digital_archivo_data['list_codigos'];
+		$list_cantida = $pedido_digital_archivo_data['list_cantida'];
+		$codigos_format = preg_replace('/\n$/','',preg_replace('/^\n/','',preg_replace('/[\r\n]+/',"\n",$list_codigos)));
+		$codigos_format = str_replace(' ', '', $codigos_format);
+		//$cod_codigos = explode(PHP_EOL,$codigos_format);
+		$ajustar_format = preg_replace('/\n$/','',preg_replace('/^\n/','',preg_replace('/[\r\n]+/',"\n",$list_cantida)));
+		$ajustar_format = str_replace(' ', '', $ajustar_format);
+		//$can_ajustes = explode(PHP_EOL,$ajustar_format);
+		$pedido_digital_archivo_data['list_codigos'] = $codigos_format;
+		$pedido_digital_archivo_data['list_cantida'] = $ajustar_format;
+		return $pedido_digital_archivo_data;
+	}
+
 	/** 
 	 * ofrece formulario para paso 1 crear el pepdido
 	 * @name	ajuste0crear
@@ -58,11 +73,14 @@ class Pedido extends YA_Controller {
 		$entidad_destino = $this->input->get_post('entidad_destino');
 		$list_codigos = $this->input->get_post('list_codigos');
 		$list_cantida = $this->input->get_post('list_cantida');
-		$pedido_digital_archivo = '';//$pedido_digital_archivo = $this->input->get_post('pedido_digital_archivo');
+		// inicializa el array de datos que se envia a la vista
 		$data['entidad_origen'] = $entidad_origen;
 		$data['entidad_destino'] = $entidad_destino;
 		$data['list_codigos'] = $list_codigos;
 		$data['list_cantida'] = $list_cantida;
+		// detecta archivo si hubo o no
+		$pedido_digital_archivo = '';//$pedido_digital_archivo = $this->input->get_post('pedido_digital_archivo');
+		$pedido_digital_archivo_data = array();
 		if(array_key_exists('pedido_digital_archivo',$_FILES))
 			$pedido_digital_archivo = $_FILES['pedido_digital_archivo']['name'];
 		$data['pedido_digital_archivo'] = $pedido_digital_archivo;
@@ -91,21 +109,26 @@ class Pedido extends YA_Controller {
 				return;
 			}
 		}
+		// procesamiento: quita duplicados y detecta si procesa archivo o no
 		$tienecampos = TRUE;
+		$pedido_digital_archivo_data['list_codigos'] = $list_codigos;
+		$pedido_digital_archivo_data['list_cantida'] = $list_cantida;
 		if($pedido_digital_archivo!='')
 		{
 			$tienearchivo = TRUE;
 			$this->load->library('sys');
 			$pedido_digital_archivo_data = $this->sys->procesar_archivo_pedido_csv('pedido_digital_archivo');
-			$data['list_codigos'] = $pedido_digital_archivo_data['list_codigos'];
-			$data['list_cantida'] = $pedido_digital_archivo_data['list_cantida'];
 		}
+		$data['list_codigos'] = $pedido_digital_archivo_data['list_codigos'];
+		$data['list_cantida'] = $pedido_digital_archivo_data['list_cantida'];
+		$pedido_digital_archivo_data = $this->_procesa_listado($pedido_digital_archivo_data);
 		$data['pedido_digital_archivo'] = $pedido_digital_archivo;
 		$data['pedido_digital_archivo_data'] = $pedido_digital_archivo_data;
-
+		// procesado de datos listo, se presenta la informacion en pantalla de confirmacion
 		$data['menusub'] = $this->genmenu('malmacen');
 		$this->render('malmacen/pedido0digital',$data);
 	}
+
 }
 
 /* End of file php */

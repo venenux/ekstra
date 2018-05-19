@@ -255,11 +255,11 @@ class sys
 			foreach($csv_array as $lineas => $arreglolinea)
 			{
 				if(array_key_exists('list_codigos',$arreglolinea))
-						$list_codigos = $arreglolinea['list_codigos'].PHP_EOL;
+						$list_codigos .= $arreglolinea['list_codigos'].PHP_EOL;
 					else
 						$list_codigos .= '0'.PHP_EOL;
-					if(array_key_exists('list_cantida',$arreglolinea))
-						$list_cantida .= $arreglolinea['list_cantida'].PHP_EOL;
+					if(array_key_exists('list_cantidad',$arreglolinea))
+						$list_cantida .= $arreglolinea['list_cantidad'].PHP_EOL;
 					else
 						$list_cantida .= '0'.PHP_EOL;
 				
