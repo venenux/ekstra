@@ -94,17 +94,19 @@ class Pedido extends YA_Controller {
 		if ($this->form_validation->run() == FALSE)
 		{
 			$tieneentidades = FALSE;
+			$data['form_error_mensaje'] = 'Debe escoger destino y origen';
 			$this->pedido0digital($data);
 			return;
 		}
 		$tieneentidades = TRUE;
-		$this->form_validation->set_rules('list_codigos', 'Codigos', 'trim|required|alpha_numeric');
-		$this->form_validation->set_rules('list_cantida', 'Cantidad', 'trim|required|alpha_numeric');
+		$this->form_validation->set_rules('list_codigos', 'Codigos', 'trim|required');
+		$this->form_validation->set_rules('list_cantida', 'Cantidad', 'trim|required');
 		if ($this->form_validation->run() == FALSE)
 		{
 			$tienecampos = FALSE;
 			if($pedido_digital_archivo=='')
 			{
+				$data['form_error_mensaje'] = 'Si no coloca cantidad y codigos debe subir archivo';
 				$this->pedido0digital($data);
 				return;
 			}

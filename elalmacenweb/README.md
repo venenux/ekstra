@@ -30,7 +30,7 @@ la orden tambien se puede emitir directamente sin pedido.
 Cada transcicion entre pedido, orden y despacho genera un movimeinto.
 
 1. En la interfaz del almacen se crea un pedido sea buscando productos 
-o con carga de archivo CSV (2 columnas, codigoproducto, cantidadpedida)
+o con carga de archivo CSV (2 columnas, `list_codigos`, `list_cantidad`, separado por `|`)
 el pedido es creado por usuario actual para otro usuario o entidad
 
 2. Un usuario de almacen o privilegiado, procesa y acepta o rechaza, 
