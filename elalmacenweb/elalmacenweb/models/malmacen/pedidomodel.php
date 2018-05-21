@@ -47,7 +47,7 @@ class Pedidomodel extends CI_Model {
 	 */
 	public function get_pedido_codigo($usuario = NULL, $codigo = NULL)
 	{
-		$this->dbmy = $this->load->database('elpedidowebdb', TRUE);
+		$this->dbmy = $this->load->database('elalmacenwebdb', TRUE);
 		$driverconected = $this->dbmy->initialize();
 		if($driverconected != TRUE)
 			return FALSE;
@@ -132,8 +132,10 @@ class Pedidomodel extends CI_Model {
 			return FALSE;
 		if( !is_array($parametros['list_codigos']))
 			return FALSE;
+		if( count($parametros['list_codigos']) < 1)
+			return FALSE;
 
-		$this->dbmy = $this->load->database('elpedidowebdb', TRUE);
+		$this->dbmy = $this->load->database('elalmacenwebdb', TRUE);
 		$driverconected = $this->dbmy->initialize();
 		if($driverconected != TRUE)
 			return FALSE;
@@ -146,17 +148,21 @@ class Pedidomodel extends CI_Model {
 		unset($parametros['list_codigos']);
 		$fecha = date('Ymd');
 		$estado = 'ABIERTO';
-		$parametros['num_pedido'] = $cod_pedido . '-'.$cod_origen.'-'.$cod_destino;
+		$sessionflag = date('YmdHis').'entidad'.$usuario;
+		$sessionficha = $sessionflag;
+		$parametros['num_pedido'] = $cod_pedido.'-'.$cod_origen.'-'.$cod_destino;
+		$parametros['fecha'] = $fecha;
+		$parametros['estado'] = $estado;
 
-		$existente = $this->get_pedido_codigo($usuario, $cod_oajuste); // ojo el correlativo lo diferencia
+		$existente = $this->get_pedido_codigo($usuario, $cod_pedido); // ojo el correlativo lo diferencia
 		if($existente != FALSE AND is_array($existente) )
 		{
 			$array_ajuste = $existente;
 			$array_detalle = $existente[0]['list_codigos'];
 			if($array_detalle != TRUE)
-				return $existente; // si no hay detalle el proceso anterior salio malo no sigue
+				return $cod_pedido; // si no hay detalle el proceso anterior salio malo no sigue
 			if(count($array_detalle)!=count($list_codigos))
-				return $existente; // no se puede hacer update discrepancias, hcer nuevo o revisar
+				return FALSE; // no se puede hacer update discrepancias, hcer nuevo o revisar
 		}
 
 		// preparar insercion o actualizacion ajuste forma 23
@@ -168,7 +174,7 @@ class Pedidomodel extends CI_Model {
 			$parametros['sessionficha'] = $sessionficha;
 			$sqloajustecabeza = $this->dbmy->insert_string('esk_pedido', $parametros);
 			$this->dbmy->query($sqloajustecabeza);
-			foreach($list_codigosajustes as $index => $tosql)
+			foreach($list_codigos as $index => $tosql)
 			{
 				$tosql['cod_pedido']=$cod_pedido;
 				$tosql['sessionficha']=$sessionficha;
@@ -193,7 +199,7 @@ class Pedidomodel extends CI_Model {
 			$this->dbmy->trans_rollback();
 		else
 			$this->dbmy->trans_commit();
-		return $cod_oajuste;
+		return $cod_pedido;
 	}
 
 

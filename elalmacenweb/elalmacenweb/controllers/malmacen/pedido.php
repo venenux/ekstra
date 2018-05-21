@@ -32,15 +32,13 @@ class Pedido extends YA_Controller {
 		$list_cantida = $pedido_digital_archivo_data['list_cantida'];
 		$codigos_format = preg_replace('/\n$/','',preg_replace('/^\n/','',preg_replace('/[\r\n]+/',"\n",$list_codigos)));
 		$codigos_format = str_replace(' ', '', $codigos_format);
-		//$cod_codigos = explode(PHP_EOL,$codigos_format);
+		$arraycodigos = explode(PHP_EOL,$codigos_format);
 		$ajustar_format = preg_replace('/\n$/','',preg_replace('/^\n/','',preg_replace('/[\r\n]+/',"\n",$list_cantida)));
 		$ajustar_format = str_replace(' ', '', $ajustar_format);
-		//$can_ajustes = explode(PHP_EOL,$ajustar_format);
+		$arraycantida = explode(PHP_EOL,$ajustar_format);
 		$pedido_digital_archivo_data['list_codigos'] = $codigos_format;
 		$pedido_digital_archivo_data['list_cantida'] = $ajustar_format;
 		$arraylistado = array();
-		$arraycodigos = explode(PHP_EOL,$codigos_format);
-		$arraycantida = explode(PHP_EOL,$ajustar_format);
 		if( count($arraycodigos) == count($arraycantida) )
 		{
 			foreach($arraycodigos as $indic => $codigop)
@@ -175,12 +173,14 @@ class Pedido extends YA_Controller {
 			return;
 		}
 		$parametros = array();
-		$parametros['entidad_origen'] = $data['entidad_origen'];
-		$parametros['entidad_destino'] = implode(',',$data['entidad_destino']);
+		$parametros['cod_pedido'] = date('YmdHis');
+		$parametros['cod_ejecuta'] = $data['entidad_origen'];// TODO mientras
+		$parametros['cod_origen'] = $data['entidad_origen'];
+		$parametros['cod_destino'] = implode(',',$data['entidad_destino']);
 		$parametros['list_codigos'] = $data['pedido_digital_archivo_data']['arraylistado'];
 		$this->load->model('malmacen/pedidomodel'); // este contiene abstraccion de tabla unidad unidcamente
 		$cod_pedido = $this->pedidomodel->set_pedido($this->username,$parametros,FALSE);
-		$almaceneslist=$this->get_pedido_codigo($this->username,$cod_pedido,FALSE);
+		$almaceneslist=$this->pedidomodel->get_pedido_codigo($this->username,$cod_pedido);
 		if($almaceneslist !== FALSE)
 			$this->pedido0digital($data);
 		else
