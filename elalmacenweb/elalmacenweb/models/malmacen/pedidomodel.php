@@ -55,7 +55,9 @@ class Pedidomodel extends CI_Model {
 		$cod_pedido = $codigo;
 		if($cod_pedido === FALSE)
 			return FALSE;
-		if(stripos($cod_pedido,',') !== FALSE)
+
+		$queryfiltros = "";
+		if(stripos($cod_pedido,',') !== FALSE AND $cod_pedido != NULL)
 		{
 			$cod_pedidoes = explode(',',$cod_pedido);
 			foreach($cod_pedidoes as $alm=>$cod_pedido)
@@ -64,13 +66,12 @@ class Pedidomodel extends CI_Model {
 				$queryfiltros .= " and c.cod_pedido = ".$cod_pedido." ";
 			}
 		}
-		else
+		else if( $cod_pedido != NULL)
 		{
 			$cod_pedido = $this->dbmy->escape($codigo,TRUE);
 			$queryfiltros = " and c.cod_pedido = ".$cod_pedido." ";
 		}
 
-		$sqlfiltro = "";
 		$sqlcabeza = "
 			SELECT 
 				p.cod_aprobado1, 

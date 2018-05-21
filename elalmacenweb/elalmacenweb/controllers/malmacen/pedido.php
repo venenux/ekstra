@@ -23,7 +23,99 @@ class Pedido extends YA_Controller {
 	 */
 	public function index()
 	{
-		$this->pedido0digital();
+		$enlace1crear = 'malmacen/pedido/pedido0digital';
+		$enlace2listar = 'malmacen/pedido/pedidomanejar/';
+		$this->pedidoslistar();
+	}
+
+	/** 
+	 * listado de pedidospara aprobar o procesar con botones
+	 * @name	pedidoslistar
+	 * @access	public
+	 * @param	string $parametros codigos separados por coma
+	 * @return	void
+	 */
+	public function pedidoslistar($parametros = NULL)
+	{
+		$cod_pedidos = $this->input->get_post('cod_pedidos');
+		$cod_pedidos = str_replace(' ', '', $cod_pedidos);
+		if($cod_pedidos == NULL  OR $cod_pedidos == '')
+			$cod_pedidos = $parametros;
+		$this->load->model('malmacen/pedidomodel'); // este contiene abstraccion de tabla unidad unidcamente
+		$pedido_listado_array=$this->pedidomodel->get_pedido_codigo($this->username,NULL);
+		$data['pedido_digital'] = $pedido_listado_array;
+		$indx = 0;
+		if(!is_array($pedido_listado_array))
+		{
+			$data['presentarpedidos'] = 'No se encontraron datos coincidente o el codigo ha sido bloqueado/removido';
+			$data['menusub'] = $this->genmenu('malmacen');
+			$this->render('malmacen/pedidolistado',$data);
+			return;
+		}
+		foreach($pedido_listado_array as $arraypedido)
+		{
+			$codigoacciones = '';
+			$pedido_listado_array_detalles = $arraypedido['codigospedidos'];
+			if(is_array($pedido_listado_array_detalles) )
+			{
+				$indxd = 0;
+				foreach($pedido_listado_array_detalles as $aca)
+				{
+					unset($pedido_listado_array_detalles[$indxd]['cod_pedido']);
+					unset($pedido_listado_array_detalles[$indxd]['sessionflag']);
+					unset($pedido_listado_array_detalles[$indxd]['sessionficha']);
+					$pedido_listado_array[$indx]['codigospedidos']= $pedido_listado_array_detalles;
+					$indxd += 1;
+				}
+			}	// esto requiere permitted_uri_chars permita el simbolo "+"
+			$esaprobado1 = $arraypedido['cod_aprobado1'];
+			$esaprobado1 = str_replace(' ', '', $esaprobado1);
+			$esaprobado2 = $arraypedido['cod_aprobado2'];
+			$esaprobado2 = str_replace(' ', '', $esaprobado2);
+			if( $esaprobado1 == '' OR $esaprobado2 == '' )
+			{
+				$codigoacciones .= ' '.anchor('malmacen/pedido/aprobar/'.$arraypedido['cod_pedido'],'V');
+				$codigoacciones .= ' '.anchor('malmacen/pedido/denegar/'.$arraypedido['cod_pedido'],'X');
+				$pedido_listado_array[$indx] = array_merge(array('acciones'=>$codigoacciones),$pedido_listado_array[$indx]);
+			}
+			else
+			{
+				$pedido_listado_array[$indx] = array_merge(array('acciones'=>'APROBADO'),$pedido_listado_array[$indx]);
+			}
+			$indx += 1;
+		}
+		// pinto el listado de los pedidos realizados y pendientes
+		$this->load->library('table', NULL, 'renderpedidos');
+		$this->load->library('table', NULL, 'renderdetalles');
+		$tmmopen = '<table with=100% border="1" cellpadding="2" cellspacing="2" style="border=0px;"  >';
+		$tablapl = array('table_open'=>$tmmopen,'row_start'=>'<tr>','row_end'=>'</tr>','cell_start'=>'<td>','cell_end'=>'</td>','table_close'=>'</table>');
+		$this->renderpedidos->clear();
+		$this->renderpedidos->set_template($tablapl);
+		$this->renderpedidos->set_heading(array_keys($pedido_listado_array[0]));
+		$this->renderpedidos->set_datatables( array("sortable" => "true", "searchable" => "true", "fixedHeight" => "true", "perPage" => "100", "fixedColumns" => "false" ) );
+		$indx = 0;
+		foreach($pedido_listado_array as $arraypedido)
+		{
+			$list_pedidos_detalles = $arraypedido['codigospedidos'];
+			$detalle = '';
+			if(is_array($list_pedidos_detalles) AND count($list_pedidos_detalles) >1 )
+			{
+				$this->renderdetalles->clear();
+				$tmmopen = '<table with=100% border="1" cellpadding="2" cellspacing="2" style="border=1px;"  >';
+				$tablapl = array('table_open'=>$tmmopen,'row_start'=>'<tr>','row_end'=>'</tr>','cell_start'=>'<td>','cell_end'=>'</td>','table_close'=>'</table>');
+				$this->renderdetalles->set_template($tablapl);
+				$this->renderdetalles->set_heading(array_keys($list_pedidos_detalles[0]));
+				$this->renderdetalles->set_datatables(FALSE);
+				foreach($list_pedidos_detalles as $aca)
+					$this->renderdetalles->add_row(array_values($aca));
+				$detalle = $this->renderdetalles->generate();
+			}
+			$arraypedido['codigospedidos'] = $detalle;
+			$this->renderpedidos->add_row(array_values($arraypedido));
+		}
+		$data['presentarpedidos'] = $this->renderpedidos->generate();
+		$data['menusub'] = $this->genmenu('malmacen');
+		$this->render('malmacen/pedidolistado',$data);
 	}
 
 	private function _procesa_listado($pedido_digital_archivo_data)
@@ -52,7 +144,7 @@ class Pedido extends YA_Controller {
 
 	/** 
 	 * ofrece formulario para paso 1 crear el pepdido
-	 * @name	ajuste0crear
+	 * @name	pedido0digital
 	 * @access	public
 	 * @return	void
 	 */
@@ -180,7 +272,8 @@ class Pedido extends YA_Controller {
 		$parametros['list_codigos'] = $data['pedido_digital_archivo_data']['arraylistado'];
 		$this->load->model('malmacen/pedidomodel'); // este contiene abstraccion de tabla unidad unidcamente
 		$cod_pedido = $this->pedidomodel->set_pedido($this->username,$parametros,FALSE);
-		$almaceneslist=$this->pedidomodel->get_pedido_codigo($this->username,$cod_pedido);
+		$pedido_listado_array=$this->pedidomodel->get_pedido_codigo($this->username,$cod_pedido);
+		$data['pedido_digital'] = $pedido_listado_array;
 		if($almaceneslist !== FALSE)
 			$this->pedido0digital($data);
 		else
