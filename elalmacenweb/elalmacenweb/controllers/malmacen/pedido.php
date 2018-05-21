@@ -128,7 +128,9 @@ class Pedido extends YA_Controller {
 		$data['pedido_digital_archivo_data'] = $pedido_digital_archivo_data;
 		// procesado de datos listo, se presenta la informacion en pantalla de confirmacion
 		$data['menusub'] = $this->genmenu('malmacen');
-		$this->render('malmacen/pedido0digital',$data);
+		$vistas[0]='malmacen/pedido0digital';
+		$vistas[1]='malmacen/pedido1digital';
+		$this->render($vistas,$data);
 	}
 
 }

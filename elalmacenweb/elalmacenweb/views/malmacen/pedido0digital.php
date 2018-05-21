@@ -29,17 +29,17 @@
 			$inputDestino = form_multiselect('entidad_destino[]', $list_entidades_destino, $entidad_destino);
 			$this->table->add_row('Destino (las sucursales a donde enviara los items:',$inputDestino);
 
-			$inputCodigos = form_textarea('list_codigos',$list_codigos);
-			$this->table->add_row('Codigos de items o productos: ',$inputCodigos);
 
+			$this->table->add_row('Codigos de items o productos: ','Cantidad solicitada: ');
+			$inputCodigos = form_textarea('list_codigos',$list_codigos);
 			$inputAjustes = form_textarea('list_cantida',$list_cantida);
-			$this->table->add_row('Cantidad solicitada: ',$inputAjustes);
+			$this->table->add_row($inputCodigos,$inputAjustes);
 
 			$inputArchivo = form_upload('pedido_digital_archivo',$pedido_digital_archivo).PHP_EOL;
 			$this->table->add_row('Usar archivo digital? (list_codigos|list_cantidad): ',$inputArchivo . '( Cargado: archivo '.$pedido_digital_archivo.')');
 
 			$buttonPedido0 = form_submit('but_proceso1', 'A_Procesar_Paso_1', 'class="btn-primary btn"');
-			$buttonPedido1 = form_submit('but_proceso1', 'A_Procesar_Archivo', 'class="btn-primary btn"');
+			$buttonPedido1 = form_submit('but_proceso1', 'A_Procesar_Paso_2', 'class="btn-primary btn"');
 			$this->table->add_row($buttonPedido0,$buttonPedido1);
 
 			echo $this->table->generate();
@@ -48,9 +48,5 @@
 
 		echo form_fieldset_close() . PHP_EOL;
 			echo PHP_EOL;
-
-		echo form_fieldset('EJEMPLO DE COMO ES EL ARCHIVO',array('class'=>'container_blue containerin ')) . PHP_EOL;
-				
-		echo form_fieldset_close() . PHP_EOL;
 
 	?>
