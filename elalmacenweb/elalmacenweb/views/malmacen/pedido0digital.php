@@ -39,7 +39,7 @@
 			$this->table->add_row('Usar archivo digital? (list_codigos|list_cantidad): ',$inputArchivo . '( Cargado: archivo '.$pedido_digital_archivo.')');
 
 			$buttonPedido0 = form_submit('but_proceso1', 'A_Procesar_Paso_1', 'class="btn-primary btn"');
-			$buttonPedido1 = form_submit('but_proceso1', 'A_Procesar_Paso_2', 'class="btn-primary btn"');
+			$buttonPedido1 = form_submit('but_proceso2', 'A_Procesar_Paso_2', 'class="btn-primary btn"');
 			$this->table->add_row($buttonPedido0,$buttonPedido1);
 
 			echo $this->table->generate();

@@ -38,6 +38,17 @@ class Pedido extends YA_Controller {
 		//$can_ajustes = explode(PHP_EOL,$ajustar_format);
 		$pedido_digital_archivo_data['list_codigos'] = $codigos_format;
 		$pedido_digital_archivo_data['list_cantida'] = $ajustar_format;
+		$arraylistado = array();
+		$arraycodigos = explode(PHP_EOL,$codigos_format);
+		$arraycantida = explode(PHP_EOL,$ajustar_format);
+		if( count($arraycodigos) == count($arraycantida) )
+		{
+			foreach($arraycodigos as $indic => $codigop)
+			{
+				$arraylistado[$indic]=array('cod_producto'=>$codigop,'can_producto'=>$arraycantida[$indic]);
+			}
+		}
+		$pedido_digital_archivo_data['arraylistado'] = $arraylistado;
 		return $pedido_digital_archivo_data;
 	}
 
@@ -66,9 +77,10 @@ class Pedido extends YA_Controller {
 	 * @access	public
 	 * @return	void
 	 */
-	public function pedido1digital($cod_almacen = NULL)
+	public function pedido1digital($data=NULL)
 	{
-		$renderdata = TRUE;
+		$but_proceso1 = $this->input->get_post('but_proceso1');
+		$but_proceso2 = $this->input->get_post('but_proceso2');
 		$entidad_origen = $this->input->get_post('entidad_origen');
 		$entidad_destino = $this->input->get_post('entidad_destino');
 		$list_codigos = $this->input->get_post('list_codigos');
@@ -128,9 +140,51 @@ class Pedido extends YA_Controller {
 		$data['pedido_digital_archivo_data'] = $pedido_digital_archivo_data;
 		// procesado de datos listo, se presenta la informacion en pantalla de confirmacion
 		$data['menusub'] = $this->genmenu('malmacen');
-		$vistas[0]='malmacen/pedido0digital';
-		$vistas[1]='malmacen/pedido1digital';
-		$this->render($vistas,$data);
+		if($but_proceso1 != '')
+		{
+			$vistas[0]='malmacen/pedido0digital';
+			$vistas[1]='malmacen/pedido1digital';
+			$this->render($vistas,$data);
+		}
+		else
+			$this->pedido2digital($data);
+	}
+
+	/** 
+	 * procesa el pedido y sigue
+	 * @access	public
+	 * @param	void
+	 * @return	void
+	 */
+	public function pedido2digital($data = NULL)
+	{
+		$renderdata = TRUE;
+		if(!is_array($data))
+			$renderdata = FALSE;
+		if(!array_key_exists('pedido_digital_archivo_data',$data))
+			$renderdata = FALSE;
+		if(!array_key_exists('entidad_origen',$data))
+			$renderdata = FALSE;
+		if(!array_key_exists('entidad_destino',$data))
+			$renderdata = FALSE;
+		$data['semaforo_procesar'] = TRUE;
+		if($renderdata == FALSE)
+		{
+			$data['form_error_mensaje'] = 'Conexcion perdida o se intento llamar el formulario sin datos, debe repetirse el proceso';
+			$this->pedido0digital($data);
+			return;
+		}
+		$parametros = array();
+		$parametros['entidad_origen'] = $data['entidad_origen'];
+		$parametros['entidad_destino'] = implode(',',$data['entidad_destino']);
+		$parametros['list_codigos'] = $data['pedido_digital_archivo_data']['arraylistado'];
+		$this->load->model('malmacen/pedidomodel'); // este contiene abstraccion de tabla unidad unidcamente
+		$cod_pedido = $this->pedidomodel->set_pedido($this->username,$parametros,FALSE);
+		$almaceneslist=$this->get_pedido_codigo($this->username,$cod_pedido,FALSE);
+		if($almaceneslist !== FALSE)
+			$this->pedido0digital($data);
+		else
+			$this->render('malmacen/pedido2procesar',$data);
 	}
 
 }

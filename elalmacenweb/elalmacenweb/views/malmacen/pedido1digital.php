@@ -15,7 +15,7 @@
 			$arraycantida = explode(PHP_EOL,$list_cantida);
 			if( count($arraycodigos) != count($arraycantida) )
 			{
-				$this->table->add_row('Los datos se corrompieron procese bien el archivo/listado');
+				$this->table->add_row('Los datos no son correctos procese bien el archivo/listado');
 			}
 			else
 			{
