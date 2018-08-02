@@ -1,0 +1,19 @@
+' Gambas module file
+
+Public Sub Main()
+  
+  ' each pinter class inheriit form printgeneric defines own kit/print rules 
+  ' and printmanange will have generic rules, so each class will have override/process of that rules
+  ' so take a look of the "wp" operation function, are defined at printgeneric but each class manages by own
+
+  Dim printodev As New Printermanager(True) ' parameter determines wicht printer class device to use
+  
+  printodev.op ' here we must define port string device, if not will asume /dev/ttyS<x> at printermanager.op
+  
+  printodev.wp(Chr(2) & "_" & Chr(3)) ' epson Vnzla fiscal kit defines this as status request
+  
+  printodev.rp ' sometimes work others not if operationw are too close.. opending fixed
+  
+  Print printodev.dataread ' why here  the inhereits does not prin the printer buffer?
+
+End

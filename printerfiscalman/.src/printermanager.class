@@ -1,0 +1,51 @@
+' Gambas class file
+
+''' printer manager class suppost to "decide" based on a parameter wich class be used at
+
+Private printodev As Variant
+
+Property Read dataread As String
+
+  
+
+Public Sub _new(tipo As Boolean)
+  
+  If tipo Then
+  printodev = New Printoepson
+  Else
+  printodev = New Printobixolo
+  Endif
+  
+End
+
+
+Public Function op(Optional pp As String = "/dev/ttyS1")
+  
+  printodev.puerto = pp
+  printodev.op
+  
+End
+
+Public Function wp(Optional data As String = "_")
+  
+  printodev.wp(data) ' why in the class said "stream are closed" ?
+
+End
+
+Public Function rp()
+  
+  printodev.rp
+
+End
+
+Public Function cp()
+  
+  printodev.cp
+  
+End
+
+Private Function dataread_Read() As String
+
+  Return printodev.dataread
+
+End

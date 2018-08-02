@@ -1,0 +1,13 @@
+' Gambas class file
+
+''' specific to epson serial printer, suppost that inherits preuses all the op, rp, and cp funtions
+
+Inherits Printgeneric
+
+'' the write to port its specific for the printer epson class, rest are same, inherits?
+Public Function wp(Optional data As String = Chr(2) & "X" & Chr(3))
+  
+  Print #Super.SComm, data  ' why here said "stream are closed" ?
+  ' Super.rp
+  
+End

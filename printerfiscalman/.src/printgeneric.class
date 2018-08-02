@@ -1,0 +1,67 @@
+' Gambas class file
+
+''' this its the generic class like interfaces in JavaEE, 
+''' defines And provides general procedures Like Open port common To all specific printers classes
+
+
+'' to set the port ot use
+Public puerto As String = "/dev/ttyS0"
+
+'' abstractin port serial to use
+Public SComm As SerialPort
+
+'' used in manager class to access data in port buffer
+Public dataread As String = ""
+
+
+'' output nformation as kind of log, print in ide some stdour to gambas ide console, due its just example
+Private Sub printerror()
+  
+  Print Error.Text & " at " & Error.Where & " in " & Error.Class.Name
+  
+End
+
+
+' those methods will be generic and common for all the specific printer class
+
+
+'' generic open port procedure
+Public Function op()
+    Try SComm.Close()
+    SComm = New SerialPort As "SComm"
+    SComm.PortName = puerto
+    SComm.Speed = 9600
+    SComm.Parity = 0  ' setup el dispositivo como dice en pagina 5 (13 del pdf) del manual VMAX libreria impresora fiscal 200A3
+    SComm.DataBits = 8
+    SComm.StopBits = 1
+    SComm.FlowControl = 2
+    Try SComm.Open()
+    If Error Then printerror
+Catch
+  Try SComm.Open()
+  If Error Then printerror
+  If Error Then Error.Propagate()
+End
+
+'' generic close port procedure
+Public Sub cp()
+    Try SComm.Close()
+    Catch
+        Print " error " & Error.Text
+End
+
+'' generic read port buffer data
+Public Sub rp()
+  Dim buffers As String = ""
+  Dim timedout As Boolean = False
+  Dim timetout As Long
+  timetout = Val(Format$(Now, "nnss"))
+  Do
+    Sleep 0.1               ' se espera un poco algunas veces los datos llegan lento
+    Read #SComm, buffers, Lof(SComm)
+    Sleep 0.1               ' se espera un poco algunas veces los datos llegan lento
+    dataread = dataread & buffers
+    timedout = ((Val(Format$(Now, "nnss")) - timetout) > 0.5) ' se repite hasta que se acabe el tiempo si es necesario
+  Loop Until (timedout)
+End
+

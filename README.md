@@ -1,8 +1,9 @@
 Artifacts of software needed and hacked
 Artefactos de software necesitados y hackeados
 
-* elcatalogojar: visor java de emergencia para sistemas operativos mediocres.. funciones limitadas y simples.
-* elalmacenweb: sistema fugaz de almacen, matsdo y rapidongo.. leer adentro para trabajar
+* [elcatalogojar](elcatalogojar): visor java de emergencia para sistemas operativos mediocres.. funciones limitadas y simples.
+* [elalmacenweb](elalamacenweb): sistema fugaz de almacen, matsdo y rapidongo.. leer adentro para trabajar
+* [printerfiscalman](printerfiscalman): concepto de manejador de impresion para fiscales, kits, facturas, archivos
 
 Paginas en proceso y de recomendada lectura:
 
