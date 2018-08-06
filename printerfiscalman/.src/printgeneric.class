@@ -5,7 +5,7 @@
 
 
 '' to set the port ot use
-Public puerto As String = "/dev/ttyS0"
+Public puerto As String = "/dev/ttyS1"
 
 '' abstractin port serial to use
 Public SComm As SerialPort
@@ -50,18 +50,21 @@ Public Sub cp()
         Print " error " & Error.Text
 End
 
+' this event will be triggered in read operations by the stream when data its available
+Public Sub SComm_Read()
+   Dim buffers As String = ""
+  Read #SComm, buffers, Lof(SComm)
+   dataread &= buffers
+End
+
 '' generic read port buffer data
 Public Sub rp()
-  Dim buffers As String = ""
-  Dim timedout As Boolean = False
-  Dim timetout As Long
-  timetout = Val(Format$(Now, "nnss"))
+   Dim start As Date = Now
+   Dim buffers As String = ""
   Do
-    Sleep 0.1               ' se espera un poco algunas veces los datos llegan lento
+    Wait 0.1
     Read #SComm, buffers, Lof(SComm)
-    Sleep 0.1               ' se espera un poco algunas veces los datos llegan lento
-    dataread = dataread & buffers
-    timedout = ((Val(Format$(Now, "nnss")) - timetout) > 0.5) ' se repite hasta que se acabe el tiempo si es necesario
-  Loop Until (timedout)
+    dataread &= buffers
+  Loop Until DateDiff(start, Now, gb.Millisecond) > 500
 End
 
