@@ -46,6 +46,7 @@ End
 
 Private Function dataread_Read() As String
 
+  printodev.rp
   Return printodev.dataread
 
 End

@@ -11,8 +11,10 @@ Public puerto As String = "/dev/ttyS1"
 Public SComm As SerialPort
 
 '' used in manager class to access data in port buffer
-Public dataread As String = ""
+Property Read dataread As String
 
+'' buffer to read by dataread property
+Private databuffer As String = ""
 
 '' output nformation as kind of log, print in ide some stdour to gambas ide console, due its just example
 Private Sub printerror()
@@ -37,6 +39,7 @@ Public Function op()
     SComm.FlowControl = 2
     Try SComm.Open()
     If Error Then printerror
+    databuffer = ""
 Catch
   Try SComm.Open()
   If Error Then printerror
@@ -54,17 +57,33 @@ End
 Public Sub SComm_Read()
    Dim buffers As String = ""
   Read #SComm, buffers, Lof(SComm)
-   dataread &= buffers
+   databuffer &= buffers
 End
 
-'' generic read port buffer data
+' IMPORTANTE: el evento READ debe ser sobrescrito , 
+' porque hay que esperar data de la impresora segun lso tiempos de esta
+' y cada impresora es distinta, con tiempos distintos y mensajes/proptocolos distintos
+
+
+'' generic read port buffer data, this method only will read lasted not readed info from the data buffer class
 Public Sub rp()
    Dim start As Date = Now
    Dim buffers As String = ""
-  Do
-    Wait 0.1
-    Read #SComm, buffers, Lof(SComm)
-    dataread &= buffers
-  Loop Until DateDiff(start, Now, gb.Millisecond) > 500
+   If IsNull(databuffer) Then
+    Do
+      Wait 0.1
+      Read #SComm, buffers, Lof(SComm)
+      databuffer &= buffers
+    Loop Until DateDiff(start, Now, gb.Millisecond) > 500
+   Endif
 End
 
+
+Private Function dataread_Read() As String
+
+  Dim returndata As String = ""
+  returndata = databuffer
+  databuffer = Null ' acts as semaphore
+  Return returndata
+
+End

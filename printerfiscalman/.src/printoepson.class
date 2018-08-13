@@ -12,3 +12,7 @@ Public Function wp(Optional data As String = Chr(2) & "_" & Chr(3))
   
 End
 
+
+' IMPORTANTE: el evento READ debe ser sobrescrito , 
+' porque hay que esperar data de la impresora segun lso tiempos de esta
+' y cada impresora es distinta, con tiempos distintos y mensajes/proptocolos distintos

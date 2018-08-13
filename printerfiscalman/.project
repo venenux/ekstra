@@ -1,8 +1,7 @@
 # Gambas Project File 3.0
-# Compiled with Gambas 3.10.0
 Title=printerfiscalman
 Startup=Main
-Version=0.0.2
+Version=0.0.4
 Component=gb.image
 Component=gb.db
 Component=gb.settings
