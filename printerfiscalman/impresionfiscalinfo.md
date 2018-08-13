@@ -47,44 +47,45 @@ prácticamente instantáneos):
 
     **Protocolo de comunicación fiscal**
     
-    La comunicación entre el host y la impresora fiscal es bi-direccional. El protocolo es 
-    del tipo “maestro/esclavo” y se basa en los siguientes principios:
-    *  El host (“maestro”) inicia todas las comunicaciones.
-    *  La impresora fiscal (“esclavo”) nunca enviará un mensaje no solicitado.
+La comunicación entre el host y la impresora fiscal es bi-direccional. El protocolo es 
+del tipo “maestro/esclavo” y se basa en los siguientes principios:
+
+*  El host (“maestro”) inicia todas las comunicaciones.
+*  La impresora fiscal (“esclavo”) nunca enviará un mensaje no solicitado.
     
-    El formato de los mensajes intercambiados entre el host y la impresora fiscal es el siguiente:
+El formato de los mensajes intercambiados entre el host y la impresora fiscal es el siguiente:
 
-    | campo | descripcion |
-    | ----- | ------------ |
-    | STX   | inicio del string del mensage 0x02 |
-    | sec   | numero de secuencia |
-    | comando | Número de comando [0x30 – 0xAF] |
-    |   -   | separador de campo |
-    | campo1 | campo de datos |
-    | .... | ... mas campos n veces |
-    | campon | ultimo campo numero "n" |
-    | ETX   | Fin de texto [0x03 |
-    | BCC   | nnnnn
+| campo | descripcion |
+| ----- | ------------ |
+| STX   | inicio del string del mensage 0x02 |
+| sec   | numero de secuencia |
+| comando | Número de comando [0x30 – 0xAF] |
+|   -   | separador de campo |
+| campo1 | campo de datos |
+| .... | ... mas campos n veces |
+| campon | ultimo campo numero "n" |
+| ETX   | Fin de texto [0x03 |
+| BCC   | nnnnn
 
-    Tanto los comandos enviados por el host como las respuestas de la impresora fiscal, 
+Tanto los comandos enviados por el host como las respuestas de la impresora fiscal, 
 están enmarcadas por los códigos de control ASCII de “inicio de texto” (STX) (0x02) y de 
 “fin de texto” (ETX) (0x03).
 
-    Los caracteres de verificación de bloque (BCC <nnnn>) deben ser enviados al final de 
+Los caracteres de verificación de bloque (BCC <nnnn>) deben ser enviados al final de 
 la trama de datos. El BCC <nnnn> es la suma sencilla de todos los caracteres desde el 
 inicio (STX) hasta el fin de datos (ETX), y se representa mediante 4 caracteres hexadecimales.
 
-    Los comandos enviados por el host a la impresora fiscal deben tener un número de secuencia 
+Los comandos enviados por el host a la impresora fiscal deben tener un número de secuencia 
 en el rango desde 0x20 a 0x7F (hexadecimal) o desde 32 a 127 (decimal). 
 
 Las respuestas de la impresora fiscal tendrán un número de secuencia coincidente. 
 No es necesario que los números de secuencia sean correlativos, pero deberán ser 
 diferentes del número de secuencia del comando anterior.
 
-    Para cada comando enviado por el host, éste deberá recibir una respuesta de la impresora 
-fiscal antes de que se envíe el próximo.
+**Para cada comando enviado por el host, éste deberá recibir una respuesta de la impresora 
+fiscal antes de que se envíe el próximo.**
 
-    El host debe analizar la respuesta a cada comando para garantizar que no ha ocurrido ningún 
+El host debe analizar la respuesta a cada comando para garantizar que no ha ocurrido ningún 
 error con el manejo de la impresora fiscal.
 
 **IMPORTANTE:** las respuestas deben ser siempre analizadas, debido a que es la única forma 
