@@ -5,7 +5,7 @@ also personal mails, about some behaviour of fiscal kit's in printers:
 * [Notas de PICCORO](#notas-de-piccoro)
 * [Notas de zxMarce](#notas-de-zxmarce)
 * [Explicacion kit fiscal similar](#explicacion-kit-fiscal-similar-argentino-dominicana-venezolano)
-  * [Protocolo de comunicación fiscal](#protocolo-de-comunicación-fiscal)
+  * [Protocolo de comunicación fiscal](#protocolo-de-comunicacion-fiscal)
   * [El BCC Byte Check Code](#el-bcc-byte-check-code)
 
 Sorry but are mayority on spanish.
@@ -71,7 +71,7 @@ este protocolo compatible con versiones anteriores se deberá marcar como nulos 
 carácter 127 decimal.
 
 
-### Protocolo de comunicación fiscal
+### Protocolo de comunicacion fiscal
     
 La comunicación entre el host y la impresora fiscal es bi-direccional. El protocolo es 
 del tipo “maestro/esclavo” y se basa en los siguientes principios:
