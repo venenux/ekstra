@@ -1,3 +1,4 @@
+# acerca de kit fiscales
 
 This it's a special document based on notes from gabmas mail list and 
 also personal mails, about some behaviour of fiscal kit's in printers:
@@ -9,6 +10,31 @@ also personal mails, about some behaviour of fiscal kit's in printers:
   * [El BCC Byte Check Code](#el-bcc-byte-check-code)
 
 Sorry but are mayority on spanish.
+
+## Comunicacion serial
+
+Todo mensaje Tanto los comandos enviados por el host como las respuestas 
+de la impresora fiscal (el kit realmente), están enmarcadas por los códigos 
+de control ASCII de “inicio de texto” `(STX) (0x02)` y de “fin de texto” `(ETX) (0x03)`
+
+Any and all message either commands send by the host as the responses 
+from the printer (in fact the fiscal kit), are enclouse between the ASCII 
+control codes of "begin of text" `(STX) (0x02)` and “end of text” `(ETX) (0x03)`
+
+### probador de comunicacion serial
+
+* gambas farm: iloserialport, SerialPort
+* qt adhoc: https://www.teuniz.net/serial-com-tester/index.html
+
+## Why fiscal kits - Porque kits fiscales
+
+The fiscal kit printing are used due communications in some countries 
+are very deficient, and a 100% on-line system will be not viable cos 
+a client cannot buy a product if the system go offline ar that moment.
+
+La impresion en kit fiscales se realiza porque las comunicaciones en 
+algunos paises fallan, y un sistema 100% en linea no seria viable ya 
+que un cliente no podria comprar un producto si el internet fallase.
 
 ## Notas de PICCORO
 
@@ -34,11 +60,6 @@ en ser ejecutados mientras que otros son prácticamente instantáneos):
 
 **El 13 de agosto de 2018, 15:30, ML<zxMarce> escribió:**
 
-Hace ya varios años (2009!) desarrollé una interfase fiscal con un PDF provisto por PnP Desarrollos 
-en Venezuela. Fué en Windows/VB6.Proveyeron también un "control OCX" (una especie de Shared Object 
-en Linux) con fuentes, escrito horriblemente en VB6. Ni mencionar que hice mi propio OCX.
-
-Pero del PDF que mandaron saco esto en limpio para ver si puedo darte una mano (lo destaqué en rojo; 
 ten en cuenta que unos comandos toman varios segundos en ser ejecutados mientras que otros son 
 prácticamente instantáneos):
 
@@ -81,17 +102,17 @@ del tipo “maestro/esclavo” y se basa en los siguientes principios:
     
 El formato de los mensajes intercambiados entre el host y la impresora fiscal es el siguiente:
 
-| campo | descripcion |
-| ----- | ------------ |
-| STX   | inicio del string del mensage 0x02 |
-| sec   | numero de secuencia |
+| campo  | descripcion             |
+| ------ | ----------------------- |
+| STX    | inicio del string del mensage 0x02 |
+| sec    | numero de secuencia     |
 | comando | Número de comando [0x30 – 0xAF] |
-|   -   | separador de campo |
-| campo1 | campo de datos |
-| .... | ... mas campos n veces |
+|   -    | separador de campo      |
+| campo1 | campo de datos          |
+| ....   | ... mas campos n veces  |
 | campon | ultimo campo numero "n" |
-| ETX   | Fin de texto [0x03 |
-| BCC   | codigo de checksum [ver BCC](el-bcc-byte-check-code)
+| ETX    | Fin de texto [0x03      |
+| BCC    | codigo de checksum [ver BCC](#el-bcc-byte-check-code) |
 
 Tanto los comandos enviados por el host como las respuestas de la impresora fiscal, 
 están enmarcadas por los códigos de control ASCII de “inicio de texto” (STX) (0x02) y de 
