@@ -117,11 +117,13 @@ El BCC (block-check-code) es, cuatro bytes transmitidos con los caracteres hexa 
 Ejemplo con un paquete ficticio &H02 - &H41 - &H03 (STX - "A" - ETX) donde el paquete o 
 el comando completo con parametros etc etc es simpelmente "A", entonces el BCC es:
 
+```
     00 02 (STX)
   + 00 41 (A)
     00 03 (ETX)
   -------
     00 46 -> Valor a enviar como BCC
+```
 
 El string a enviar es, entonces: `&H02&H41&H03&H30&H30&H34&H36` que traducido 
 en ascii es `STXAETX0046` es decir a diferencia de el kit elepost aqui ETX no esta al final.
