@@ -16,3 +16,11 @@ End
 ' IMPORTANTE: el evento READ debe ser sobrescrito , 
 ' porque hay que esperar data de la impresora segun lso tiempos de esta
 ' y cada impresora es distinta, con tiempos distintos y mensajes/proptocolos distintos
+
+
+' this event will be triggered in read operations by the stream when data its available
+' but are override by each printer class due the max time to waith response
+Public Sub SComm_Read()
+   Sleep 0.5
+   Super.SComm_Read
+End

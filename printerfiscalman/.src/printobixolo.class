@@ -4,14 +4,22 @@
 
 Inherits Printgeneric
 
+
 '' the write to port its specific for the printer epson class, rest are same, inherits?
 Public Function wp(Optional data As String = Chr(2) & "X" & Chr(3))
   
   Print #Super.SComm, data  ' why here said "stream are closed" ?
-  ' Super.rp
   
 End
 
 ' IMPORTANTE: el evento READ debe ser sobrescrito , 
 ' porque hay que esperar data de la impresora segun lso tiempos de esta
 ' y cada impresora es distinta, con tiempos distintos y mensajes/proptocolos distintos
+
+
+' this event will be triggered in read operations by the stream when data its available
+' but are override by each printer class due the max time to waith response
+Public Sub SComm_Read()
+   Wait 0.5
+   Super.SComm_Read
+End
