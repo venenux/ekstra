@@ -1,0 +1,11 @@
+' Gambas class file
+
+Inherits Printgeneric
+
+'' the write to file its specific for the printer file class
+Public Function wp(Optional data As String = "")
+  
+  Print #Super.SComm, data  ' 
+  
+End
+

@@ -2,24 +2,44 @@
 
 ''' printer manager class suppost to "decide" based on a parameter wich class be used at
 
+'' object printer abstraction
 Private printodev As Variant
 
+'' data buffer where the output status will be stored to see/read
 Property Read dataread As String
 
-  
+'' can be defined in op funtion or using the property
+Property device As String
 
-Public Sub _new(tipo As Boolean)
-  
-  If tipo Then
+
+Property Read kitstatus As Variant
+
+
+Public Sub _new(Optional vendor As String = Null)
+
+  ' printodev = New Printofile ' no esta lista, las funciones son similares pero cambia el formato de lectura
   printodev = New Printoepson
-  Else
+  
+  If Comp(vendor, "epson", gb.IgnoreCase) = 0 Then
+  printodev = New Printoepson
+  printodev.delaytobuffer = 0.5
+  Endif
+  
+  If Comp(vendor, "bixolon", gb.IgnoreCase) = 0 
   printodev = New Printobixolo
+  printodev.delaytobuffer = 0.6
+  Endif
+  
+  If Comp(vendor, "file", gb.IgnoreCase) = 0 
+  printodev = New Printofile
+  printodev.delaytobuffer = 0.1
   Endif
   
 End
 
 
 Public Function op(Optional pp As String = "/dev/ttyS1")
+  
   
   printodev.puerto = pp
   printodev.op
@@ -48,5 +68,23 @@ Private Function dataread_Read() As String
 
   printodev.rp
   Return printodev.dataread
+
+End
+
+Private Function device_Read() As String
+
+  Return printodev.puerto
+
+End
+
+Private Sub device_Write(Value As String)
+
+  printodev.puerto = Value
+
+End
+
+Private Function kitstatus_Read() As Variant
+
+  Return printodev.devkitstatus()
 
 End

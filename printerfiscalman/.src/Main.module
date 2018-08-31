@@ -6,14 +6,14 @@ Public Sub Main()
   ' and printmanange will have generic rules, so each class will have override/process of that rules
   ' so take a look of the "wp" operation function, are defined at printgeneric but each class manages by own
 
-  Dim printodev As New Printermanager(True) ' parameter determines wicht printer class device to use
+  Dim printodev As New Printermanager ' parameter determines wicht printer class device to use
   
   printodev.op ' here we must define port string device, if not will asume /dev/ttyS<x> at printermanager.op
   
   printodev.wp(Chr(2) & "_" & Chr(3)) ' change and parse as you wish/need i parse that "_" due my printer report status
   
-  Wait 0.5 '  waith to the read event raise when data happened, NOT WAITH SO MUCH so will only read garbage
-  
+  ' once data has writen to device, a read event will raise, and the "dataread" buffer wil be filled
+
 ' IMPORTANTE: el evento READ debe ser sobrescrito , 
 ' porque hay que esperar data de la impresora segun lso tiempos de esta
 ' y cada impresora es distinta, con tiempos distintos y mensajes/proptocolos distintos
@@ -25,5 +25,7 @@ Public Sub Main()
   
   ' another question, i have a property (printermananger) that access to a property in the printerclass
   ' that behaviour are too complex or inneficient or improperty?
+  
+  Print printodev.kitstatus
 
 End

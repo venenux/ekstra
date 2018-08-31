@@ -4,9 +4,11 @@
 
 Inherits Printgeneric
 
+
 '' the write to port its specific for the printer epson class, rest are same, inherits?
 Public Function wp(Optional data As String = Chr(2) & "_" & Chr(3))
   
+  data = Chr(2) & data & Chr(3)
   Print #Super.SComm, data  ' why here said "stream are closed" ?
   ' Super.rp
   
@@ -21,6 +23,56 @@ End
 ' this event will be triggered in read operations by the stream when data its available
 ' but are override by each printer class due the max time to waith response
 Public Sub SComm_Read()
-   Sleep 0.5
    Super.SComm_Read
+End
+
+
+
+Public Function devkitstatus() As Variant
+
+  wp("_")
+  Super.rp
+  Return Super.dataread
+
+End
+
+
+Public Function devkitreportes(Optional idcom As Integer = 99, parametros As Variant[]) As Variant
+  
+  Dim dt0, dt1, dt3 As String = ""
+  
+  dt0 = parametros[0]
+  ' no se ha definido como sera el pase de comando, en idcom
+  Select Case idcom
+    Case 1
+      logprint("reporte electronico, tipo: " & dt0 & " si viene fecha es " & dt1 & " y " & dt2)
+      If lavka_writeport("Y" & dt0 & dt1 & dt2) Then
+        If lavka_readport Then
+          respuesta2 = dato
+          respuesta2 = Replace$(respuesta2, Chr(2), "", gb.IgnoreCase)
+          respuesta2 = Replace$(respuesta2, Chr(3), "", gb.IgnoreCase)
+          respuesta2 = Replace$(respuesta2, Chr(6), "", gb.IgnoreCase)
+          ' TODO: en futuro disecionar los reportes y retornar un arreglo con cada dato separado por indices nombrados
+          Return respuesta2
+        Else
+          Return False
+        Endif
+      Endif
+    Case 3
+      ' TODO: enviar estatus y ver si es programacion, si es programacion permitir, sino para que envio le retorno una groseria y se friege
+      logprint("actualizar fecha y hora")
+            ' C140220001800 : CDDMMAAAAhhmm
+            lavka_writeport("C" & dt0)
+            lavka_readport
+            If Comp(dato, Chr(6), gb.IgnoreCase) = 0 Then
+              Return True
+            Endif
+    Case 2
+      logprint("seleccionar periferico, no implementado, el lider dice que mejor se pega a la pc, ademas la documentacion esta podrida")
+    Case 4
+      logprint("version de firmware de impresora, el lider dice que Eso no me interesa.. no impklementado ademas la documentacion ta podrida")
+    Case Else
+      logprint("comando no valido!")
+      Return False
+  End Select  
 End

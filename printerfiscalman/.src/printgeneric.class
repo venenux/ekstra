@@ -4,17 +4,21 @@
 ''' defines And provides general procedures Like Open port common To all specific printers classes
 
 
-'' to set the port ot use
+'' to set the port ot use, if are a file use a path to the new file
 Public puerto As String = "/dev/ttyS1"
 
 '' abstractin port serial to use
-Public SComm As SerialPort
+Public SComm As Variant
 
 '' used in manager class to access data in port buffer
 Property Read dataread As String
 
 '' buffer to read by dataread property
 Private databuffer As String = ""
+
+'' delay for wait reponse for data as all fiscal kit's need waith for a while until data it's comming, must be defined for each printer, commonly 0.5 (500ms) are standar
+Public delaytobuffer As Float = 1
+
 
 '' output nformation as kind of log, print in ide some stdour to gambas ide console, due its just example
 Private Sub printerror()
@@ -56,7 +60,8 @@ End
 ' this event will be triggered in read operations by the stream when data its available
 Public Sub SComm_Read()
    Dim buffers As String = ""
-  Read #SComm, buffers, Lof(SComm)
+    Sleep delaytobuffer ' CAUTION durante este tiempo el programa estara "colgado" esperando.. cuidado!
+   Read #SComm, buffers, Lof(SComm)
    databuffer &= buffers
 End
 
@@ -71,8 +76,7 @@ Public Sub rp()
    Dim buffers As String = ""
    If IsNull(databuffer) Then
     Do
-      Wait 0.1
-      Read #SComm, buffers, Lof(SComm)
+      Read #SComm, buffers, Lof(SComm)    ' OJO aqui no hay sleep por el buffer, esta en el evento, pues se dispara!
       databuffer &= buffers
     Loop Until DateDiff(start, Now, gb.Millisecond) > 500
    Endif

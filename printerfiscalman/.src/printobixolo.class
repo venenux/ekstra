@@ -20,6 +20,6 @@ End
 ' this event will be triggered in read operations by the stream when data its available
 ' but are override by each printer class due the max time to waith response
 Public Sub SComm_Read()
-   Wait 0.5
    Super.SComm_Read
 End
+
