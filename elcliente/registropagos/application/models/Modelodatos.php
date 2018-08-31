@@ -86,8 +86,10 @@ class Modelodatos extends CI_Model
 		return $response;
 	}
 
-	public function check_user($userandclaveandmodulo)
+	public function check_user($userandclaveandmodulo=null)
 	{
+		if ( $userandclaveandmodulo == null )
+			return FALSE;
 		if ( !is_array($userandclaveandmodulo) )
 			return FALSE;
 		if ( ! array_key_exists ( 'modulourl' , $userandclaveandmodulo ))
@@ -96,11 +98,16 @@ class Modelodatos extends CI_Model
 			return FALSE;
 		if ( ! array_key_exists ( 'username' , $userandclaveandmodulo ))
 			return FALSE;
-		
+
+		$username = $userandclaveandmodulo['username'];
+		$userclave = $userandclaveandmodulo['userclave'];
+		$modulourl = $userandclaveandmodulo['modulourl'];
+
+		log_message('info', 'deteccion del url request basada en modulourl'.$userandclaveandmodulo['modulourl']);
 		$this->load->library('libu');
 		$ipnet = $this->libu->getipnet('server', TRUE);
 		$this->config->load('cli_modulourl');
-		$urlnet = $this->config->item('modulourl'.$userandclaveandmodulo['modulourl']);
+		$urlnet = $this->config->item('modulourl'.$modulourl);
 		if( strripos($ipnet,'10.10.') !== FALSE OR strripos($ipnet,'37.10.') !== FALSE)
 			if ( strripos($ipnet,'37.10.') == 0)
 				$urldelsistemaweb = 'http://intranet1.net.ve/'.$urlnet;
@@ -113,7 +120,17 @@ class Modelodatos extends CI_Model
 				$urldelsistemaweb = 'http://10.10.34.23/'.$urlnet;
 		else
 			$urldelsistemaweb = 'http://sabalnomina.no-ip.org/'.$urlnet;
-		log_message('info', 'Intentanto validar request hacia '.$urldelsistemaweb);
+		log_message('info', 'deteccion request hacia '.$urldelsistemaweb.' vaidada.. revision de datos:');
+
+		log_message('info', 'deteccion validacion de encriptacion de datos, por amplitud');
+		if( strlen($userclave) != 32 )
+			$userclave == md5($userclave);
+		if( strlen($username) != 32 )
+			$username == md5($username);
+		log_message('info', 'deteccion encriptacion de datos validada... realizando request:');
+		$userandclaveandmodulo['userclave'] = $userclave;
+		$userandclaveandmodulo['username'] = $username;
+
 		$scurl = curl_init();
 		curl_setopt($scurl, CURLOPT_URL, $urldelsistemaweb);
 		curl_setopt($scurl , CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
