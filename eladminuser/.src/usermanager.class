@@ -1,44 +1,9 @@
 ' Gambas class file
 
-Public $conexionmysql As Connection
+Private $dbcnx As Edbm
 
-Public Function getConexionmysql() As Connection
-    
-    'Print "Creando conexión a la Base de Datos MYSQL ..."
-    $conexionmysql = New Connection
-    
-    $conexionmysql.Type = "mysql"
-       
-    $conexionmysql.Name = "sysdbadmins"
-       
-    ' $conexionmysql.Host = "10.10.34.23" 'esto va asi??
-    ' $conexionmysql.Login = "sysdbuser" 
-    ' $conexionmysql.Password = "sysdbuser.1.com"
-    ' '   ______________________________________________________________
-    ' < muuuuuuchas loqueras con las bases de datos ¿será contagioso?  >  
-    '   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    '  \  ^__^                                               ^__^  /
-    '   \ (@@)\ _______                             _______ /(00) /
-    '     (__) \       )\/\                     /\/(       / (__)
-    '           ||---w |                           | w---||
-    '           ||    ||                           ||    ||
-    '               * /
-    $conexionmysql.Host = "10.10.34.132"
-    $conexionmysql.Login = "sysdbadmin" '"sysdbuser" 
-    $conexionmysql.Password = "sysdb.1.com" '"sysdbuser.1.com"
-    
-    Try $conexionmysql.Open
-    If Error Then 
-        ' Message.error("Error al intentar conectarse a la Base de Datos MYSQL")
-        Print "Error al intentar conectarse a la Base de Datos MYSQL:"
-        Print ERROR.TEXT
-        Print ERROR.CODE
-        Print ERROR.WHERE
-        $conexionmysql = Null
-    Endif
-    
-    Return $conexionmysql
-    
+Private Sub italive()
+
 End
 
 Public Function operar() As Collection
@@ -54,17 +19,9 @@ Public Function operar() As Collection
     
     Print "Solicitando acceso a la base de Datos..."
     conex1 = getConexionmysql()
-'     conex2 = getConexionmysql() ' aqui puede ser la odbc, cuando se configure a futuro 
-    'configurar macabramente la conexión para obtener acceso a la base de datos sysdbpos
-    ' Observaciones: este truco se hace porque conex1 hace una conexión con la base de datos
-    ' sysdbadmin y no conecta con sysdbpos... al crear Connection1 lleva configurada la conexión
-    ' a sysdbpos 
-    Connections["Connection1"].Login = "sysdbadmin"
-    Connections["Connection1"].Password = "sysdb.1.com"
-    Connections["Connection1"].open
     ' 
     'If (conex1 <> Null) And (conex2 <> Null) Then 
-    If (conex1 <> Null) And (Connections["Connection1"] <> Null) Then 
+    If conex1 <> Null Then 
         ' hacer query en la tabla de usuarios y determinar si debe haber algun cambio o no     
         Print "Se tiene Acceso a la base de datos, iniciando las operaciones programadas...  " 
         query = "SELECT sysdbadmins.adm_entidad_usuario.cod_entidad, sysdbadmins.adm_usuario.ficha, sysdbadmins.adm_usuario.intranet, sysdbadmins.adm_usuario.clave, sysdbadmins.adm_usuario.apellido,"
