@@ -106,7 +106,6 @@ class YA_Controller extends CI_Controller
 		$this->table->clear();
 		$this->table->add_row($menuarraymain);
 		return $this->table->generate();
-		echo $menuarraymain;
     }
 
 	/* 
